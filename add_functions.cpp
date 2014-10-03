@@ -9,14 +9,17 @@ void read_unformatted_file(QMap<double, double> &Data, QString fileName)
     QTextStream in(&file);
 
     while(!in.atEnd()) {
-        //QMessageBox::information(0, "Info", "In while-loop");
         QString line = in.readLine();
-        //QMessageBox::information(0, "Info", line);
-        QStringList fields = line.split("  ");
-        Data[fields[0].toDouble()] = fields[1].toDouble();
-        //QMessageBox::information(0, "Info", fields[0]);
+        QVector<double> tmp_input;
+        if(line.split(" ").size() == 7)
+        {
+            tmp_input.push_back(line.split(" ")[3].toDouble());
+            tmp_input.push_back(line.split(" ")[6].toDouble());
+        }
+        if(tmp_input.size() == 2)
+            Data[tmp_input[0]] = tmp_input[1];
+        tmp_input.clear();
     }
-
     file.close();
 }
 

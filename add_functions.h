@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
+#include <sstream>
 
 void read_unformatted_file(QMap<double, double> &Data, QString fileName);
 void write_unformatted_file(const QMap<double, double> &Data, QString fileName);

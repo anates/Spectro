@@ -140,17 +140,18 @@ void MainWindow::replot()
     MainWindow::pen.setCapStyle(Qt::RoundCap);
     MainWindow::pen.setJoinStyle(Qt::RoundJoin);
 
-    //MainWindow::Curve.setPen(MainWindow::pen);
+    MainWindow::Curve.setPen(MainWindow::pen);
 
     QVector<double> x, y;
-    y = QVector<double>::fromList(Scandata.keys());
-    x = QVector<double>::fromList(Scandata.values());
+    x = QVector<double>::fromList(Scandata.keys());
+    y = QVector<double>::fromList(Scandata.values());
 
     MainWindow::Curve.setSamples(x, y);
     MainWindow::Curve.attach(ui->qwtPlot);
     ui->qwtPlot->updateAxes();
     ui->qwtPlot->show();
     ui->qwtPlot->replot();
+    QMessageBox::information(this, tr("Info"),QString::number(x[x.size()-1]));
 }
 
 void MainWindow::on_saveGenericData_clicked()
