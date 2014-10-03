@@ -10,9 +10,7 @@
 *                                                                  *
 *******************************************************************/
 
-#include "../Include/Globale.h"
-
-
+#include "Globale.h"
 
 int StrToInt(std::string InString)
 {
@@ -55,12 +53,10 @@ void Readword(std::string &Name)
 	std::getline(std::cin, Name);
 }
 
-
 void ReadLine(std::string &name)
 {
 	std::getline(std::cin, name);
 }
-
 
 void ReadReal(double & Real)
 {

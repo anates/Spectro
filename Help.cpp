@@ -1,4 +1,4 @@
-#include "../Include/Globale.h"
+#include "Globale.h"
 
 /*******************************************************************
 *              ***  FIL - BESKRIVELSE  ***                           *
@@ -42,7 +42,6 @@ inline bool FoundHelp(std::string &FilNavn)
 	}
 
 }
-
 
 void WriteHelp(int Help_Nr)
 {

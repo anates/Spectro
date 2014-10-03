@@ -9,7 +9,7 @@
 *                                                                  *
 *******************************************************************/
 
-#include "../Include/Globale.h"
+#include "Globale.h"
 
 
 void Check_for_max(Spectrum Data, SingleSpec AuxData, int i, bool ok, ResultTab tab, int nr)
@@ -91,8 +91,6 @@ void Finn_FWHM(Spectrum Data, int j, int nr, ResultTab Tab)
 
 
 }
-
-
 
 void Analyze(Spectrum Data)  // VAR transfer to avoid overflow }
 {

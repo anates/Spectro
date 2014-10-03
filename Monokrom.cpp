@@ -14,7 +14,7 @@
 *                                                            *
 *************************************************************/
 
-#include "../Include/Monokrom.h"
+#include "Monokrom.h"
 
 /*************************************************************
 *                                                            *
@@ -31,8 +31,6 @@ void ShortDelay(int StopCount)
 	for (int i = 0; i < StopCount; i++)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
-
-
 
 void MonoNed(double step, bool signal)
 {
@@ -188,7 +186,6 @@ void ReadMonoPos(void)
 	in.close();
 }
 
-
 void WriteMonoPos(void)
 {
 	/*********************************************************
@@ -213,7 +210,6 @@ void WriteMonoPos(void)
 	outfile.close();
 }
 
-
 void KontrollMonoPos(void)
 {
 	/*********************************************************
@@ -231,8 +227,6 @@ void KontrollMonoPos(void)
 	std::cout << "MonoPos (in cm-1) = ";
 	//ReadReal(MonoPos);//Has to be fixed???
 }
-
-
 
 //void ManuellMonoFlytting(void)
 //{

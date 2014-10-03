@@ -11,23 +11,17 @@
 *                                                                  *
 *******************************************************************/
 
-#include "../Include/Globale.h"
+#include "Globale.h"
 
 bool onScreen = false;
 bool OnFile = true;
 
-
 typedef double Spectrum[MaxPoints][2];
 typedef bool PlSetChosenType[20][number_settings];
 typedef std::string PlSettingType[2][number_settings];
-//typedef struct LetterSet{
-//	char x[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-//} LetterSet;
 extern struct LetterSet Letters;
-//enum AveMode{ NoAverage, Point, Intervall };
 const int PolPosition[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 extern struct ScanList Scan;
-
 
 Spectrum LumiSpectrum;     // Data storage variable 
 
@@ -45,7 +39,7 @@ bool Monochecked,
 ScanPrepOK,
 LogWritten,
 StorageOK;
-PlSetChosenType PolSetChosen;;
+PlSetChosenType PolSetChosen;
 PlSettingType Polsetting;
 
 bool isInSet(char letter)

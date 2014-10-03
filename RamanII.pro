@@ -15,23 +15,17 @@ SOURCES += main.cpp\
     TPDECL.cpp \
     Raman.cpp \
     Monokrom.cpp \
-    menyer.cpp \
     Maaling.cpp \
-    Laagring.cpp \
     Help.cpp \
     Globale.cpp \
-    ControlCardReplacement.cpp \
     COM_PROC.cpp \
     Analyse.cpp
 
 HEADERS  += mainwindow.h \
     TPDECL.h \
-    targetver.h \
     Raman.h \
     Monokrom.h \
-    menyer.h \
     Maaling.h \
-    Laagring.h \
     Help.h \
     Globale.h \
     COM_PROC.h \
