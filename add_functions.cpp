@@ -10,15 +10,9 @@ void read_unformatted_file(QMap<double, double> &Data, QString fileName)
 
     while(!in.atEnd()) {
         QString line = in.readLine();
-        QVector<double> tmp_input;
-        if(line.split(" ").size() == 7)
-        {
-            tmp_input.push_back(line.split(" ")[3].toDouble());
-            tmp_input.push_back(line.split(" ")[6].toDouble());
-        }
-        if(tmp_input.size() == 2)
-            Data[tmp_input[0]] = tmp_input[1];
-        tmp_input.clear();
+        QPair<double, double> valuePair;
+        splitToDoubles(valuePair, line);
+        Data[valuePair.first] = valuePair.second;
     }
     file.close();
 }
@@ -40,4 +34,22 @@ void write_unformatted_file(const QMap<double, double> &Data, QString fileName)
     }
 
     file.close();
+}
+
+void splitToDoubles(QPair<double, double> &valuePair, QString input)
+{
+    QStringList stringlist = input.split(" ");
+    double x, y;
+    int i = 0;
+    while(stringlist.at(i).isEmpty())
+    {
+        stringlist.removeAt(i);
+        i++;
+    }
+    while(stringlist.at(stringlist.size()-1).isEmpty())
+        stringlist.removeAt(stringlist.size()-1);
+
+    x = stringlist.at(0).toDouble();
+    y = stringlist.at(stringlist.size()-1).toDouble();
+    valuePair = qMakePair(x, y);
 }

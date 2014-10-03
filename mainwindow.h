@@ -14,6 +14,9 @@ class QPushButton;
 class QLabel;
 class QLineEdit;
 class QTextEdit;
+class QAction;
+class QActionGroup;
+class QMenu;
 
 namespace Ui {
 class MainWindow;
@@ -40,11 +43,25 @@ private slots:
 
     void on_loadGenericButton_clicked();
 
-    void replot();
-
     void on_saveGenericData_clicked();
 
+    void open();
+
+    void openGeneric();
+
+    void save();
+
+    void saveGeneric();
+
+
 private:
+
+    void replot();
+    void createActions();
+    void createMenus();
+
+
+
     Ui::MainWindow *ui;
 
     QMap<double, double> Scandata;
@@ -52,6 +69,12 @@ private:
     QPen pen;
     QwtPlotCurve Curve;
     QwtPlotGrid Grid;
+
+    QMenu *fileMenu;
+    QAction *openAct;
+    QAction *openGenericAct;
+    QAction *saveAct;
+    QAction *saveGenericAct;
 };
 
 #endif // MAINWINDOW_H

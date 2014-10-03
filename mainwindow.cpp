@@ -9,6 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     MainWindow::polarizerSettings.resize(3);
+
+    createActions();
+    createMenus();
     ui->loadButton->setToolTip(tr("Load scan from a file"));
     ui->saveButton->setToolTip(tr("Save contacts to a file"));
     ui->scanButton->setToolTip("Start scan");
@@ -151,7 +154,6 @@ void MainWindow::replot()
     ui->qwtPlot->updateAxes();
     ui->qwtPlot->show();
     ui->qwtPlot->replot();
-    QMessageBox::information(this, tr("Info"),QString::number(x[x.size()-1]));
 }
 
 void MainWindow::on_saveGenericData_clicked()
@@ -163,4 +165,55 @@ void MainWindow::on_saveGenericData_clicked()
     }
     else
         write_unformatted_file(MainWindow::Scandata, fileName);
+}
+
+void MainWindow::open()
+{
+    MainWindow::on_loadButton_clicked();
+}
+
+void MainWindow::openGeneric()
+{
+    MainWindow::on_loadGenericButton_clicked();
+}
+
+void MainWindow::save()
+{
+    MainWindow::on_saveButton_clicked();
+}
+
+void MainWindow::saveGeneric()
+{
+    MainWindow::on_saveGenericData_clicked();
+}
+
+void MainWindow::createActions()
+{
+    openAct = new QAction(tr("&Open"), this);
+    openAct->setShortcuts(QKeySequence::Open);
+    openAct->setStatusTip(tr("Load a file"));
+    connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
+    openGenericAct = new QAction(tr("&Open old file"), this);
+    openGenericAct->setStatusTip(tr("Load an old file"));
+    connect(openGenericAct, SIGNAL(triggered()), this, SLOT(openGeneric()));
+
+    saveAct = new QAction(tr("&Save"), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save a file"));
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+
+    saveGenericAct = new QAction(tr("&Save old file"), this);
+    saveGenericAct->setStatusTip(tr("Save a file in old style"));
+    connect(saveGenericAct, SIGNAL(triggered()), this, SLOT(saveGeneric()));
+
+}
+
+void MainWindow::createMenus()
+{
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(openAct);
+    fileMenu->addAction(openGenericAct);
+    fileMenu->addAction(saveAct);
+    fileMenu->addAction(saveGenericAct);
 }

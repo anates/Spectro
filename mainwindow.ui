@@ -30,7 +30,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="functionTab" native="true">
+      <widget class="QWidget" name="functionTab">
        <attribute name="title">
         <string>Functions</string>
        </attribute>

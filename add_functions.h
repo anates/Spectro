@@ -13,5 +13,7 @@
 
 void read_unformatted_file(QMap<double, double> &Data, QString fileName);
 void write_unformatted_file(const QMap<double, double> &Data, QString fileName);
+void splitToDoubles(QPair<double, double> &valuePair, QString input);
+
 
 #endif // ADD_FUNCTIONS_H
