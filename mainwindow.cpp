@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    MainWindow::polarizerSettings.resize(3);
     ui->loadButton->setToolTip(tr("Load scan from a file"));
     ui->saveButton->setToolTip(tr("Save contacts to a file"));
     ui->scanButton->setToolTip("Start scan");
@@ -66,4 +67,40 @@ void MainWindow::on_saveButton_clicked()
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
         out << Scandata;
     }
+}
+
+void MainWindow::on_xPol_clicked(bool checked)
+{
+    if(polarizerSettings.size() == 3)
+        polarizerSettings[0] = checked;
+    else
+    {
+        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+        getch();
+        exit(-1);
+    };
+}
+
+void MainWindow::on_yPol_clicked(bool checked)
+{
+    if(polarizerSettings.size() == 3)
+        polarizerSettings[1] = checked;
+    else
+    {
+        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+        getch();
+        exit(-1);
+    };
+}
+
+void MainWindow::on_zPol_clicked(bool checked)
+{
+    if(polarizerSettings.size() == 3)
+        polarizerSettings[2] = checked;
+    else
+    {
+        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+        getch();
+        exit(-1);
+    };
 }

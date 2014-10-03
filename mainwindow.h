@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMap>
 #include <QWidget>
+#include "Globale.h"
 
 class QPushButton;
 class QLabel;
@@ -27,10 +28,17 @@ private slots:
 
     void on_saveButton_clicked();
 
+    void on_xPol_clicked(bool checked);
+
+    void on_yPol_clicked(bool checked);
+
+    void on_zPol_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
 
     QMap<double, double> Scandata;
+    QVector<bool> polarizerSettings;
 };
 
 #endif // MAINWINDOW_H

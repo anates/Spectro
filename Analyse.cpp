@@ -11,7 +11,6 @@
 
 #include "Globale.h"
 
-
 void Check_for_max(Spectrum Data, SingleSpec AuxData, int i, bool ok, ResultTab tab, int nr)
 {
 

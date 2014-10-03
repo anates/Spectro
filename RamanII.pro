@@ -35,3 +35,5 @@ FORMS    += mainwindow.ui
 
 INCLUDEPATH += /usr/include/qwt
 LIBS += -L/usr/lib/ -lqwt
+
+QMAKE_CXXFLAGS += -std=c++11

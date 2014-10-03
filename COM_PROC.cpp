@@ -28,7 +28,7 @@ void KeyBuffer(void)
 	while (!(std::cin >> value))
 	{
 		std::cin.clear();
-		//std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 }
 
