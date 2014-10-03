@@ -43,7 +43,8 @@ void MainWindow::on_loadButton_clicked()
         }
         else
         {
-            //Daten ins Fenster schieben, ist aber im Moment noch leer
+            QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
+            MainWindow::replot();
         }
     }
 }
@@ -103,4 +104,62 @@ void MainWindow::on_zPol_clicked(bool checked)
         getch();
         exit(-1);
     };
+}
+
+void MainWindow::on_loadGenericButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Scan file"), "", tr("All Files(*)")); //Eventuell auf mehrere Files erweitern, damit man mehrere Scans gleichzeitig laden kann
+    if(fileName.isEmpty())
+        return;
+    else
+    {
+        read_unformatted_file(Scandata, fileName);
+
+        if(Scandata.isEmpty())
+        {
+            QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
+        }
+        else
+        {
+            QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
+            MainWindow::replot();
+        }
+    }
+}
+
+void MainWindow::replot()
+{
+    MainWindow::Grid.attach(ui->qwtPlot);
+
+    MainWindow::Curve.setTitle("Raman spectra");
+    MainWindow::Curve.setRenderHint(QwtPlotItem::RenderAntialiased, true);
+
+    MainWindow::pen.setStyle(Qt::SolidLine);
+    MainWindow::pen.setWidth(3);
+    MainWindow::pen.setBrush(Qt::black);
+    MainWindow::pen.setCapStyle(Qt::RoundCap);
+    MainWindow::pen.setJoinStyle(Qt::RoundJoin);
+
+    //MainWindow::Curve.setPen(MainWindow::pen);
+
+    QVector<double> x, y;
+    y = QVector<double>::fromList(Scandata.keys());
+    x = QVector<double>::fromList(Scandata.values());
+
+    MainWindow::Curve.setSamples(x, y);
+    MainWindow::Curve.attach(ui->qwtPlot);
+    ui->qwtPlot->updateAxes();
+    ui->qwtPlot->show();
+    ui->qwtPlot->replot();
+}
+
+void MainWindow::on_saveGenericData_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
+    if(fileName.isEmpty())
+    {
+        return;
+    }
+    else
+        write_unformatted_file(MainWindow::Scandata, fileName);
 }

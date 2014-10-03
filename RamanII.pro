@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     Help.cpp \
     Globale.cpp \
     COM_PROC.cpp \
-    Analyse.cpp
+    Analyse.cpp \
+    add_functions.cpp
 
 HEADERS  += mainwindow.h \
     TPDECL.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     Help.h \
     Globale.h \
     COM_PROC.h \
-    Analyse.h
+    Analyse.h \
+    add_functions.h
 
 FORMS    += mainwindow.ui
 
