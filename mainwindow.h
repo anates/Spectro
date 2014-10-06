@@ -33,18 +33,6 @@ public:
 private slots:
     void on_loadButton_clicked();
 
-    void on_saveButton_clicked();
-
-    void on_xPol_clicked(bool checked);
-
-    void on_yPol_clicked(bool checked);
-
-    void on_zPol_clicked(bool checked);
-
-    void on_loadGenericButton_clicked();
-
-    void on_saveGenericData_clicked();
-
     void open();
 
     void openGeneric();
@@ -53,13 +41,23 @@ private slots:
 
     void saveGeneric();
 
+    void on_dispXValue_toggled(bool checked);
+
+    void on_dispYValue_toggled(bool checked);
+
+    void on_dispZValue_toggled(bool checked);
+
+    void on_gridTabWidget_currentChanged(int index);
+
+    void on_scanButton_clicked();
 
 private:
 
+    enum State {Scan, Edit, Move};
     void replot();
     void createActions();
     void createMenus();
-
+    void changeState(State newState);
 
 
     Ui::MainWindow *ui;
@@ -75,6 +73,8 @@ private:
     QAction *openGenericAct;
     QAction *saveAct;
     QAction *saveGenericAct;
+
+
 };
 
 #endif // MAINWINDOW_H

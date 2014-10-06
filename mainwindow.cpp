@@ -9,12 +9,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     MainWindow::polarizerSettings.resize(3);
-
     createActions();
     createMenus();
     ui->loadButton->setToolTip(tr("Load scan from a file"));
-    ui->saveButton->setToolTip(tr("Save contacts to a file"));
+    //ui->saveButton->setToolTip(tr("Save scan to a file"));
     ui->scanButton->setToolTip("Start scan");
+    ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 19);
+    ui->horizontalLayout_2->setStretchFactor(ui->formLayout_2, 1);
+    //ui->gridTabWidget->TabShape = QTabWidget::Triangular;
 }
 
 MainWindow::~MainWindow()
@@ -23,6 +25,37 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_loadButton_clicked()
+{
+    MainWindow::open();
+}
+
+void MainWindow::replot()
+{
+    MainWindow::Grid.attach(ui->qwtPlot);
+
+    MainWindow::Curve.setTitle("Raman spectra");
+    MainWindow::Curve.setRenderHint(QwtPlotItem::RenderAntialiased, true);
+
+    MainWindow::pen.setStyle(Qt::SolidLine);
+    MainWindow::pen.setWidth(3);
+    MainWindow::pen.setBrush(Qt::black);
+    MainWindow::pen.setCapStyle(Qt::RoundCap);
+    MainWindow::pen.setJoinStyle(Qt::RoundJoin);
+
+    MainWindow::Curve.setPen(MainWindow::pen);
+
+    QVector<double> x, y;
+    x = QVector<double>::fromList(Scandata.keys());
+    y = QVector<double>::fromList(Scandata.values());
+
+    MainWindow::Curve.setSamples(x, y);
+    MainWindow::Curve.attach(ui->qwtPlot);
+    ui->qwtPlot->updateAxes();
+    ui->qwtPlot->show();
+    ui->qwtPlot->replot();
+}
+
+void MainWindow::open()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Scan file"), "", tr("Scan file (*.sca);;All Files(*)")); //Eventuell auf mehrere Files erweitern, damit man mehrere Scans gleichzeitig laden kann
     if(fileName.isEmpty())
@@ -52,64 +85,7 @@ void MainWindow::on_loadButton_clicked()
     }
 }
 
-void MainWindow::on_saveButton_clicked()
-{
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (*.sca);;All Files(*)"));
-    if(fileName.isEmpty())
-    {
-        return;
-    }
-    else
-    {
-        QFile file(fileName);
-        if(!file.open(QIODevice::WriteOnly))
-        {
-            QMessageBox::information(this, tr("Unable to open file"), file.errorString());
-            return;
-        }
-        QDataStream out(&file);
-        out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
-        out << Scandata;
-    }
-}
-
-void MainWindow::on_xPol_clicked(bool checked)
-{
-    if(polarizerSettings.size() == 3)
-        polarizerSettings[0] = checked;
-    else
-    {
-        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
-        getch();
-        exit(-1);
-    };
-}
-
-void MainWindow::on_yPol_clicked(bool checked)
-{
-    if(polarizerSettings.size() == 3)
-        polarizerSettings[1] = checked;
-    else
-    {
-        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
-        getch();
-        exit(-1);
-    };
-}
-
-void MainWindow::on_zPol_clicked(bool checked)
-{
-    if(polarizerSettings.size() == 3)
-        polarizerSettings[2] = checked;
-    else
-    {
-        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
-        getch();
-        exit(-1);
-    };
-}
-
-void MainWindow::on_loadGenericButton_clicked()
+void MainWindow::openGeneric()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Scan file"), "", tr("All Files(*)")); //Eventuell auf mehrere Files erweitern, damit man mehrere Scans gleichzeitig laden kann
     if(fileName.isEmpty())
@@ -130,33 +106,28 @@ void MainWindow::on_loadGenericButton_clicked()
     }
 }
 
-void MainWindow::replot()
+void MainWindow::save()
 {
-    MainWindow::Grid.attach(ui->qwtPlot);
-
-    MainWindow::Curve.setTitle("Raman spectra");
-    MainWindow::Curve.setRenderHint(QwtPlotItem::RenderAntialiased, true);
-
-    MainWindow::pen.setStyle(Qt::SolidLine);
-    MainWindow::pen.setWidth(3);
-    MainWindow::pen.setBrush(Qt::black);
-    MainWindow::pen.setCapStyle(Qt::RoundCap);
-    MainWindow::pen.setJoinStyle(Qt::RoundJoin);
-
-    MainWindow::Curve.setPen(MainWindow::pen);
-
-    QVector<double> x, y;
-    x = QVector<double>::fromList(Scandata.keys());
-    y = QVector<double>::fromList(Scandata.values());
-
-    MainWindow::Curve.setSamples(x, y);
-    MainWindow::Curve.attach(ui->qwtPlot);
-    ui->qwtPlot->updateAxes();
-    ui->qwtPlot->show();
-    ui->qwtPlot->replot();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (*.sca);;All Files(*)"));
+    if(fileName.isEmpty())
+    {
+        return;
+    }
+    else
+    {
+        QFile file(fileName);
+        if(!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            return;
+        }
+        QDataStream out(&file);
+        out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
+        out << Scandata;
+    }
 }
 
-void MainWindow::on_saveGenericData_clicked()
+void MainWindow::saveGeneric()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
     if(fileName.isEmpty())
@@ -165,26 +136,6 @@ void MainWindow::on_saveGenericData_clicked()
     }
     else
         write_unformatted_file(MainWindow::Scandata, fileName);
-}
-
-void MainWindow::open()
-{
-    MainWindow::on_loadButton_clicked();
-}
-
-void MainWindow::openGeneric()
-{
-    MainWindow::on_loadGenericButton_clicked();
-}
-
-void MainWindow::save()
-{
-    MainWindow::on_saveButton_clicked();
-}
-
-void MainWindow::saveGeneric()
-{
-    MainWindow::on_saveGenericData_clicked();
 }
 
 void MainWindow::createActions()
@@ -216,4 +167,84 @@ void MainWindow::createMenus()
     fileMenu->addAction(openGenericAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveGenericAct);
+}
+
+void MainWindow::on_dispXValue_toggled(bool checked)
+{
+    if(polarizerSettings.size() == 3)
+        polarizerSettings[0] = checked;
+    else
+    {
+        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+        getch();
+        exit(-1);
+    };
+}
+
+void MainWindow::on_dispYValue_toggled(bool checked)
+{
+    if(polarizerSettings.size() == 3)
+        polarizerSettings[1] = checked;
+    else
+    {
+        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+        getch();
+        exit(-1);
+    };
+}
+
+void MainWindow::on_dispZValue_toggled(bool checked)
+{
+    if(polarizerSettings.size() == 3)
+        polarizerSettings[2] = checked;
+    else
+    {
+        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+        getch();
+        exit(-1);
+    };
+}
+
+void MainWindow::on_gridTabWidget_currentChanged(int index)
+{
+
+}
+
+void MainWindow::changeState(State newState)
+{
+    switch(newState)
+    {
+        case Scan:
+        {
+            ui->gridTabWidget->setTabEnabled(1, false);
+            ui->gridTabWidget->setTabEnabled(0, true);
+            ui->loadButton->hide();
+            ui->loadSettingsButton->hide();
+            ui->dispXValue->setEnabled(0);
+            ui->dispYValue->setEnabled(0);
+            ui->dispZValue->setEnabled(0);
+            break;
+        }
+        case Edit:
+        {
+            ui->loadButton->show();
+            ui->loadSettingsButton->show();
+            ui->dispXValue->setEnabled(1);
+            ui->dispYValue->setEnabled(1);
+            ui->dispZValue->setEnabled(1);
+            ui->gridTabWidget->setTabEnabled(1, true);
+            break;
+        }
+        case Move:
+        {
+            break;
+        }
+    }
+}
+
+void MainWindow::on_scanButton_clicked()
+{
+    MainWindow::changeState(Scan);
+    //Nothing to do here
+    MainWindow::changeState(Edit);
 }
