@@ -3,6 +3,7 @@
 #include <QVector>
 #include <QPair>
 
+#define RAMAN
 
 enum AveMode{ NoAverage, Point, Intervall };
 

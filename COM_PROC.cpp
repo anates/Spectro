@@ -62,21 +62,21 @@ void ReadReal(double & Real)
 {
 	std::string name;
 	std::getline(std::cin, name);
-	convertToNumber<double>(name);
+    Real = convertToNumber<double>(name);
 }
 
 void ReadInt(int & Real)
 {
 	std::string name;
 	std::getline(std::cin, name);
-	convertToNumber<int>(name);
+    Real = convertToNumber<int>(name);
 }
 
 void ReadLongInt(long int & Real)
 {
 	std::string name;
 	std::getline(std::cin, name);
-	convertToNumber<long int>(name);
+    Real = convertToNumber<long int>(name);
 }
 
 void ReadFromSet(char &letter)

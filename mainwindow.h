@@ -8,7 +8,8 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include "Globale.h"
-#include "add_functions.h"
+//#include "add_functions.h"
+//#include "Globale.h"
 
 class QPushButton;
 class QLabel;
@@ -31,7 +32,7 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_loadButton_clicked();
+    void on_loadGenericButton_clicked();
 
     void open();
 
@@ -53,7 +54,7 @@ private slots:
 
 private:
 
-    enum State {Scan, Edit, Move};
+    enum State {ScanState, EditState, MoveState};
     void replot();
     void createActions();
     void createMenus();
@@ -62,8 +63,10 @@ private:
 
     Ui::MainWindow *ui;
 
-    QMap<double, double> Scandata;
+    QMap<qreal, qreal> Scandata;
     QVector<bool> polarizerSettings;
+    ScanList newScanList;
+
     QPen pen;
     QwtPlotCurve Curve;
     QwtPlotGrid Grid;

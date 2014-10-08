@@ -29,7 +29,7 @@
 #include <termios.h>
 #include <ctype.h>
 
-#include "Raman.h"
+#include "add_functions.h"
 
 #define GLOBALE
 
@@ -126,25 +126,6 @@ extern bool Monochecked, ScanPrepOK, LogWritten, StorageOK;
 extern PlSetChosenType PolSetChosen;
 extern PlSettingType Polsetting;
 
-class BadConversion : public std::runtime_error
-{
-public:
-	BadConversion(std::string const & s) : std::runtime_error(s)
-	{
-
-	}
-};
-
-template <typename T>
-inline T convertToNumber(std::string const & s)
-{
-	std::istringstream i(s);
-	T x;
-	if (!(i >> x))
-		throw BadConversion("convertToNumber(\"" + s + "\")");
-	return x;
-}
-
 
 //New inserted from Monokrom
 void MonoOpp(double step, bool signal);
@@ -202,3 +183,23 @@ void WriteHelp(int Help_Nr);
 char getch(void);
 char getche(void);
 //
+
+
+class BadConversion : public std::runtime_error
+{
+public:
+    BadConversion(std::string const & s) : std::runtime_error(s)
+    {
+
+    }
+};
+
+template <typename T>
+inline T convertToNumber(std::string const & s)
+{
+    std::istringstream i(s);
+    T x;
+    if (!(i >> x))
+        throw BadConversion("convertToNumber(\"" + s + "\")");
+    return x;
+}

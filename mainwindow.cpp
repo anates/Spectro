@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::polarizerSettings.resize(3);
     createActions();
     createMenus();
-    ui->loadButton->setToolTip(tr("Load scan from a file"));
+    ui->loadGenericButton->setToolTip(tr("Load scan from a file"));
     //ui->saveButton->setToolTip(tr("Save scan to a file"));
     ui->scanButton->setToolTip("Start scan");
     ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 19);
@@ -24,9 +24,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_loadButton_clicked()
+void MainWindow::on_loadGenericButton_clicked()
 {
-    MainWindow::open();
+    MainWindow::openGeneric();
 }
 
 void MainWindow::replot()
@@ -38,7 +38,7 @@ void MainWindow::replot()
 
     MainWindow::pen.setStyle(Qt::SolidLine);
     MainWindow::pen.setWidth(3);
-    MainWindow::pen.setBrush(Qt::black);
+    MainWindow::pen.setBrush(Qt::red);
     MainWindow::pen.setCapStyle(Qt::RoundCap);
     MainWindow::pen.setJoinStyle(Qt::RoundJoin);
 
@@ -92,17 +92,22 @@ void MainWindow::openGeneric()
         return;
     else
     {
-        read_unformatted_file(Scandata, fileName);
+        struct Scan newScan;
+        MainWindow::Scandata.clear();
+        read_unformatted_file(newScan.values, fileName);
+        //newScan.polSettings = polarizerSettings;//Muss manuell eingegeben werden!
 
-        if(Scandata.isEmpty())
+        if(newScan.values.Data.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
         }
         else
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
+            vectorToMap(newScan.values.Data, MainWindow::Scandata);
             MainWindow::replot();
         }
+
     }
 }
 
@@ -214,20 +219,20 @@ void MainWindow::changeState(State newState)
 {
     switch(newState)
     {
-        case Scan:
+        case ScanState:
         {
             ui->gridTabWidget->setTabEnabled(1, false);
             ui->gridTabWidget->setTabEnabled(0, true);
-            ui->loadButton->hide();
+            ui->loadGenericButton->hide();
             ui->loadSettingsButton->hide();
             ui->dispXValue->setEnabled(0);
             ui->dispYValue->setEnabled(0);
             ui->dispZValue->setEnabled(0);
             break;
         }
-        case Edit:
+        case EditState:
         {
-            ui->loadButton->show();
+            ui->loadGenericButton->show();
             ui->loadSettingsButton->show();
             ui->dispXValue->setEnabled(1);
             ui->dispYValue->setEnabled(1);
@@ -235,7 +240,7 @@ void MainWindow::changeState(State newState)
             ui->gridTabWidget->setTabEnabled(1, true);
             break;
         }
-        case Move:
+        case MoveState:
         {
             break;
         }
@@ -244,7 +249,8 @@ void MainWindow::changeState(State newState)
 
 void MainWindow::on_scanButton_clicked()
 {
-    MainWindow::changeState(Scan);
+    MainWindow::changeState(ScanState);
     //Nothing to do here
-    MainWindow::changeState(Edit);
+    MainWindow::changeState(EditState);
+    //Analyze(MainWindow::newScanList);
 }

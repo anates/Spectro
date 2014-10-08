@@ -112,7 +112,7 @@
              </widget>
             </item>
             <item row="6" column="1">
-             <widget class="QPushButton" name="loadButton">
+             <widget class="QPushButton" name="loadGenericButton">
               <property name="text">
                <string>Load old scan data</string>
               </property>
@@ -128,104 +128,123 @@
        <attribute name="title">
         <string>Scan settings</string>
        </attribute>
-       <widget class="QWidget" name="gridLayoutWidget_2">
-        <property name="geometry">
-         <rect>
-          <x>7</x>
-          <y>10</y>
-          <width>448</width>
-          <height>184</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_7">
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdit_11">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Position</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="lineEdit_8">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="lineEdit_10">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLineEdit" name="lineEdit_13"/>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLineEdit" name="lineEdit_12"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>Current settings</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QLineEdit" name="lineEdit_9"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>New settings</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Movement speed</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QPushButton" name="execButton_2">
-           <property name="text">
-            <string>Execute</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Wave number [cm-1]</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLineEdit" name="lineEdit_14"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="mvButton_2">
-             <property name="text">
-              <string>Move</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Current settings</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Wave number [cm-1]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_10">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_8">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>New settings</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="lineEdit_12"/>
+          </item>
+          <item row="4" column="2">
+           <widget class="QPushButton" name="execButton_2">
+            <property name="text">
+             <string>Execute</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Position</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="lineEdit_13"/>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLineEdit" name="lineEdit_9"/>
+          </item>
+          <item row="5" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLineEdit" name="lineEdit_14"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mvButton_2">
+              <property name="text">
+               <string>Move</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_11">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Movement speed</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="1">
+             <widget class="QPushButton" name="centerMono">
+              <property name="text">
+               <string>Center</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="stepBackMono">
+              <property name="text">
+               <string>Back</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QPushButton" name="stepForwardMono">
+              <property name="text">
+               <string>Forward</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

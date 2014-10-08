@@ -1,4 +1,4 @@
-#include "Maaling.h"
+#include "Globale.h"
 
 
 /*************************************************************
@@ -43,77 +43,8 @@
 //	}
 //}
 
-//void SelectScan(void)
-//{
-//	std::string instring;
-
-//	StorageOK = false;
-//	if(!Scan.loaded)
-//		RetrieveScanList();
-//	if (Scan.loaded)
-//	{
-//		i = 1;
-//		while(getchar()!= do
-//		begin
-//			ClrScr;
-//		PrintScanList;
-//		Textcolor(black);
-//		Textbackground(lightgray);
-//		Writeln;
-//		Writeln('Arrow keys-up/down  SPACE-Select  CR-Exit');
-//		Textcolor(lightgray);
-//		Textbackground(black);
-//		GotoXY(1, Cursor(0));
-//	Instring: = Readkey;
-//		If Instring = #0 then
-//			begin
-//		Instring : = Readkey;
-//		If Instring = Uparrow then GotoXY(1, Cursor(-1));
-//		IF Instring = Downarrow then GotoXY(1, Cursor(1));
-//		end;
-//		If Instring = Space then
-//			begin
-//			Scan.Selected[i]: = Not(Scan.Selected[i]);
-//		GotoXY(1, Cursor(1));
-//		end;
-//		end
-//	}
-//	ScanPrepOk = false;
-//	for(i = 1; i <= Scan.I; i++)
-//		if(Scan.selected[i])
-//			ScanprepOk = true;
-
-//}
-
 
 /*
-Procedure LoadScanParameters(i:integer);
-
-************************************************************
-*             ***  PROSEDYRE - BESKRIVELSE  ***                *
-*                                                            *
-* NAVN      : ReadScanParameters                             *
-* FUNKSJON : Reading interval borders, start values and     *
-*             which type of average                          *
-*             Converts it into internal values               *
-* DATO : 17.09.90                                       *
-*                                                            *
-************************************************************
-
-
-BEGIN
-MonoStart : = Scan.Lower[i];
-MonoStop: = Scan.Upper[i];
-MonoStep: = Scan.Step[i];
-Average: = Scan.average[i];
-AntMidl: = Scan.averageNo[i];
-
-END;        { ReadScanParameters }
-
-
-
-
-
 
 Function Read_DPC : INTEGER;
 
@@ -182,8 +113,8 @@ Read_DMM : = MaxValue
 	   Read_DMM : = TmpResult;
 END;      { Read_DMM }
 
-
-
+*/
+/*
 //Möglicherweise wichtig!!!
 Procedure PM_avlesning(VAR Intensitet, Avvik : REAL);
 
