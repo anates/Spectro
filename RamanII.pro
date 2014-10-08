@@ -13,24 +13,22 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     TPDECL.cpp \
-    Raman.cpp \
     Monokrom.cpp \
     Maaling.cpp \
-    Help.cpp \
     Globale.cpp \
     COM_PROC.cpp \
     Analyse.cpp \
-    add_functions.cpp
+    add_functions.cpp \
+    Raman_old.cpp \
+    Raman.cpp
 
 HEADERS  += mainwindow.h \
     TPDECL.h \
     Raman.h \
     Monokrom.h \
     Maaling.h \
-    Help.h \
     Globale.h \
     COM_PROC.h \
-    Analyse.h \
     add_functions.h
 
 FORMS    += mainwindow.ui

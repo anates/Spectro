@@ -46,7 +46,7 @@ void Beep(unsigned int time)
 #else
 	std::cout << '\a';
 #endif
-};
+}
 
 void Readword(std::string &Name)
 {
@@ -79,10 +79,10 @@ void ReadLongInt(long int & Real)
 	convertToNumber<long int>(name);
 }
 
-void ReadFromSet(char &letter, LetterSet CurrentSet)
+void ReadFromSet(char &letter)
 {
-	char c = ' ';
-	while (!isInSet(c))
+    char c = ' ';
+    while (!isalnum(c))
 		std::cin >> c;
 	letter = c;
 }

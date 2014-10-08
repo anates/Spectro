@@ -16,7 +16,7 @@
 bool onScreen = false;
 bool OnFile = true;
 
-typedef double Spectrum[MaxPoints][2];
+//typedef double Spectrum[MaxPoints][2];
 typedef bool PlSetChosenType[20][number_settings];
 typedef std::string PlSettingType[2][number_settings];
 extern struct LetterSet Letters;
@@ -41,15 +41,6 @@ LogWritten,
 StorageOK;
 PlSetChosenType PolSetChosen;
 PlSettingType Polsetting;
-
-bool isInSet(char letter)
-{
-	LetterSet Letters;
-	for (int i = 0; i < 62; i++)
-	if (Letters.x[i] == letter)
-		return true;
-	return false;
-}
 
 inline bool exists_test1(const std::string& name) {
 	if (FILE *file = fopen(name.c_str(), "r")) {

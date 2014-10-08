@@ -5,7 +5,7 @@
 #define CheckLimit 5
 #define FullSide 20
 
-double ResultTab[200][3];
-double SingleSpec[MaxPoints];
+//double ResultTab[200][3];
+//double SingleSpec[MaxPoints];
 
-void Analyze(Spectrum Data);
+void Analyze(const Spectrum &Data);

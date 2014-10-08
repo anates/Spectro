@@ -31,7 +31,7 @@ void ShortDelay(int StopCount)
 	for (int i = 0; i < StopCount; i++)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
-
+//Wird voraussichtlich entfernt, muss aber noch überprüft werden
 void MonoNed(double step, bool signal)
 {
 	/*************************************************************
@@ -85,7 +85,7 @@ void MonoNed(double step, bool signal)
 		}
 	}
 }
-
+//Wird voraussichtlich entfernt, muss aber noch überprüft werden
 void MonoOpp(double step, bool signal)
 {
 	/*************************************************************
@@ -135,7 +135,7 @@ void MonoOpp(double step, bool signal)
 	if (c == 27)
 		signal = true;
 }
-
+//Wird voraussichtlich entfernt, muss aber noch überprüft werden
 void MonoInit(double NewMonoPos, bool signal)
 {
 	/*************************************************************
@@ -156,7 +156,8 @@ void MonoInit(double NewMonoPos, bool signal)
 	else 
 		MonoNed(Step, signal);
 }
-
+//Wird voraussichtlich entfernt, muss aber noch überprüft werden.
+//Warnung: Hier könnte ein Problem auftreten, weil die Datei nicht vorhanden ist
 void ReadMonoPos(void)
 {
 	/*********************************************************
@@ -185,7 +186,7 @@ void ReadMonoPos(void)
 	}
 	in.close();
 }
-
+//Fliegt voraussichtlich raus
 void WriteMonoPos(void)
 {
 	/*********************************************************
@@ -209,7 +210,7 @@ void WriteMonoPos(void)
 	outfile << MonoPos << '\n';
 	outfile.close();
 }
-
+//Fliegt, wird ersetzt
 void KontrollMonoPos(void)
 {
 	/*********************************************************
@@ -227,7 +228,7 @@ void KontrollMonoPos(void)
 	std::cout << "MonoPos (in cm-1) = ";
 	//ReadReal(MonoPos);//Has to be fixed???
 }
-
+//Fliegt, wird ersetzt (Code wird aber noch benötigt)
 //void ManuellMonoFlytting(void)
 //{
 //	/*************************************************************

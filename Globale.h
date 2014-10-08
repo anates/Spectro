@@ -27,6 +27,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <termios.h>
+#include <ctype.h>
+
+#include "Raman.h"
 
 #define GLOBALE
 
@@ -69,7 +72,7 @@
 
 #define FullSide 20
 
-#define terskel 100
+#define treshold 100
 #define SmoothLimit 2
 #define CheckLimit 5
 #define FullSide 20
@@ -83,28 +86,28 @@ extern bool onScreen;
 extern bool OnFile;
 
 
-typedef double Spectrum[MaxPoints][2];
+typedef QVector<QPair<qreal, qreal> > Spectrum;
 typedef bool PlSetChosenType[20][number_settings];
 typedef std::string PlSettingType[2][number_settings];
 //extern const char LetterSet[];
-struct LetterSet{
-	std::string x = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-};
-enum AveMode{ NoAverage, Point, Intervall };
+//struct LetterSet{
+//	std::string x = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+//};
+
 extern const int PolPosition[];
-struct ScanList
-{
-	std::string name;
-	int I;
-	double Lower[20], Upper[20];
-	double step[20];
-	int counts[20];
-	int Pol[20];
-	int AverageNo[20];
-	AveMode Average[20];
-	bool selected[20];
-	bool saved, loaded, altered;
-};
+//struct ScanList
+//{
+//	std::string name;
+//	int I;
+//	double Lower[20], Upper[20];
+//	double step[20];
+//	int counts[20];
+//	int Pol[20];
+//	int AverageNo[20];
+//	AveMode Average[20];
+//	bool selected[20];
+//	bool saved, loaded, altered;
+//};
 
 extern Spectrum LumiSpectrum;     // Data storage variable 
 
@@ -120,11 +123,8 @@ extern AveMode Average;
 extern int DMM_ID;
 extern struct ScanList Scan;
 extern bool Monochecked, ScanPrepOK, LogWritten, StorageOK;
-extern PlSetChosenType PolSetChosen;;
+extern PlSetChosenType PolSetChosen;
 extern PlSettingType Polsetting;
-
-bool isInSet(char letter);
-
 
 class BadConversion : public std::runtime_error
 {
@@ -155,10 +155,10 @@ void WriteMonoPos(void);
 void KontrollMonoPos(void);
 void ManuellMonoFlytting(void);
 
-typedef double ResultTab[200][3];
-typedef double SingleSpec[MaxPoints];
+typedef QVector<QPair<qreal, qreal> > ResultTab;
+typedef QVector<qreal> SingleSpec;
 
-void Analyze(Spectrum Data);
+void Analyze(Spectrum &Data);
 
 int StrToInt(std::string Instring);
 double StrToReal(std::string Instring);
@@ -170,13 +170,13 @@ void ReadLine(std::string Name, bool Done);
 void ReadReal(double Realnumber);
 void ReadInt(int Intnumber);
 void ReadLongInt(long int longintnmbr);
-void ReadFromSet(char &letter, LetterSet CurrentSet);
+void ReadFromSet(char &letter);
 bool YesOrNoQuery(void);
-void FlushData(Spectrum data);
+void FlushData(Spectrum &data);
 bool Defaultyes(void);
 
-void StoreData(Spectrum Data, int k);
-void FetchData(Spectrum Data);
+void StoreData(const Spectrum &Data, int k);
+void FetchData(Spectrum &Data);
 void ShowDir(void);
 void PrintScanList(void);
 void SaveScanList(void);

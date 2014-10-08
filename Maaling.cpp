@@ -19,71 +19,71 @@
 *************************************************************/
 
 
+//Not needed anymore ???
+//unsigned char SetPolarizer(int i)
+//{
+//	switch (i)
+//	{
+//	case 1:
+//		return 0x2;
+//	case 2:
+//		return 0x1;
+//	case 3:
+//		return 0x0;
+//	case 4:
+//		return 0x3;
+//	case 5:
+//		return 0x6;
+//	case 6:
+//		return 0x5;
+//	case 7:
+//		return 0x7;
+//	default:
+//		return 0x0;
+//	}
+//}
 
-unsigned char SetPolarizer(int i)
-{
-	switch (i)
-	{
-	case 1:
-		return 0x2;
-	case 2:
-		return 0x1;
-	case 3:
-		return 0x0;
-	case 4:
-		return 0x3;
-	case 5:
-		return 0x6;
-	case 6:
-		return 0x5;
-	case 7:
-		return 0x7;
-	default:
-		return 0x0;
-	}
-}
+//void SelectScan(void)
+//{
+//	std::string instring;
 
-/*void SelectScan(void)
-{
-	std::string instring;
+//	StorageOK = false;
+//	if(!Scan.loaded)
+//		RetrieveScanList();
+//	if (Scan.loaded)
+//	{
+//		i = 1;
+//		while(getchar()!= do
+//		begin
+//			ClrScr;
+//		PrintScanList;
+//		Textcolor(black);
+//		Textbackground(lightgray);
+//		Writeln;
+//		Writeln('Arrow keys-up/down  SPACE-Select  CR-Exit');
+//		Textcolor(lightgray);
+//		Textbackground(black);
+//		GotoXY(1, Cursor(0));
+//	Instring: = Readkey;
+//		If Instring = #0 then
+//			begin
+//		Instring : = Readkey;
+//		If Instring = Uparrow then GotoXY(1, Cursor(-1));
+//		IF Instring = Downarrow then GotoXY(1, Cursor(1));
+//		end;
+//		If Instring = Space then
+//			begin
+//			Scan.Selected[i]: = Not(Scan.Selected[i]);
+//		GotoXY(1, Cursor(1));
+//		end;
+//		end
+//	}
+//	ScanPrepOk = false;
+//	for(i = 1; i <= Scan.I; i++)
+//		if(Scan.selected[i])
+//			ScanprepOk = true;
 
-	StorageOK = false;
-	if(!Scan.loaded) 
-		RetrieveScanList();
-	if (Scan.loaded)
-	{
-		i = 1;
-		while(getchar()!= do
-		begin
-			ClrScr;
-		PrintScanList;
-		Textcolor(black);
-		Textbackground(lightgray);
-		Writeln;
-		Writeln('Arrow keys-up/down  SPACE-Select  CR-Exit');
-		Textcolor(lightgray);
-		Textbackground(black);
-		GotoXY(1, Cursor(0));
-	Instring: = Readkey;
-		If Instring = #0 then
-			begin
-		Instring : = Readkey;
-		If Instring = Uparrow then GotoXY(1, Cursor(-1));
-		IF Instring = Downarrow then GotoXY(1, Cursor(1));
-		end;
-		If Instring = Space then
-			begin
-			Scan.Selected[i]: = Not(Scan.Selected[i]);
-		GotoXY(1, Cursor(1));
-		end;
-		end
-	}
-	ScanPrepOk = false;
-	for(i = 1; i <= Scan.I; i++)
-		if(Scan.selected[i])
-			ScanprepOk = true;
-
-}*/
+//}
 
 
 /*
@@ -184,7 +184,7 @@ END;      { Read_DMM }
 
 
 
-
+//Möglicherweise wichtig!!!
 Procedure PM_avlesning(VAR Intensitet, Avvik : REAL);
 
 ************************************************************

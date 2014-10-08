@@ -99,11 +99,11 @@ minimum allowed by the handler is 32.
 
 /*****************************************************************************/
 //Has to be upgraded to dynamical memory
-struct names
-{
-	char nbuf[nbufsize];		/*device / board names   */
-	char flbuf[flbufsize];		/*filenames	    */
-};
+//struct names
+//{
+//	char nbuf[nbufsize];		/*device / board names   */
+//	char flbuf[flbufsize];		/*filenames	    */
+//};
 
 extern int Port[1000];
 
@@ -117,7 +117,7 @@ extern unsigned int ibcnt;   		/*number of bytes sent or DOS error */
 
 /*The following variables may be used directly in your application program. */
 
-extern names bname, bdname, flname;   			/*board name buffer, board or device name buffer, filename buffer */
+//extern names bname, bdname, flname;   			/*board name buffer, board or device name buffer, filename buffer */
 //
 //void ibbna(int bd, struct names bname);
 //
@@ -189,5 +189,5 @@ extern names bname, bdname, flname;   			/*board name buffer, board or device na
 //
 //void ibwrtf(int bd, struct names flname);
 
-void init(void);
+//void init(void);
 

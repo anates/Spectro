@@ -4,13 +4,13 @@
 
 /*These three variables are to be accessed directly in application program. */
 
-unsigned int ibsta;			/*status word                       */
-unsigned int iberr;   		/*GPIB error code                   */
-unsigned int ibcnt;   		/*number of bytes sent or DOS error */
+//unsigned int ibsta;			/*status word                       */
+//unsigned int iberr;   		/*GPIB error code                   */
+//unsigned int ibcnt;   		/*number of bytes sent or DOS error */
 
 /*The following variables may be used directly in your application program. */
 
-names bname, bdname, flname;   			/*board name buffer, board or device name buffer, filename buffer */
+//names bname, bdname, flname;   			/*board name buffer, board or device name buffer, filename buffer */
 //
 //void ibbna(int bd, struct names bname);
 //
@@ -84,22 +84,22 @@ names bname, bdname, flname;   			/*board name buffer, board or device name buff
 
 int Port[1000] = { 0 }; //Is only used for debug, has to be removed before final compilation ???
 
-int found, our_lcv;
+//int found, our_lcv;
 
-void init(void)
-{
-	found = 0;	/*initialize successful ibfind flag */
-	ibsta = 0;	/*initialize global status variables */
-	iberr = 0;
-	ibcnt = 0;
-	for (our_lcv = 0; our_lcv < nbufsize; our_lcv++)
-	{
-		bname.nbuf[our_lcv] = ' ';
-		bdname.nbuf[our_lcv] = ' ';
-	}
-	for (our_lcv = 1; our_lcv < flbufsize; our_lcv++)
-	{
-		flname.flbuf[our_lcv] = ' ';
-	}
-}
+//void init(void)
+//{
+//	found = 0;	/*initialize successful ibfind flag */
+//	ibsta = 0;	/*initialize global status variables */
+//	iberr = 0;
+//	ibcnt = 0;
+//	for (our_lcv = 0; our_lcv < nbufsize; our_lcv++)
+//	{
+//		bname.nbuf[our_lcv] = ' ';
+//		bdname.nbuf[our_lcv] = ' ';
+//	}
+//	for (our_lcv = 1; our_lcv < flbufsize; our_lcv++)
+//	{
+//		flname.flbuf[our_lcv] = ' ';
+//	}
+//}
 
