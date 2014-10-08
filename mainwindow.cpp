@@ -62,20 +62,55 @@ void MainWindow::open()
         return;
     else
     {
+        struct Scan newScan;
         QFile file(fileName);
+        int monoSetting;
+        qreal startScan, finScan, scanSpeed;
+        QString scanName;
         if(!file.open(QIODevice::ReadOnly))
         {
             QMessageBox::information(this, tr("Unable to open file"),file.errorString());
             return;
         }
         QDataStream in(&file);
-        in.setVersion(QDataStream::Qt_4_5);//Siehe unten wegen Kompatibilität
+        quint32 magic;
+        in >> magic;
+        if(magic != 0xB00B1E5)
+        {
+            QMessageBox::information(this, tr("Wrong file format!"),"Sorry, wrong file format! Please try to open it with \"Load old Data\"!");
+            return;
+        }
+        qint32 version;
+        in >> version;
+        if(version < 100)
+        {
+            QMessageBox::information(this, tr("Wrong file format!"),"Sorry, file is too old! Please try to open it with \"Load old Data\"!");
+            return;
+        }
+        if(version <= 110)
+            in.setVersion(QDataStream::Qt_3_3);
+        else
+            in.setVersion(QDataStream::Qt_4_5);
         Scandata.empty();
+        in >> scanName;
+        in >> monoSetting;
+        in >> startScan;
+        in >> finScan;
+        in >> scanSpeed;
         in >> Scandata;
-
+        newScan.scanName = scanName;
+        newScan.finPos = finScan;
+        newScan.startPos = startScan;
+        newScan.scanSpeed = scanSpeed;
+        newScan.polSettings.push_back((bool)(monoSetting%2 == 1));
+        newScan.polSettings.push_back((bool)(monoSetting%2 == 0 && monoSetting != 4));
+        newScan.polSettings.push_back((bool)(monoSetting >= 4));
+        //TODO hier!!!
+        MainWindow::newScanList.Scans.push_back(newScan);
         if(Scandata.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
+            return;
         }
         else
         {
@@ -111,6 +146,7 @@ void MainWindow::openGeneric()
     }
 }
 
+
 void MainWindow::save()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (*.sca);;All Files(*)"));
@@ -127,7 +163,18 @@ void MainWindow::save()
             return;
         }
         QDataStream out(&file);
+        out << (quint32)0xB00B1E5;
+        out << (qint32)123;
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
+        if(!MainWindow::newScanList.Scans.isEmpty())
+        {
+            out << MainWindow::newScanList.Scans[0].scanName;
+            qint32 monoSetting = (int)MainWindow::newScanList.Scans[0].polSettings[0] + (int)MainWindow::newScanList.Scans[0].polSettings[1] + (int)MainWindow::newScanList.Scans[0].polSettings[2];
+            out << monoSetting;
+            out << MainWindow::newScanList.Scans[0].startPos;
+            out << MainWindow::newScanList.Scans[0].finPos;
+            out << MainWindow::newScanList.Scans[0].scanSpeed;
+        }
         out << Scandata;
     }
 }
@@ -142,6 +189,7 @@ void MainWindow::saveGeneric()
     else
         write_unformatted_file(MainWindow::Scandata, fileName);
 }
+
 
 void MainWindow::createActions()
 {
@@ -165,6 +213,7 @@ void MainWindow::createActions()
 
 }
 
+
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -173,6 +222,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveGenericAct);
 }
+
 
 void MainWindow::on_dispXValue_toggled(bool checked)
 {
@@ -186,6 +236,7 @@ void MainWindow::on_dispXValue_toggled(bool checked)
     };
 }
 
+
 void MainWindow::on_dispYValue_toggled(bool checked)
 {
     if(polarizerSettings.size() == 3)
@@ -197,6 +248,7 @@ void MainWindow::on_dispYValue_toggled(bool checked)
         exit(-1);
     };
 }
+
 
 void MainWindow::on_dispZValue_toggled(bool checked)
 {
@@ -210,10 +262,12 @@ void MainWindow::on_dispZValue_toggled(bool checked)
     };
 }
 
+
 void MainWindow::on_gridTabWidget_currentChanged(int index)
 {
 
 }
+
 
 void MainWindow::changeState(State newState)
 {
@@ -246,6 +300,7 @@ void MainWindow::changeState(State newState)
         }
     }
 }
+
 
 void MainWindow::on_scanButton_clicked()
 {

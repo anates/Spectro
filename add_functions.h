@@ -23,7 +23,7 @@ struct ScanData
 struct Scan
 {
     ScanData values;
-    QVector<bool> polSettings[3];
+    QVector<bool> polSettings;
     QString scanName;
     qreal startPos;
     qreal finPos;
