@@ -118,6 +118,31 @@
               </property>
              </widget>
             </item>
+            <item row="7" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QPushButton" name="LastScan">
+                <property name="text">
+                 <string>Backwards</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="NextScan">
+                <property name="text">
+                 <string>Forward</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="ChooseScanLabel">
+              <property name="text">
+               <string>Switch to next Scan</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>

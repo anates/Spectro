@@ -19,31 +19,6 @@
 *************************************************************/
 
 
-//Not needed anymore ???
-//unsigned char SetPolarizer(int i)
-//{
-//	switch (i)
-//	{
-//	case 1:
-//		return 0x2;
-//	case 2:
-//		return 0x1;
-//	case 3:
-//		return 0x0;
-//	case 4:
-//		return 0x3;
-//	case 5:
-//		return 0x6;
-//	case 6:
-//		return 0x5;
-//	case 7:
-//		return 0x7;
-//	default:
-//		return 0x0;
-//	}
-//}
-
-
 /*
 
 Function Read_DPC : INTEGER;

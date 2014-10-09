@@ -42,6 +42,8 @@ private slots:
 
     void saveGeneric();
 
+    void saveGenericAllPlots();
+
     void on_dispXValue_toggled(bool checked);
 
     void on_dispYValue_toggled(bool checked);
@@ -51,6 +53,10 @@ private slots:
     void on_gridTabWidget_currentChanged(int index);
 
     void on_scanButton_clicked();
+
+    void on_LastScan_clicked();
+
+    void on_NextScan_clicked();
 
 private:
 
@@ -66,6 +72,8 @@ private:
     QMap<qreal, qreal> Scandata;
     QVector<bool> polarizerSettings;
     ScanList newScanList;
+    struct Scan currentScan;
+    int currentScanNumber;
 
     QPen pen;
     QwtPlotCurve Curve;
@@ -76,6 +84,7 @@ private:
     QAction *openGenericAct;
     QAction *saveAct;
     QAction *saveGenericAct;
+    QAction *saveGenericAll;
 
 
 };

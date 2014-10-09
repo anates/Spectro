@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->scanButton->setToolTip("Start scan");
     ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 19);
     ui->horizontalLayout_2->setStretchFactor(ui->formLayout_2, 1);
+    MainWindow::currentScanNumber = 0;
+    ui->LastScan->hide();
+    ui->NextScan->hide();
+    ui->ChooseScanLabel->hide();
     //ui->gridTabWidget->TabShape = QTabWidget::Triangular;
 }
 
@@ -45,6 +49,7 @@ void MainWindow::replot()
     MainWindow::Curve.setPen(MainWindow::pen);
 
     QVector<double> x, y;
+    vectorToMap(newScanList.Scans[currentScanNumber-1].values.Data/*currentScan.values.Data*/, MainWindow::Scandata);
     x = QVector<double>::fromList(Scandata.keys());
     y = QVector<double>::fromList(Scandata.values());
 
@@ -105,8 +110,7 @@ void MainWindow::open()
         newScan.polSettings.push_back((bool)(monoSetting%2 == 1));
         newScan.polSettings.push_back((bool)(monoSetting%2 == 0 && monoSetting != 4));
         newScan.polSettings.push_back((bool)(monoSetting >= 4));
-        //TODO hier!!!
-        MainWindow::newScanList.Scans.push_back(newScan);
+        //TODO hier!!!Nur was?
         if(Scandata.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
@@ -115,6 +119,17 @@ void MainWindow::open()
         else
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
+            MainWindow::newScanList.Scans.push_back(newScan);
+
+            if(MainWindow::newScanList.Scans.size() > 1)
+            {
+                ui->LastScan->show();
+                ui->NextScan->show();
+                ui->ChooseScanLabel->show();
+            }
+            currentScan = newScanList.Scans[currentScanNumber];
+            currentScanNumber++;
+            QMessageBox::information(this, tr("Info"),QString::number(currentScanNumber) + " " + QString::number(newScanList.Scans.size()));
             MainWindow::replot();
         }
     }
@@ -130,8 +145,15 @@ void MainWindow::openGeneric()
         struct Scan newScan;
         MainWindow::Scandata.clear();
         read_unformatted_file(newScan.values, fileName);
-        //newScan.polSettings = polarizerSettings;//Muss manuell eingegeben werden!
-
+        //Generische Daten werden eingegeben, müssen später mit richtigen Werten ersetzt werden
+        newScan.polSettings[0] = false;
+        newScan.polSettings[1] = false;
+        newScan.polSettings[2] = false;
+        newScan.av = NoAverage;
+        newScan.finPos = -1;
+        newScan.scanName = "empty";
+        newScan.scanSpeed = -1;
+        newScan.startPos = -1;
         if(newScan.values.Data.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
@@ -139,13 +161,20 @@ void MainWindow::openGeneric()
         else
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
-            vectorToMap(newScan.values.Data, MainWindow::Scandata);
+            MainWindow::newScanList.Scans.push_back(newScan);
+
+            if(MainWindow::newScanList.Scans.size() > 1)
+            {
+                ui->LastScan->show();
+                ui->NextScan->show();
+                ui->ChooseScanLabel->show();
+            }
+            currentScan = newScanList.Scans[currentScanNumber];
+            currentScanNumber++;
             MainWindow::replot();
         }
-
     }
 }
-
 
 void MainWindow::save()
 {
@@ -168,16 +197,17 @@ void MainWindow::save()
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
         if(!MainWindow::newScanList.Scans.isEmpty())
         {
-            out << MainWindow::newScanList.Scans[0].scanName;
-            qint32 monoSetting = (int)MainWindow::newScanList.Scans[0].polSettings[0] + (int)MainWindow::newScanList.Scans[0].polSettings[1] + (int)MainWindow::newScanList.Scans[0].polSettings[2];
+            out << MainWindow::newScanList.Scans[currentScanNumber].scanName;
+            qint32 monoSetting = (int)MainWindow::newScanList.Scans[currentScanNumber-1].polSettings[0] + (int)MainWindow::newScanList.Scans[0].polSettings[1] + (int)MainWindow::newScanList.Scans[0].polSettings[2];
             out << monoSetting;
-            out << MainWindow::newScanList.Scans[0].startPos;
-            out << MainWindow::newScanList.Scans[0].finPos;
-            out << MainWindow::newScanList.Scans[0].scanSpeed;
+            out << MainWindow::newScanList.Scans[currentScanNumber].startPos;
+            out << MainWindow::newScanList.Scans[currentScanNumber].finPos;
+            out << MainWindow::newScanList.Scans[currentScanNumber].scanSpeed;
         }
-        out << Scandata;
+        out << MainWindow::newScanList.Scans[currentScanNumber].values.Data;
     }
 }
+
 
 void MainWindow::saveGeneric()
 {
@@ -187,9 +217,21 @@ void MainWindow::saveGeneric()
         return;
     }
     else
-        write_unformatted_file(MainWindow::Scandata, fileName);
+        write_unformatted_file(newScanList.Scans[currentScanNumber-1]/*MainWindow::Scandata*/, fileName);
 }
 
+
+void MainWindow::saveGenericAllPlots()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
+    if(fileName.isEmpty())
+    {
+        return;
+    }
+    else
+        for(int i = 0; i < newScanList.Scans.size(); i++)
+            write_unformatted_file(newScanList.Scans[i], fileName + QString::number(i+1));//Geht noch nicht, da Funktion zu alt
+}
 
 void MainWindow::createActions()
 {
@@ -211,6 +253,10 @@ void MainWindow::createActions()
     saveGenericAct->setStatusTip(tr("Save a file in old style"));
     connect(saveGenericAct, SIGNAL(triggered()), this, SLOT(saveGeneric()));
 
+    saveGenericAll = new QAction(tr("&Save all open plots in old style"), this);
+    saveGenericAll->setStatusTip(tr("Save all open plots in old style"));
+    connect(saveGenericAll, SIGNAL(triggered()), this, SLOT(saveGenericAllPlots()));
+
 }
 
 
@@ -221,6 +267,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(openGenericAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveGenericAct);
+    fileMenu->addAction(saveGenericAll);
 }
 
 
@@ -308,4 +355,28 @@ void MainWindow::on_scanButton_clicked()
     //Nothing to do here
     MainWindow::changeState(EditState);
     //Analyze(MainWindow::newScanList);
+}
+
+
+void MainWindow::on_LastScan_clicked()
+{
+    //MainWindow::currentScan.values.Data.clear();
+    //MainWindow::replot();
+    int tmpCurrentScanNumber = currentScanNumber - 1;
+    tmpCurrentScanNumber = (tmpCurrentScanNumber <= 0)?MainWindow::newScanList.Scans.size() - 1:tmpCurrentScanNumber-1;
+    //MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
+    currentScanNumber = tmpCurrentScanNumber + 1;
+    MainWindow::replot();
+}
+
+
+void MainWindow::on_NextScan_clicked()
+{
+    MainWindow::currentScan.values.Data.clear();
+    MainWindow::replot();
+    int tmpCurrentScanNumber = currentScanNumber - 1;
+    tmpCurrentScanNumber = (tmpCurrentScanNumber >= newScanList.Scans.size()-1)?0:tmpCurrentScanNumber+1;
+    MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
+    currentScanNumber = tmpCurrentScanNumber + 1;
+    MainWindow::replot();
 }

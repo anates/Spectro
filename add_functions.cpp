@@ -43,20 +43,18 @@ void read_unformatted_file(ScanData &Data, const QString &fileName)
     file.close();
 }
 
-void write_unformatted_file(const QMap<double, double> &Data, QString fileName)
+void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/, QString fileName)//Muss dringend geupdatet werden???
 {
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly)) {
         QMessageBox::information(0, "error", file.errorString());
     }
     QTextStream out(&file);
+    //Hier müssen noch die Scanparameter rein, dafür muss die Lesefunktion aber angepasst werden!
 
-    QVector<double> x, y;
-    x = QVector<double>::fromList(Data.keys());
-    y = QVector<double>::fromList(Data.values());
-    for(int i = 0; i < Data.size(); i++)
+    for(int i = 0; i < Data.values.Data.size(); i++)
     {
-        out << x[i] << '\t' << y[i] << '\n';
+        out << Data.values.Data[i].first << '\t' << Data.values.Data[i].second << '\n';
     }
 
     file.close();
