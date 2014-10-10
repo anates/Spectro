@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
@@ -251,7 +251,7 @@
           <item row="5" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QLineEdit" name="lineEdit_14"/>
+             <widget class="QLineEdit" name="moveData"/>
             </item>
             <item>
              <widget class="QPushButton" name="mvButton_2">

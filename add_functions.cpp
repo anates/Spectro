@@ -32,6 +32,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
     version = in.readLine();
     if(version == "8008135")
     {
+        Data.scanName = in.readLine();
         Data.startPos = in.readLine().toDouble();
         Data.finPos = in.readLine().toDouble();
         Data.scanSpeed = in.readLine().toDouble();
@@ -64,6 +65,7 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
     }
     QTextStream out(&file);
     out << "8008135\n";
+    out << Data.scanName << '\n';
     out << Data.startPos << '\n';
     out << Data.finPos << '\n';
     out << Data.scanSpeed << '\n';

@@ -14,7 +14,7 @@
 *                                                            *
 *************************************************************/
 
-#include "Monokrom.h"
+#include "Globale.h"
 
 /*************************************************************
 *                                                            *
@@ -32,7 +32,7 @@ void ShortDelay(int StopCount)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 //Wird voraussichtlich entfernt, muss aber noch überprüft werden
-void MonoNed(double step, bool signal)
+void MonoNed(const double step, bool &signal)
 {
 	/*************************************************************
 	*            ***  PROSEDYRE - BESKRIVELSE  ***                 *
@@ -86,7 +86,7 @@ void MonoNed(double step, bool signal)
 	}
 }
 //Wird voraussichtlich entfernt, muss aber noch überprüft werden
-void MonoOpp(double step, bool signal)
+void MonoOpp(const double step, bool &signal)
 {
 	/*************************************************************
 	*            ***  PROCEDURE - BESKRIVELSE  ***                 *
@@ -136,7 +136,7 @@ void MonoOpp(double step, bool signal)
 		signal = true;
 }
 //Wird voraussichtlich entfernt, muss aber noch überprüft werden
-void MonoInit(double NewMonoPos, bool signal)
+void MonoInit(const double NewMonoPos, bool signal)
 {
 	/*************************************************************
 	*             ***  PROSEDYRE - BESKRIVELSE  ***                *

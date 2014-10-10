@@ -28,6 +28,7 @@
 #include <cstdlib>
 #include <termios.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #include "add_functions.h"
 
@@ -89,25 +90,10 @@ extern bool OnFile;
 typedef QVector<QPair<qreal, qreal> > Spectrum;
 typedef bool PlSetChosenType[20][number_settings];
 typedef std::string PlSettingType[2][number_settings];
-//extern const char LetterSet[];
-//struct LetterSet{
-//	std::string x = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-//};
+
 
 extern const int PolPosition[];
-//struct ScanList
-//{
-//	std::string name;
-//	int I;
-//	double Lower[20], Upper[20];
-//	double step[20];
-//	int counts[20];
-//	int Pol[20];
-//	int AverageNo[20];
-//	AveMode Average[20];
-//	bool selected[20];
-//	bool saved, loaded, altered;
-//};
+
 
 extern Spectrum LumiSpectrum;     // Data storage variable 
 
@@ -128,9 +114,9 @@ extern PlSettingType Polsetting;
 
 
 //New inserted from Monokrom
-void MonoOpp(double step, bool signal);
-void MonoNed(double step, bool signal);
-void MonoInit(double MonoPos, bool signal);
+void MonoOpp(const double step, bool &signal);
+void MonoNed(const double step, bool &signal);
+void MonoInit(const double MonoPos, bool &signal);
 void ReadMonoPos(void);
 void WriteMonoPos(void);
 void KontrollMonoPos(void);

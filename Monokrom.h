@@ -13,10 +13,7 @@
 #define StepTime 20
 
 
-void MonoOpp(double step, bool signal);
-void MonoNed(double step, bool signal);
-void MonoInit(double MonoPos, bool signal);
-void ReadMonoPos(void);
-void WriteMonoPos(void);
-void KontrollMonoPos(void);
-void ManuellMonoFlytting(void);
+void MonoOpp(const double step, bool &signal);
+void MonoNed(const double step, bool &signal);
+void MonoInit(const double MonoPos, bool &signal);
+

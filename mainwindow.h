@@ -7,6 +7,7 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
+#include <QThread>
 #include "Globale.h"
 //#include "add_functions.h"
 //#include "Globale.h"
@@ -63,6 +64,12 @@ private slots:
     void on_saveScan_clicked();
 
     void reload_data();
+
+    void on_stepBackMono_clicked();
+
+    void on_stepForwardMono_clicked();
+
+    void on_mvButton_2_clicked();
 
 private:
 

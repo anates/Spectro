@@ -87,7 +87,7 @@ void MainWindow::open()
         QDataStream in(&file);
         quint32 magic;
         in >> magic;
-        if(magic != 0xB00B1E5)
+        if(magic != 0x8008135)
         {
             QMessageBox::information(this, tr("Wrong file format!"),"Sorry, wrong file format! Please try to open it with \"Load old Data\"!");
             return;
@@ -103,13 +103,13 @@ void MainWindow::open()
             in.setVersion(QDataStream::Qt_3_3);
         else
             in.setVersion(QDataStream::Qt_4_5);
-        Scandata.empty();
+        newScan.values.Data.empty();
         in >> scanName;
         in >> monoSetting;
         in >> startScan;
         in >> finScan;
         in >> scanSpeed;
-        in >> Scandata;
+        in >> newScan.values.Data;
         newScan.scanName = scanName;
         newScan.finPos = finScan;
         newScan.startPos = startScan;
@@ -117,8 +117,7 @@ void MainWindow::open()
         newScan.polSettings.push_back((bool)(monoSetting%2 == 1));
         newScan.polSettings.push_back((bool)(monoSetting%2 == 0 && monoSetting != 4));
         newScan.polSettings.push_back((bool)(monoSetting >= 4));
-        //TODO hier!!!Nur was?
-        if(Scandata.isEmpty())
+        if(newScan.values.Data.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
             return;
@@ -139,7 +138,7 @@ void MainWindow::open()
             currentScan = newScanList.Scans[currentScanNumber];
             currentScanNumber++;
             ui->selectScanBox->addItem(currentScan.scanName);
-            QMessageBox::information(this, tr("Info"),QString::number(currentScanNumber) + " " + QString::number(newScanList.Scans.size()));
+            //QMessageBox::information(this, tr("Info"),QString::number(currentScanNumber) + " " + QString::number(newScanList.Scans.size()));
             MainWindow::replot();
         }
     }
@@ -216,19 +215,21 @@ void MainWindow::save()
             return;
         }
         QDataStream out(&file);
-        out << (quint32)0xB00B1E5;
+        out << (quint32)0x8008135;
         out << (qint32)123;
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
         if(!MainWindow::newScanList.Scans.isEmpty())
         {
-            out << MainWindow::newScanList.Scans[currentScanNumber].scanName;
-            qint32 monoSetting = (int)MainWindow::newScanList.Scans[currentScanNumber-1].polSettings[0] + (int)MainWindow::newScanList.Scans[0].polSettings[1] + (int)MainWindow::newScanList.Scans[0].polSettings[2];
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].scanName;
+            qint32 monoSetting = (int)(MainWindow::newScanList.Scans[currentScanNumber-1].polSettings[0]) + (int)(MainWindow::newScanList.Scans[0].polSettings[1])*2 + (int)(MainWindow::newScanList.Scans[0].polSettings[2])*4;
             out << monoSetting;
-            out << MainWindow::newScanList.Scans[currentScanNumber].startPos;
-            out << MainWindow::newScanList.Scans[currentScanNumber].finPos;
-            out << MainWindow::newScanList.Scans[currentScanNumber].scanSpeed;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].startPos;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].finPos;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].scanSpeed;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].values.Data;
         }
-        out << MainWindow::newScanList.Scans[currentScanNumber].values.Data;
+        else
+            QMessageBox::information(this, tr("No scan data"),tr("No scan opened!"));
     }
 }
 
@@ -381,8 +382,30 @@ void MainWindow::changeState(State newState)
 void MainWindow::on_scanButton_clicked()
 {
     MainWindow::changeState(ScanState);
-    //Nothing to do here
+    bool signal;
+    struct Scan newScan;
+    ui->progressBar->show();
+    newScan.finPos = ui->setTargetPosition->text().toDouble();
+    newScan.startPos = ui->setStartPosition->text().toDouble();
+    newScan.scanSpeed = ui->setScanSpeed->text().toDouble();
+    newScan.scanName = ui->scanName->text();
+    int counter = 0;
+    for(int i = (ui->setStartPosition->text().toDouble()*100); i < (ui->setTargetPosition->text().toDouble()*100); i++)
+    {
+        //MonoOpp(1, signal);
+
+        //Hier muss die Datenauswertung hinein
+        //Für debugzwecke???FEHLT NOCH???
+        usleep(50);
+        //Muss ebenfalls noch verbessert werden
+        if((int)(newScan.finPos*100-newScan.startPos*100)%i == 0)
+        {
+            ui->progressBar->setValue(counter);
+            counter++;
+        }
+    }
     MainWindow::changeState(EditState);
+    ui->progressBar->hide();
     //Analyze(MainWindow::newScanList);
 }
 
@@ -430,4 +453,28 @@ void MainWindow::reload_data()
     ui->dispYValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[1]);
     ui->dispZValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[2]);
     ui->scanName->setText(newScanList.Scans[currentScanNumber-1].scanName);
+}
+
+void MainWindow::on_stepBackMono_clicked()
+{
+    //CHECK IF STOP NOT HERE???
+    bool signal;
+    MonoNed(1, signal);
+}
+
+void MainWindow::on_stepForwardMono_clicked()
+{
+    //CHECK IF STOP NOT HERE???
+    bool signal;
+    MonoOpp(1, signal);
+}
+
+void MainWindow::on_mvButton_2_clicked()
+{
+    bool signal;
+    //CHECK IF STOP NOT HERE???
+    if(ui->moveData->text().toInt() < 0)
+        MonoNed(ui->moveData->text().toInt()*-1, signal);
+    else
+        MonoOpp(ui->moveData->text().toInt(), signal);
 }
