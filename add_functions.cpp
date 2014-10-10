@@ -19,14 +19,27 @@ inline T convertToNumber(std::string const & s)
     return x;
 }
 
-void read_unformatted_file(ScanData &Data, const QString &fileName)
+void read_unformatted_file(Scan &Data, const QString &fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly)) {
         QMessageBox::information(0, "error", file.errorString());
+        return;
     }
     QTextStream in(&file);
-
+    QString version;
+    Data.scanName = fileName;
+    version = in.readLine();
+    if(version == "8008135")
+    {
+        Data.startPos = in.readLine().toDouble();
+        Data.finPos = in.readLine().toDouble();
+        Data.scanSpeed = in.readLine().toDouble();
+        int polSettingsInt = in.readLine().toInt();
+        Data.polSettings[0] = (polSettingsInt%2 == 1);
+        Data.polSettings[1] = (polSettingsInt%2 == 0 && polSettingsInt != 4);
+        Data.polSettings[2] = (polSettingsInt >= 4);
+    }
     while(!in.atEnd()) {
         std::string line = in.readLine().toStdString();
         std::stringstream iss(line);
@@ -38,7 +51,7 @@ void read_unformatted_file(ScanData &Data, const QString &fileName)
             tmpline.push_back(tmpstring);
         }while(iss);
         if(tmpline.size() == 3)
-            Data.Data.push_back(qMakePair(convertToNumber<qreal>(tmpline[0]), convertToNumber<qreal>(tmpline[1])));
+            Data.values.Data.push_back(qMakePair(convertToNumber<qreal>(tmpline[0]), convertToNumber<qreal>(tmpline[1])));
     }
     file.close();
 }
@@ -50,8 +63,12 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
         QMessageBox::information(0, "error", file.errorString());
     }
     QTextStream out(&file);
-    //Hier müssen noch die Scanparameter rein, dafür muss die Lesefunktion aber angepasst werden!
-
+    out << "8008135\n";
+    out << Data.startPos << '\n';
+    out << Data.finPos << '\n';
+    out << Data.scanSpeed << '\n';
+    out << (int)(Data.polSettings[0]?1:0) + (int)(Data.polSettings[1]?2:0) + (int)(Data.polSettings[2]?4:0) << '\n';
+    out << Data.values.Data[0].first << '\t' << Data.values.Data[0].second << '\n';
     for(int i = 0; i < Data.values.Data.size(); i++)
     {
         out << Data.values.Data[i].first << '\t' << Data.values.Data[i].second << '\n';

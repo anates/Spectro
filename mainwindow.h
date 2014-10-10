@@ -58,6 +58,12 @@ private slots:
 
     void on_NextScan_clicked();
 
+    void on_selectScanBox_currentIndexChanged(int index);
+
+    void on_saveScan_clicked();
+
+    void reload_data();
+
 private:
 
     enum State {ScanState, EditState, MoveState};

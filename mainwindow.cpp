@@ -20,6 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->LastScan->hide();
     ui->NextScan->hide();
     ui->ChooseScanLabel->hide();
+    ui->selectScanBox->hide();
+    ui->selectScanLabel->hide();
+    ui->progressBar->hide();
+    ui->progressBar->setValue(0);
+    MainWindow::setWindowTitle("");
     //ui->gridTabWidget->TabShape = QTabWidget::Triangular;
 }
 
@@ -36,7 +41,7 @@ void MainWindow::on_loadGenericButton_clicked()
 void MainWindow::replot()
 {
     MainWindow::Grid.attach(ui->qwtPlot);
-
+    MainWindow::Curve.attach(NULL);
     MainWindow::Curve.setTitle("Raman spectra");
     MainWindow::Curve.setRenderHint(QwtPlotItem::RenderAntialiased, true);
 
@@ -49,6 +54,7 @@ void MainWindow::replot()
     MainWindow::Curve.setPen(MainWindow::pen);
 
     QVector<double> x, y;
+    MainWindow::Scandata.clear();
     vectorToMap(newScanList.Scans[currentScanNumber-1].values.Data/*currentScan.values.Data*/, MainWindow::Scandata);
     x = QVector<double>::fromList(Scandata.keys());
     y = QVector<double>::fromList(Scandata.values());
@@ -58,6 +64,7 @@ void MainWindow::replot()
     ui->qwtPlot->updateAxes();
     ui->qwtPlot->show();
     ui->qwtPlot->replot();
+    MainWindow::reload_data();
 }
 
 void MainWindow::open()
@@ -120,15 +127,18 @@ void MainWindow::open()
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
             MainWindow::newScanList.Scans.push_back(newScan);
-
+            MainWindow::newScanList.scanFileNames.push_back(fileName);
             if(MainWindow::newScanList.Scans.size() > 1)
             {
                 ui->LastScan->show();
                 ui->NextScan->show();
                 ui->ChooseScanLabel->show();
+                ui->selectScanLabel->show();
+                ui->selectScanBox->show();
             }
             currentScan = newScanList.Scans[currentScanNumber];
             currentScanNumber++;
+            ui->selectScanBox->addItem(currentScan.scanName);
             QMessageBox::information(this, tr("Info"),QString::number(currentScanNumber) + " " + QString::number(newScanList.Scans.size()));
             MainWindow::replot();
         }
@@ -144,16 +154,17 @@ void MainWindow::openGeneric()
     {
         struct Scan newScan;
         MainWindow::Scandata.clear();
-        read_unformatted_file(newScan.values, fileName);
-        //Generische Daten werden eingegeben, müssen später mit richtigen Werten ersetzt werden
         newScan.polSettings[0] = false;
         newScan.polSettings[1] = false;
         newScan.polSettings[2] = false;
         newScan.av = NoAverage;
         newScan.finPos = -1;
-        newScan.scanName = "empty";
+        newScan.scanName = fileName;
         newScan.scanSpeed = -1;
         newScan.startPos = -1;
+        read_unformatted_file(newScan, fileName);
+        //Generische Daten werden eingegeben, müssen später mit richtigen Werten ersetzt werden
+
         if(newScan.values.Data.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
@@ -162,15 +173,28 @@ void MainWindow::openGeneric()
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
             MainWindow::newScanList.Scans.push_back(newScan);
-
+            MainWindow::newScanList.scanFileNames.push_back(fileName);
             if(MainWindow::newScanList.Scans.size() > 1)
             {
                 ui->LastScan->show();
                 ui->NextScan->show();
                 ui->ChooseScanLabel->show();
+                ui->selectScanLabel->show();
+                ui->selectScanBox->show();
             }
             currentScan = newScanList.Scans[currentScanNumber];
             currentScanNumber++;
+            ui->selectScanBox->addItem(currentScan.scanName);
+            MainWindow::setWindowTitle(fileName);
+            if(newScan.finPos != -1 && newScan.scanSpeed != -1 && newScan.startPos != -1)
+            {
+                ui->setStartPosition->setText(QString::number(newScan.startPos));
+                ui->setTargetPosition->setText(QString::number(newScan.finPos));
+                ui->setScanSpeed->setText(QString::number(newScan.scanSpeed));
+                ui->dispXValue->setChecked(newScan.polSettings[0]);
+                ui->dispYValue->setChecked(newScan.polSettings[1]);
+                ui->dispZValue->setChecked(newScan.polSettings[2]);
+            }
             MainWindow::replot();
         }
     }
@@ -208,7 +232,6 @@ void MainWindow::save()
     }
 }
 
-
 void MainWindow::saveGeneric()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
@@ -217,9 +240,20 @@ void MainWindow::saveGeneric()
         return;
     }
     else
+    {
+        if(ui->scanName->text() == "")
+            newScanList.Scans[currentScanNumber-1].scanName = fileName;
+        else
+            newScanList.Scans[currentScanNumber-1].scanName = ui->scanName->text();
+        if(ui->setScanSpeed->text() != "")
+            newScanList.Scans[currentScanNumber-1].scanSpeed = ui->setScanSpeed->text().toDouble();
+        if(ui->setStartPosition->text() != "")
+            newScanList.Scans[currentScanNumber-1].startPos = ui->setStartPosition->text().toDouble();
+        if(ui->setTargetPosition->text() != "")
+            newScanList.Scans[currentScanNumber-1].finPos = ui->setTargetPosition->text().toDouble();
         write_unformatted_file(newScanList.Scans[currentScanNumber-1]/*MainWindow::Scandata*/, fileName);
+    }
 }
-
 
 void MainWindow::saveGenericAllPlots()
 {
@@ -230,7 +264,9 @@ void MainWindow::saveGenericAllPlots()
     }
     else
         for(int i = 0; i < newScanList.Scans.size(); i++)
-            write_unformatted_file(newScanList.Scans[i], fileName + QString::number(i+1));//Geht noch nicht, da Funktion zu alt
+        {
+            write_unformatted_file(newScanList.Scans[i], fileName + QString::number(i+1));
+        }
 }
 
 void MainWindow::createActions()
@@ -259,7 +295,6 @@ void MainWindow::createActions()
 
 }
 
-
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -269,7 +304,6 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveGenericAct);
     fileMenu->addAction(saveGenericAll);
 }
-
 
 void MainWindow::on_dispXValue_toggled(bool checked)
 {
@@ -283,7 +317,6 @@ void MainWindow::on_dispXValue_toggled(bool checked)
     };
 }
 
-
 void MainWindow::on_dispYValue_toggled(bool checked)
 {
     if(polarizerSettings.size() == 3)
@@ -295,7 +328,6 @@ void MainWindow::on_dispYValue_toggled(bool checked)
         exit(-1);
     };
 }
-
 
 void MainWindow::on_dispZValue_toggled(bool checked)
 {
@@ -309,12 +341,10 @@ void MainWindow::on_dispZValue_toggled(bool checked)
     };
 }
 
-
 void MainWindow::on_gridTabWidget_currentChanged(int index)
 {
 
 }
-
 
 void MainWindow::changeState(State newState)
 {
@@ -348,7 +378,6 @@ void MainWindow::changeState(State newState)
     }
 }
 
-
 void MainWindow::on_scanButton_clicked()
 {
     MainWindow::changeState(ScanState);
@@ -357,18 +386,17 @@ void MainWindow::on_scanButton_clicked()
     //Analyze(MainWindow::newScanList);
 }
 
-
 void MainWindow::on_LastScan_clicked()
 {
-    //MainWindow::currentScan.values.Data.clear();
-    //MainWindow::replot();
+    MainWindow::currentScan.values.Data.clear();
+    MainWindow::replot();
     int tmpCurrentScanNumber = currentScanNumber - 1;
     tmpCurrentScanNumber = (tmpCurrentScanNumber <= 0)?MainWindow::newScanList.Scans.size() - 1:tmpCurrentScanNumber-1;
-    //MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
+    MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
+    MainWindow::setWindowTitle(MainWindow::currentScan.scanName);
     currentScanNumber = tmpCurrentScanNumber + 1;
     MainWindow::replot();
 }
-
 
 void MainWindow::on_NextScan_clicked()
 {
@@ -378,5 +406,28 @@ void MainWindow::on_NextScan_clicked()
     tmpCurrentScanNumber = (tmpCurrentScanNumber >= newScanList.Scans.size()-1)?0:tmpCurrentScanNumber+1;
     MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
     currentScanNumber = tmpCurrentScanNumber + 1;
+    MainWindow::setWindowTitle(MainWindow::currentScan.scanName);
     MainWindow::replot();
+}
+
+void MainWindow::on_selectScanBox_currentIndexChanged(int index)
+{
+    MainWindow::currentScanNumber = index + 1;
+    MainWindow::replot();
+}
+
+void MainWindow::on_saveScan_clicked()
+{
+    saveGeneric();
+}
+
+void MainWindow::reload_data()
+{
+    ui->setScanSpeed->setText(QString::number(newScanList.Scans[currentScanNumber-1].scanSpeed));
+    ui->setStartPosition->setText(QString::number(newScanList.Scans[currentScanNumber-1].startPos));
+    ui->setTargetPosition->setText(QString::number(newScanList.Scans[currentScanNumber-1].finPos));
+    ui->dispXValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[0]);
+    ui->dispYValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[1]);
+    ui->dispZValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[2]);
+    ui->scanName->setText(newScanList.Scans[currentScanNumber-1].scanName);
 }

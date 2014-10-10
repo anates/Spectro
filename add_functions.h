@@ -38,7 +38,7 @@ struct ScanList
     QVector<QString> scanFileNames;
 };
 
-void read_unformatted_file(ScanData &Data, const QString &fileName);
+void read_unformatted_file(Scan &Data, const QString &fileName);
 void write_unformatted_file(const Scan &Data, QString fileName);
 void splitToDoubles(QPair<double, double> &valuePair, QString input);
 void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<qreal, qreal> &outdata);
