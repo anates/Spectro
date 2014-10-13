@@ -114,9 +114,9 @@ extern PlSettingType Polsetting;
 
 
 //New inserted from Monokrom
-void MonoOpp(const double step, bool &signal);
-void MonoNed(const double step, bool &signal);
-void MonoInit(const double MonoPos, bool &signal);
+void MonoOpp(const qreal step, qreal &MonoPos);
+void MonoNed(const qreal step, qreal &MonoPos);
+void moveToTarget(const double &NewMonoPos, qreal &MonoPos);
 void ReadMonoPos(void);
 void WriteMonoPos(void);
 void KontrollMonoPos(void);
@@ -189,3 +189,5 @@ inline T convertToNumber(std::string const & s)
         throw BadConversion("convertToNumber(\"" + s + "\")");
     return x;
 }
+
+

@@ -32,6 +32,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+public slots:
+     //void customMenuRequested(QPoint pos);
+
 private slots:
     void on_loadGenericButton_clicked();
 
@@ -71,6 +74,12 @@ private slots:
 
     void on_mvButton_2_clicked();
 
+    void on_logButton_clicked();
+
+    void createLogData();
+
+    void loadConfig();
+
 private:
 
     enum State {ScanState, EditState, MoveState};
@@ -78,6 +87,9 @@ private:
     void createActions();
     void createMenus();
     void changeState(State newState);
+    //void contextMenuEvent(QContextMenuEvent *event);
+
+    //void customContextMenuRequested(const QPoint &pos);
 
 
     Ui::MainWindow *ui;
@@ -87,6 +99,7 @@ private:
     ScanList newScanList;
     struct Scan currentScan;
     int currentScanNumber;
+    struct Spectrometer newSpectrometer;
 
     QPen pen;
     QwtPlotCurve Curve;

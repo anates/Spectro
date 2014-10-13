@@ -25,9 +25,20 @@ struct Scan
     AveMode av;
 };
 
+struct LogFile
+{
+    QString name;
+    qreal laserIntensity;
+    qreal slitWidth;
+    qreal sensitivity;
+    qreal countNumber;
+};
+
 struct ScanList
 {
     QVector<Scan> Scans;
     QString fileName;
     QVector<QString> scanFileNames;
+    struct Logfile log;
 };
+

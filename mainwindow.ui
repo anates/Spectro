@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
@@ -35,44 +35,44 @@
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
             </property>
-            <item row="1" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
                <string>Start Position [cm-1]</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="3" column="1">
              <widget class="QLineEdit" name="setStartPosition"/>
             </item>
-            <item row="2" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
                <string>Target Position [cm-1]</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="4" column="1">
              <widget class="QLineEdit" name="setTargetPosition"/>
             </item>
-            <item row="3" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
                <string>Scan speed</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="5" column="1">
              <widget class="QLineEdit" name="setScanSpeed"/>
             </item>
-            <item row="4" column="0">
+            <item row="6" column="0">
              <widget class="QLabel" name="PolarizerLabel">
               <property name="text">
                <string>Polarizer settings</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="6" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <widget class="QCheckBox" name="dispXValue">
@@ -97,28 +97,28 @@
               </item>
              </layout>
             </item>
-            <item row="5" column="1">
+            <item row="7" column="1">
              <widget class="QPushButton" name="scanButton">
               <property name="text">
                <string>Start scan</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="1">
+            <item row="8" column="1">
              <widget class="QPushButton" name="loadSettingsButton">
               <property name="text">
                <string>Load scan settings</string>
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="9" column="1">
              <widget class="QPushButton" name="loadGenericButton">
               <property name="text">
                <string>Load old scan data</string>
               </property>
              </widget>
             </item>
-            <item row="9" column="1">
+            <item row="11" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
                <widget class="QPushButton" name="LastScan">
@@ -136,37 +136,54 @@
               </item>
              </layout>
             </item>
-            <item row="9" column="0">
+            <item row="11" column="0">
              <widget class="QLabel" name="ChooseScanLabel">
               <property name="text">
                <string>Switch to next Scan</string>
               </property>
              </widget>
             </item>
-            <item row="10" column="1">
+            <item row="12" column="1">
              <widget class="QComboBox" name="selectScanBox"/>
             </item>
-            <item row="10" column="0">
+            <item row="12" column="0">
              <widget class="QLabel" name="selectScanLabel">
               <property name="text">
                <string>Select Scan</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="2" column="1">
              <widget class="QLineEdit" name="scanName"/>
             </item>
-            <item row="0" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
                <string>Scan name</string>
               </property>
              </widget>
             </item>
-            <item row="8" column="1">
+            <item row="10" column="1">
              <widget class="QPushButton" name="saveScan">
               <property name="text">
                <string>Save scan data</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="photoCounter"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>Current photo count</string>
               </property>
              </widget>
             </item>
@@ -300,6 +317,91 @@
              </widget>
             </item>
            </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="logTab">
+       <property name="accessibleName">
+        <string/>
+       </property>
+       <attribute name="title">
+        <string>Logfile settings</string>
+       </attribute>
+       <layout class="QFormLayout" name="formLayout_4">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Data for logfile</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_3">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+            </property>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Laser power [mW]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="laserPower"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Width of slits [mm]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="slitWidth"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Sensitivity [counts/sec]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="sensitivity"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>counts</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="countNumber"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_15">
+              <property name="text">
+               <string>Name for logfile</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="logfileName"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="logButton">
+            <property name="text">
+             <string>Add log</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

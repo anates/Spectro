@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 19);
     ui->horizontalLayout_2->setStretchFactor(ui->formLayout_2, 1);
     MainWindow::currentScanNumber = 0;
+    MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     ui->LastScan->hide();
     ui->NextScan->hide();
     ui->ChooseScanLabel->hide();
@@ -25,6 +26,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->hide();
     ui->progressBar->setValue(0);
     MainWindow::setWindowTitle("");
+    ui->gridTabWidget->setCurrentIndex(0);
+    //DataProcessingThread dataProcessor;
+    //connect(dataProcessor, SIGNAL(dataProcessor.currentCount(int)), ui->photoCounter, SLOT(ui->photoCounter->setText(QString)));
+    //dataProcessor.start();
+    //ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
+    //connect(ui->qwtPlot, SIGNAL(customContextMenuRequested(QPoint)), SLOT(customMenuRequested(QPoint)));
+    //ui->qwtPlot->contextMenuEvent(QContextMenuEvent *event);
     //ui->gridTabWidget->TabShape = QTabWidget::Triangular;
 }
 
@@ -87,7 +95,7 @@ void MainWindow::open()
         QDataStream in(&file);
         quint32 magic;
         in >> magic;
-        if(magic != 0x8008135)
+        if(magic != 0x8008135 || magic != 0x80081E5)
         {
             QMessageBox::information(this, tr("Wrong file format!"),"Sorry, wrong file format! Please try to open it with \"Load old Data\"!");
             return;
@@ -110,6 +118,14 @@ void MainWindow::open()
         in >> finScan;
         in >> scanSpeed;
         in >> newScan.values.Data;
+        if(magic == 0x80081E5)
+        {
+            in >> newScan.log.countNumber;
+            in >> newScan.log.laserIntensity;
+            in >> newScan.log.name;
+            in >> newScan.log.sensitivity;
+            in >> newScan.log.slitWidth;
+        }
         newScan.scanName = scanName;
         newScan.finPos = finScan;
         newScan.startPos = startScan;
@@ -201,6 +217,11 @@ void MainWindow::openGeneric()
 
 void MainWindow::save()
 {
+    if(newScanList.Scans.isEmpty())
+    {
+        QMessageBox::information(this, tr("Error"), tr("Sorry, no data loaded!"));
+        return;
+    }
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (*.sca);;All Files(*)"));
     if(fileName.isEmpty())
     {
@@ -215,7 +236,7 @@ void MainWindow::save()
             return;
         }
         QDataStream out(&file);
-        out << (quint32)0x8008135;
+        out << (quint32)0x80081E5;
         out << (qint32)123;
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
         if(!MainWindow::newScanList.Scans.isEmpty())
@@ -227,6 +248,11 @@ void MainWindow::save()
             out << MainWindow::newScanList.Scans[currentScanNumber-1].finPos;
             out << MainWindow::newScanList.Scans[currentScanNumber-1].scanSpeed;
             out << MainWindow::newScanList.Scans[currentScanNumber-1].values.Data;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.countNumber;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.laserIntensity;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.name;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.sensitivity;
+            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.slitWidth;
         }
         else
             QMessageBox::information(this, tr("No scan data"),tr("No scan opened!"));
@@ -235,29 +261,57 @@ void MainWindow::save()
 
 void MainWindow::saveGeneric()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
-    if(fileName.isEmpty())
+
+    if(newScanList.Scans.isEmpty())
     {
+        QMessageBox::information(this,tr("Error!"), tr("No data loaded!"));
         return;
     }
     else
     {
-        if(ui->scanName->text() == "")
-            newScanList.Scans[currentScanNumber-1].scanName = fileName;
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
+        if(fileName.isEmpty())
+        {
+            return;
+        }
         else
-            newScanList.Scans[currentScanNumber-1].scanName = ui->scanName->text();
-        if(ui->setScanSpeed->text() != "")
-            newScanList.Scans[currentScanNumber-1].scanSpeed = ui->setScanSpeed->text().toDouble();
-        if(ui->setStartPosition->text() != "")
-            newScanList.Scans[currentScanNumber-1].startPos = ui->setStartPosition->text().toDouble();
-        if(ui->setTargetPosition->text() != "")
-            newScanList.Scans[currentScanNumber-1].finPos = ui->setTargetPosition->text().toDouble();
-        write_unformatted_file(newScanList.Scans[currentScanNumber-1]/*MainWindow::Scandata*/, fileName);
+        {
+            bool saveLogFile = false;
+            QMessageBox msgBox;
+            msgBox.setText("Save Logfile?");
+            msgBox.setInformativeText("Do you want to save an additional logfile, too? All log data will be saved in the spectrum file, too.");
+            QPushButton *save = msgBox.addButton(tr("Save additional logfile"), QMessageBox::ActionRole);
+            QPushButton *notsave = msgBox.addButton(tr("Don't save additional file"), QMessageBox::ActionRole);
+            msgBox.exec();
+            if(msgBox.clickedButton() == save)
+                saveLogFile = true;
+            else
+                if(msgBox.clickedButton() == notsave)
+                    saveLogFile = false;
+            if(ui->scanName->text() == "")
+                newScanList.Scans[currentScanNumber-1].scanName = fileName;
+            else
+                newScanList.Scans[currentScanNumber-1].scanName = ui->scanName->text();
+            if(ui->setScanSpeed->text() != "")
+                newScanList.Scans[currentScanNumber-1].scanSpeed = ui->setScanSpeed->text().toDouble();
+            if(ui->setStartPosition->text() != "")
+                newScanList.Scans[currentScanNumber-1].startPos = ui->setStartPosition->text().toDouble();
+            if(ui->setTargetPosition->text() != "")
+                newScanList.Scans[currentScanNumber-1].finPos = ui->setTargetPosition->text().toDouble();
+            write_unformatted_file(newScanList.Scans[currentScanNumber-1]/*MainWindow::Scandata*/, fileName);
+            if(saveLogFile)
+                write_log_file(newScanList.Scans[currentScanNumber-1], fileName);
+        }
     }
 }
 
 void MainWindow::saveGenericAllPlots()
 {
+    if(newScanList.Scans.isEmpty())
+    {
+        QMessageBox::information(this, tr("Error"), tr("Sorry, no data loaded!"));
+        return;
+    }
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan file (old)(*.txt);;All Files(*)"));
     if(fileName.isEmpty())
     {
@@ -308,8 +362,8 @@ void MainWindow::createMenus()
 
 void MainWindow::on_dispXValue_toggled(bool checked)
 {
-    if(polarizerSettings.size() == 3)
-        polarizerSettings[0] = checked;
+    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
+        newScanList.Scans[currentScanNumber-1].polSettings[0] = checked;
     else
     {
         QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
@@ -320,8 +374,8 @@ void MainWindow::on_dispXValue_toggled(bool checked)
 
 void MainWindow::on_dispYValue_toggled(bool checked)
 {
-    if(polarizerSettings.size() == 3)
-        polarizerSettings[1] = checked;
+    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
+        newScanList.Scans[currentScanNumber-1].polSettings[1] = checked;
     else
     {
         QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
@@ -332,8 +386,8 @@ void MainWindow::on_dispYValue_toggled(bool checked)
 
 void MainWindow::on_dispZValue_toggled(bool checked)
 {
-    if(polarizerSettings.size() == 3)
-        polarizerSettings[2] = checked;
+    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
+        newScanList.Scans[currentScanNumber-1].polSettings[2] = checked;
     else
     {
         QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
@@ -355,6 +409,7 @@ void MainWindow::changeState(State newState)
         {
             ui->gridTabWidget->setTabEnabled(1, false);
             ui->gridTabWidget->setTabEnabled(0, true);
+            ui->gridTabWidget->setTabEnabled(2, false);
             ui->loadGenericButton->hide();
             ui->loadSettingsButton->hide();
             ui->dispXValue->setEnabled(0);
@@ -370,6 +425,7 @@ void MainWindow::changeState(State newState)
             ui->dispYValue->setEnabled(1);
             ui->dispZValue->setEnabled(1);
             ui->gridTabWidget->setTabEnabled(1, true);
+            ui->gridTabWidget->setTabEnabled(2, true);
             break;
         }
         case MoveState:
@@ -381,9 +437,23 @@ void MainWindow::changeState(State newState)
 
 void MainWindow::on_scanButton_clicked()
 {
-    MainWindow::changeState(ScanState);
-    bool signal;
+    if(ui->setScanSpeed->text().isEmpty() || ui->setStartPosition->text().isEmpty() || ui->setTargetPosition->text().isEmpty() || ui->scanName->text().isEmpty())
+    {
+        QMessageBox::information(this, tr("Error!"), tr("Not all neccessary information entered, please check your entered data!"));
+        return;
+    }
     struct Scan newScan;
+    newScanList.Scans.push_back(newScan);
+    currentScanNumber++;
+    QMessageBox msgBox;
+    msgBox.setText("Information.");
+    msgBox.setInformativeText("Do you want add a config file?");
+    QPushButton *yes = msgBox.addButton(tr("&Yes"), QMessageBox::ActionRole);
+    QPushButton *no = msgBox.addButton(tr("&No"), QMessageBox::ActionRole);
+    msgBox.exec();
+    //if(msgBox.clickedButton() == yes)
+        //MainWindow::createLogData();
+    MainWindow::changeState(ScanState); 
     ui->progressBar->show();
     newScan.finPos = ui->setTargetPosition->text().toDouble();
     newScan.startPos = ui->setStartPosition->text().toDouble();
@@ -396,7 +466,7 @@ void MainWindow::on_scanButton_clicked()
 
         //Hier muss die Datenauswertung hinein
         //Für debugzwecke???FEHLT NOCH???
-        usleep(50);
+        usleep(5);
         //Muss ebenfalls noch verbessert werden
         if((int)(newScan.finPos*100-newScan.startPos*100)%i == 0)
         {
@@ -453,28 +523,90 @@ void MainWindow::reload_data()
     ui->dispYValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[1]);
     ui->dispZValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[2]);
     ui->scanName->setText(newScanList.Scans[currentScanNumber-1].scanName);
+    ui->logfileName->setText(newScanList.Scans[currentScanNumber-1].log.name);
+    ui->laserPower->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.laserIntensity));
+    ui->slitWidth->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.slitWidth));
+    ui->countNumber->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.countNumber));
+    ui->sensitivity->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.sensitivity));
 }
 
 void MainWindow::on_stepBackMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    bool signal;
-    MonoNed(1, signal);
+    MonoNed(1, newSpectrometer.MonoPos);
 }
 
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    bool signal;
-    MonoOpp(1, signal);
+    MonoOpp(1, newSpectrometer.MonoPos);
 }
 
 void MainWindow::on_mvButton_2_clicked()
 {
-    bool signal;
     //CHECK IF STOP NOT HERE???
-    if(ui->moveData->text().toInt() < 0)
-        MonoNed(ui->moveData->text().toInt()*-1, signal);
+    moveToTarget(ui->moveData->text().toDouble(), newSpectrometer.MonoPos);
+}
+
+//Muss noch verbessert werden, funktioniert noch nicht
+//void MainWindow::customContextMenuRequested(const QPoint &pos)
+//{
+////    QModelIndex index=ui->qwtPlot->indexAt(pos);
+
+//    QMenu *menu=new QMenu(this);
+//    menu->addAction(new QAction("Action 1", this));
+//    menu->addAction(new QAction("Action 2", this));
+//    menu->addAction(new QAction("Action 3", this));
+//    //menu->popup(ui->qwtPlot->viewport()->mapToGlobal(pos));
+//}
+
+void MainWindow::on_logButton_clicked()
+{
+    if(newScanList.Scans.isEmpty())
+    {
+        QMessageBox::information(this, "Error", "No scan is currently loaded!");
+        return;
+    }
+    if(newScanList.Scans[currentScanNumber-1].log.logfileSet)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Error");
+        msgBox.setInformativeText("There exists already a logfile for this scan. Do you want to replace this with a new one?");
+        QPushButton *replace = msgBox.addButton(tr("&Replace"), QMessageBox::ActionRole);
+        QPushButton *cancel = msgBox.addButton(tr("&Cancel"), QMessageBox::ActionRole);
+        //msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard);
+        //msgBox.setDefaultButton(QMessageBox::Discard);
+        msgBox.exec();
+        if(msgBox.clickedButton() == cancel)
+            return;
+    }
     else
-        MonoOpp(ui->moveData->text().toInt(), signal);
+    {
+        newScanList.Scans[currentScanNumber-1].log.countNumber = ui->countNumber->text().toDouble();
+        newScanList.Scans[currentScanNumber-1].log.laserIntensity = ui->laserPower->text().toDouble();
+        newScanList.Scans[currentScanNumber-1].log.sensitivity = ui->sensitivity->text().toDouble();
+        newScanList.Scans[currentScanNumber-1].log.slitWidth = ui->slitWidth->text().toDouble();
+        newScanList.Scans[currentScanNumber-1].log.name = ui->logfileName->text();
+        newScanList.Scans[currentScanNumber-1].log.logfileSet = true;
+    }
+    ui->gridTabWidget->setCurrentIndex(0);
+}
+
+void MainWindow::createLogData()
+{
+    ui->gridTabWidget->setCurrentIndex(2);
+//    if(ui->gridTabWidget->currentIndex() == 0)
+//        return;
+}
+
+void MainWindow::loadConfig()
+{
+    QString filename = "Config.txt";
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::information(0, "error", file.errorString());
+        return;
+    }
+    QTextStream in(&file);
+    in >> newSpectrometer.MonoPos;
 }

@@ -13,7 +13,7 @@
 #define StepTime 20
 
 
-void MonoOpp(const double step, bool &signal);
-void MonoNed(const double step, bool &signal);
-void MonoInit(const double MonoPos, bool &signal);
+void MonoOpp(const qreal step, qreal &MonoPos);
+void MonoNed(const qreal step, qreal &MonoPos);
+void moveToTarget(const double &NewMonoPos, qreal &MonoPos);
 
