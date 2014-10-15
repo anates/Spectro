@@ -39,13 +39,9 @@ void WaitFor(char letter)
 		std::cin >> input;
 }
 
-void Beep(unsigned int time)
+void Beep(void)
 {
-#ifdef WIN32
-	Beep(443, time);
-#else
 	std::cout << '\a';
-#endif
 }
 
 void Readword(std::string &Name)

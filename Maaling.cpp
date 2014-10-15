@@ -1,6 +1,58 @@
-#include "Globale.h"
+//#include "Globale.h"
 
+//int Read_DPC(void)
+//{
+//    int Inhibit = 0x0, Enable = 0x4;
+//    unsigned char Flag = 0, Highbytes = 0, Lowbytes = 0;
 
+//    unsigned char Digit[4] = {0, 0, 0, 0};
+
+//    //Port[Flagport] : = Enable;//Flagport muss angepasst werden
+
+//    //{ Waiting till bit 7 is on high : }
+//    //REPEAT Flag : = PORT[Flagport] UNTIL((Flag AND $80) > 0);
+//    //{ Waiting till bit 7 is low again}
+//    //REPEAT Flag : = PORT[Flagport] UNTIL((Flag AND $80) = 0);
+
+//    //Port[Flagport] : = Inhibit;
+
+//    //{ Read data port }
+//    //Highbytes: = Port[Highport]; Ports und Auslesevorgang muss angepasst werden
+//    //Lowbytes: = Port[Lowport];
+
+//    //Port[Flagport] : = Enable;
+
+//    //{ convert it into a decimal number }
+//    //Hier muss ebenfalls noch angepasst werden
+//    Digit[3] = Highbytes / 0x10;
+//    Digit[2] = Highbytes % 0x10;
+//    Digit[1] = Lowbytes / 0x10;
+//    Digit[0] = Lowbytes % 0x10;
+
+//    //{ Hardcoding to repair a particular data transfer error : }
+//    if(Digit[3] > 7)
+//        Digit[3] = 0;
+
+//    return Digit[3] * 1000 + Digit[2] * 100 + Digit[1] * 10 + Digit[0];
+//}
+
+//class ReadDPC: public QThread
+//{
+//public:
+//    void run();
+//signals:
+//    void currentCount(int counts);
+//};
+
+//void ReadDPC::run()
+//{
+//    while(1)
+//    {
+//        usleep(50);
+//        int counts = Read_DPC();
+//        emit currentCount(counts);
+//    }
+//}
 /*************************************************************
 *             ***  FIL - BESKRIVELSE  ***                      *
 *                                                            *

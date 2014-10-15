@@ -1,8 +1,10 @@
-#ifndef COMPROC
-#include "COM_PROC.h"
-#endif
+//#ifndef COMPROC
+//#include "COM_PROC.h"
+//#endif
 
-#define MONOKROM
+//#define MONOKROM
+
+
 
 #define Ned '0x0'
 #define Step_Ned '0x1'
@@ -13,7 +15,7 @@
 #define StepTime 20
 
 
-void MonoOpp(const qreal step, qreal &MonoPos);
-void MonoNed(const qreal step, qreal &MonoPos);
-void moveToTarget(const double &NewMonoPos, qreal &MonoPos);
+
+
+
 

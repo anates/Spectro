@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     Raman.cpp
 
 HEADERS  += mainwindow.h \
-    TPDECL.h \
     Raman.h \
     Monokrom.h \
     Maaling.h \

@@ -14,7 +14,21 @@
 *                                                            *
 *************************************************************/
 
-#include "Globale.h"
+#include "add_functions.h"
+
+//Some definitions, bad style, but idc at the moment
+#define Ned '0x0'
+#define Step_Ned '0x1'
+#define Opp '0x2'
+#define Step_Opp '0x3'
+
+#define MonoMask '0xF8'
+#define StepTime 20
+
+#define MaxMonoPos 19438.2             // Monokromator konstanter
+#define MinMonoPos -10000
+#define MonoFaktor 0.0048            // Enhetssteppet er 0.0048 cm - 1
+//
 
 /*************************************************************
 *                                                            *

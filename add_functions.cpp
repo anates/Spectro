@@ -155,6 +155,7 @@ void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<qreal, qreal>
         outdata[indata[i].first] = indata[i].second;
     }
 }
+
 int Read_DPC(void)
 {
     int Inhibit = 0x0, Enable = 0x4;
@@ -189,4 +190,44 @@ int Read_DPC(void)
         Digit[3] = 0;
 
     return Digit[3] * 1000 + Digit[2] * 100 + Digit[1] * 10 + Digit[0];
+}
+
+void DPC::run()
+{
+    /*while(1)
+    {
+        usleep(50);
+        int counts = Read_DPC();
+        emit currentCount(counts);
+    }*/
+}
+
+qreal runScan(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)
+{
+    int steps = 0;
+    qreal MonoPos = MonoPosOrig;
+    if(speed > fabs(stop - start))
+        steps = 1;
+    else
+        steps = (int)(fabs(stop-start)/speed) + 1;
+    for(int i = 0; i < steps; i++)
+        direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
+    return MonoPos;
+}
+
+void scanner::run(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)
+{
+    int steps = 0;
+    qreal MonoPos = MonoPosOrig;
+    if(speed > fabs(stop - start))
+        steps = 1;
+    else
+        steps = (int)(fabs(stop-start)/speed) + 1;
+    for(int i = 0; i < steps; i++)
+    {
+        //For debug disabled
+        //direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
+        usleep(5000);
+        emit scanner::currentStatus(((qreal)(i)/steps)*100);
+    }
 }

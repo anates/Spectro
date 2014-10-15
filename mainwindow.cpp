@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     MainWindow::polarizerSettings.resize(3);
+    //MainWindow::loadConfig();//Disabled for debug after there is no spectrometer connected
     createActions();
     createMenus();
     ui->loadGenericButton->setToolTip(tr("Load scan from a file"));
@@ -27,6 +28,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setValue(0);
     MainWindow::setWindowTitle("");
     ui->gridTabWidget->setCurrentIndex(0);
+
+    DPC *newDPC = new DPC;
+    connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
+    connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
+    newDPC->run();
+
+    QString myStyleSheet = QString(" QProgressBar::chunk { background: green; }");
+    QString s = ui->progressBar->styleSheet().append(myStyleSheet);
+    ui->progressBar->setStyleSheet(s);
     //DataProcessingThread dataProcessor;
     //connect(dataProcessor, SIGNAL(dataProcessor.currentCount(int)), ui->photoCounter, SLOT(ui->photoCounter->setText(QString)));
     //dataProcessor.start();
@@ -38,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    MainWindow::writeConfig();
     delete ui;
 }
 
@@ -459,24 +470,33 @@ void MainWindow::on_scanButton_clicked()
     newScan.startPos = ui->setStartPosition->text().toDouble();
     newScan.scanSpeed = ui->setScanSpeed->text().toDouble();
     newScan.scanName = ui->scanName->text();
-    int counter = 0;
-    for(int i = (ui->setStartPosition->text().toDouble()*100); i < (ui->setTargetPosition->text().toDouble()*100); i++)
-    {
-        //MonoOpp(1, signal);
+    //int counter = 0;
+//    for(int i = (ui->setStartPosition->text().toDouble()*100); i < (ui->setTargetPosition->text().toDouble()*100); i++)
+//    {
+//        //MonoOpp(1, signal);
 
-        //Hier muss die Datenauswertung hinein
-        //Für debugzwecke???FEHLT NOCH???
-        usleep(5);
-        //Muss ebenfalls noch verbessert werden
-        if((int)(newScan.finPos*100-newScan.startPos*100)%i == 0)
-        {
-            ui->progressBar->setValue(counter);
-            counter++;
-        }
-    }
+//        //Hier muss die Datenauswertung hinein
+//        //Für debugzwecke???FEHLT NOCH???
+//        usleep(5);
+//        //Muss ebenfalls noch verbessert werden
+//        if((int)(newScan.finPos*100-newScan.startPos*100)%i == 0)
+//        {
+//            ui->progressBar->setValue(counter);
+//            counter++;
+//        }
+//    }
+    scanner *newScanner = new scanner;
+    connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
+    connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
+    newScanner->run(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.MonoPos, (newScan.finPos-newScan.startPos)>0?true:false);
     MainWindow::changeState(EditState);
     ui->progressBar->hide();
     //Analyze(MainWindow::newScanList);
+}
+
+void MainWindow::CurrentScanStatus(qreal status)
+{
+    ui->progressBar->setValue((int)(status));
 }
 
 void MainWindow::on_LastScan_clicked()
@@ -608,5 +628,26 @@ void MainWindow::loadConfig()
         return;
     }
     QTextStream in(&file);
-    in >> newSpectrometer.MonoPos;
+    QString monoPos;
+    in >> monoPos;
+    newSpectrometer.MonoPos = monoPos.toDouble();
+}
+
+void MainWindow::oncurrentCount(int counts)
+{
+    ui->photoCounter->setText(QString::number(counts));
+}
+
+void MainWindow::writeConfig()
+{
+    QString filename = "Config.txt";
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::information(0, "Error", file.errorString());
+        return;
+    }
+    QTextStream out(&file);
+    out << newSpectrometer.MonoPos;
+    file.close();
 }

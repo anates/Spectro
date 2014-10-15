@@ -1,8 +1,24 @@
 #ifndef ADD_FUNCTIONS_H
 #define ADD_FUNCTIONS_H
-#include <iostream>
-#include <cmath>
+
+#include <cstring>
+#include <stdio.h>
+#include <string>
 #include <fstream>
+#include <sstream>
+#include <stdexcept>
+#include <streambuf>
+#include <vector>
+#include <iostream>
+#include <cstdlib>
+#include <termios.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <chrono>
+#include <thread>
+
+#include <cmath>
+
 #include <QMainWindow>
 #include <QMap>
 #include <QWidget>
@@ -10,9 +26,9 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QDate>
-#include <sstream>
+#include <QThread>
 
-int read_DPC(void);
+//int read_DPC(void);
 
 enum AveMode{ NoAverage, Point, Intervall };
 
@@ -58,27 +74,34 @@ struct Spectrometer
     //Something to add?
 };
 
-//class DataProcessingThread : public QThread
-//{
-//public:
-//    void run();
-//signals:
-//    void currentCount(int);
-//};
-
-//void DataProcessingThread::run()
-//{
-//    while(1)
-//    {
-//        usleep(50);
-//        emit currentCount(read_DPC());
-//    }
-//}
-
+int Read_DPC(void);
 void read_unformatted_file(Scan &Data, const QString &fileName);
 void write_unformatted_file(const Scan &Data, QString fileName);
 void write_log_file(const Scan &Data, QString fileName);
 void splitToDoubles(QPair<double, double> &valuePair, QString input);
 void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<qreal, qreal> &outdata);
+
+//New inserted from Monokrom
+void MonoOpp(const qreal step, qreal &MonoPos);
+void MonoNed(const qreal step, qreal &MonoPos);
+void moveToTarget(const double &NewMonoPos, qreal &MonoPos);
+
+class DPC: public QThread
+{
+    Q_OBJECT
+public:
+    void run();
+signals:
+    void currentCount(int);
+};
+
+class scanner: public QThread
+{
+    Q_OBJECT
+public:
+    void run(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction);
+signals:
+    void currentStatus(qreal);
+};
 
 #endif // ADD_FUNCTIONS_H

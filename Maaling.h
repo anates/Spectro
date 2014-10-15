@@ -1,3 +1,12 @@
-#include "Globale.h"
+//#include "Globale.h"
+#include <QThread>
 
-void RecordSpectrum(void);
+//int Read_DPC(void);
+
+class ReadDPC: public QThread
+{
+public:
+    void run();
+signals:
+    void currentCount(int counts);
+};

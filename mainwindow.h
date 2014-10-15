@@ -9,8 +9,8 @@
 #include <qwt_plot_grid.h>
 #include <QThread>
 #include "Globale.h"
+//#include "Maaling.h"
 //#include "add_functions.h"
-//#include "Globale.h"
 
 class QPushButton;
 class QLabel;
@@ -33,7 +33,8 @@ public:
     ~MainWindow();
     
 public slots:
-     //void customMenuRequested(QPoint pos);
+     void oncurrentCount(int counts);
+     void CurrentScanStatus(qreal status);
 
 private slots:
     void on_loadGenericButton_clicked();
@@ -79,6 +80,8 @@ private slots:
     void createLogData();
 
     void loadConfig();
+
+    void writeConfig();
 
 private:
 
