@@ -194,30 +194,25 @@ int Read_DPC(void)
 
 void DPC::run()
 {
-    /*while(1)
+    int counts = 0, old_counts = 0;
+    qDebug() << thread() << currentThread();
+    while(1)
     {
-        usleep(50);
-        int counts = Read_DPC();
-        emit currentCount(counts);
-    }*/
+        msleep(50);
+        counts = 50;//Read_DPC();
+        if(counts != old_counts)
+        {
+            emit currentCount(counts);
+            old_counts = counts;
+        }
+
+    }
 }
 
 qreal runScan(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)
 {
     int steps = 0;
-    qreal MonoPos = MonoPosOrig;
-    if(speed > fabs(stop - start))
-        steps = 1;
-    else
-        steps = (int)(fabs(stop-start)/speed) + 1;
-    for(int i = 0; i < steps; i++)
-        direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
-    return MonoPos;
-}
-
-void scanner::run(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)
-{
-    int steps = 0;
+    qreal currentCounts = 0;
     qreal MonoPos = MonoPosOrig;
     if(speed > fabs(stop - start))
         steps = 1;
@@ -225,9 +220,28 @@ void scanner::run(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool 
         steps = (int)(fabs(stop-start)/speed) + 1;
     for(int i = 0; i < steps; i++)
     {
-        //For debug disabled
-        //direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
-        usleep(5000);
+        direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
+        currentCounts = Read_DPC();
+    }
+    return MonoPos;
+}
+
+void scanner::start(qreal start, qreal stop, qreal speed, qreal &MonoPosOrig, bool direction)
+{
+    int steps = 0;
+    qreal MonoPos = MonoPosOrig;
+    qDebug() << thread() << currentThread();
+    qreal currentCount = 0;
+    if(speed > fabs(stop - start))
+        steps = 1;
+    else
+        steps = (int)(fabs(stop-start)/speed) + 1;
+    for(int i = 0; i < steps; i++)
+    {
+        //For debug disabled//Not anymore
+        direction?1:0;//MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
+        currentCount = Read_DPC();
+        usleep(50000);//For Debug
         emit scanner::currentStatus(((qreal)(i)/steps)*100);
     }
 }

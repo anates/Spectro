@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     MainWindow::polarizerSettings.resize(3);
-    //MainWindow::loadConfig();//Disabled for debug after there is no spectrometer connected
+    MainWindow::loadConfig();
     createActions();
     createMenus();
     ui->loadGenericButton->setToolTip(tr("Load scan from a file"));
@@ -29,14 +29,24 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::setWindowTitle("");
     ui->gridTabWidget->setCurrentIndex(0);
 
-    DPC *newDPC = new DPC;
+    ui->currentPosition->setReadOnly(true);
+    ui->currentSpeed->setReadOnly(true);
+    ui->currentWaveNumber->setReadOnly(true);
+    ui->photoCounter->setReadOnly(true);
+
+    MainWindow::newDPC = new DPC;
     connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
     connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
-    newDPC->run();
+
+    qDebug() << QThread::currentThread() << "constructor";
 
     QString myStyleSheet = QString(" QProgressBar::chunk { background: green; }");
     QString s = ui->progressBar->styleSheet().append(myStyleSheet);
     ui->progressBar->setStyleSheet(s);
+
+    ui->currentPosition->setText(QString::number(newSpectrometer.MonoPos));
+    ui->currentSpeed->setText(QString::number(newSpectrometer.MonoSpeed));
+
     //DataProcessingThread dataProcessor;
     //connect(dataProcessor, SIGNAL(dataProcessor.currentCount(int)), ui->photoCounter, SLOT(ui->photoCounter->setText(QString)));
     //dataProcessor.start();
@@ -488,7 +498,7 @@ void MainWindow::on_scanButton_clicked()
     scanner *newScanner = new scanner;
     connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
     connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
-    newScanner->run(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.MonoPos, (newScan.finPos-newScan.startPos)>0?true:false);
+    newScanner->start(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.MonoPos, (newScan.finPos-newScan.startPos)>0?true:false);
     MainWindow::changeState(EditState);
     ui->progressBar->hide();
     //Analyze(MainWindow::newScanList);
@@ -548,6 +558,9 @@ void MainWindow::reload_data()
     ui->slitWidth->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.slitWidth));
     ui->countNumber->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.countNumber));
     ui->sensitivity->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.sensitivity));
+    ui->currentPosition->setText(QString::number(newSpectrometer.MonoPos));
+    ui->currentSpeed->setText(QString::number(newSpectrometer.MonoSpeed));
+    ui->currentWaveNumber->setText("Muss berechnet werden");
 }
 
 void MainWindow::on_stepBackMono_clicked()
@@ -564,8 +577,10 @@ void MainWindow::on_stepForwardMono_clicked()
 
 void MainWindow::on_mvButton_2_clicked()
 {
-    //CHECK IF STOP NOT HERE???
-    moveToTarget(ui->moveData->text().toDouble(), newSpectrometer.MonoPos);
+    if(ui->moveData->text().toDouble() < 0)
+        MonoNed(ui->moveData->text().toDouble(), newSpectrometer.MonoPos);
+    else
+        MonoOpp(ui->moveData->text().toDouble(), newSpectrometer.MonoPos);
 }
 
 //Muss noch verbessert werden, funktioniert noch nicht
@@ -628,9 +643,11 @@ void MainWindow::loadConfig()
         return;
     }
     QTextStream in(&file);
-    QString monoPos;
+    QString monoPos, monoSpeed;
     in >> monoPos;
+    in >> monoSpeed;
     newSpectrometer.MonoPos = monoPos.toDouble();
+    newSpectrometer.MonoSpeed = monoSpeed.toDouble();
 }
 
 void MainWindow::oncurrentCount(int counts)
@@ -648,6 +665,21 @@ void MainWindow::writeConfig()
         return;
     }
     QTextStream out(&file);
-    out << newSpectrometer.MonoPos;
+    out << newSpectrometer.MonoPos << '\n';
+    out << newSpectrometer.MonoSpeed;
     file.close();
+}
+
+void MainWindow::on_activateCounter_clicked()
+{
+    newDPC->start();
+}
+
+void MainWindow::on_execButton_2_clicked()
+{
+    if(ui->newPosition->text().toDouble() != newSpectrometer.MonoPos)
+        moveToTarget(ui->newPosition->text().toDouble(), newSpectrometer.MonoPos);
+    else if(ui->newSpeed->text().toDouble() != newSpectrometer.MonoSpeed)
+        newSpectrometer.MonoSpeed = ui->newSpeed->text().toDouble();
+    reload_data();
 }

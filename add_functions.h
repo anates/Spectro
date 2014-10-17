@@ -27,6 +27,7 @@
 #include <QTextStream>
 #include <QDate>
 #include <QThread>
+#include <QDebug>
 
 //int read_DPC(void);
 
@@ -70,7 +71,8 @@ struct ScanList
 
 struct Spectrometer
 {
-    qreal MonoPos;
+    qreal MonoPos = 0;
+    qreal MonoSpeed = 0;
     //Something to add?
 };
 
@@ -99,7 +101,7 @@ class scanner: public QThread
 {
     Q_OBJECT
 public:
-    void run(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction);
+    void start(qreal start, qreal stop, qreal speed, qreal &MonoPosOrig, bool direction);
 signals:
     void currentStatus(qreal);
 };

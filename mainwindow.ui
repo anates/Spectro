@@ -18,14 +18,14 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
         <string>Plot</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QwtPlot" name="qwtPlot"/>
@@ -170,9 +170,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="photoCounter"/>
-            </item>
             <item row="1" column="0">
              <widget class="Line" name="line">
               <property name="orientation">
@@ -187,11 +184,25 @@
               </property>
              </widget>
             </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLineEdit" name="photoCounter"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="activateCounter">
+                <property name="text">
+                 <string>Activate Counter</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
            </layout>
           </item>
          </layout>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QProgressBar" name="progressBar">
           <property name="value">
            <number>24</number>
@@ -222,14 +233,14 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_10">
+           <widget class="QLineEdit" name="currentWaveNumber">
             <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit_8">
+           <widget class="QLineEdit" name="currentSpeed">
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -243,7 +254,7 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLineEdit" name="lineEdit_12"/>
+           <widget class="QLineEdit" name="newPosition"/>
           </item>
           <item row="4" column="2">
            <widget class="QPushButton" name="execButton_2">
@@ -260,10 +271,10 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLineEdit" name="lineEdit_13"/>
+           <widget class="QLineEdit" name="newWaveNumber"/>
           </item>
           <item row="3" column="2">
-           <widget class="QLineEdit" name="lineEdit_9"/>
+           <widget class="QLineEdit" name="newSpeed"/>
           </item>
           <item row="5" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -280,7 +291,7 @@
            </layout>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit_11">
+           <widget class="QLineEdit" name="currentPosition">
             <property name="readOnly">
              <bool>true</bool>
             </property>

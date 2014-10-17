@@ -83,6 +83,10 @@ private slots:
 
     void writeConfig();
 
+    void on_activateCounter_clicked();
+
+    void on_execButton_2_clicked();
+
 private:
 
     enum State {ScanState, EditState, MoveState};
@@ -115,7 +119,7 @@ private:
     QAction *saveGenericAct;
     QAction *saveGenericAll;
 
-
+    DPC *newDPC;
 };
 
 #endif // MAINWINDOW_H
