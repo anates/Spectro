@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qDebug() << QThread::currentThread() << "constructor";
 
-    QString myStyleSheet = QString(" QProgressBar::chunk { background: green; }");
+    QString myStyleSheet = QString("QProgressBar{ border: 2px solid black; border-radius: 5px; text-align: center} QProgressBar::chunk { background: green; width: 10px; margin: 0.5px}");
     QString s = ui->progressBar->styleSheet().append(myStyleSheet);
     ui->progressBar->setStyleSheet(s);
 
@@ -472,36 +472,65 @@ void MainWindow::on_scanButton_clicked()
     QPushButton *yes = msgBox.addButton(tr("&Yes"), QMessageBox::ActionRole);
     QPushButton *no = msgBox.addButton(tr("&No"), QMessageBox::ActionRole);
     msgBox.exec();
-    //if(msgBox.clickedButton() == yes)
-        //MainWindow::createLogData();
-    MainWindow::changeState(ScanState); 
+    if(msgBox.clickedButton() == yes)
+    {
+        QDialog logData;
+        QFormLayout logDataLayout(&logData);
+        QLabel *labelName = new QLabel;
+        QLabel *labelPower = new QLabel;
+        QLabel *labelSlit = new QLabel;
+        QLabel *labelSens = new QLabel;
+        QLabel *labelCount = new QLabel;
+        QLineEdit *lineName = new QLineEdit;
+        QLineEdit *linePower = new QLineEdit;
+        QLineEdit *lineSlit = new QLineEdit;
+        QLineEdit *lineSens = new QLineEdit;
+        QLineEdit *lineCount = new QLineEdit;
+        labelName->setText("Logfile Name:");
+        labelPower->setText("Power [mW]");
+        labelSlit->setText("Slitwidth [mm]:");
+        labelSens->setText("Sensitivity [counts/sec]:");
+        labelCount->setText("Counts:");
+        logDataLayout.addRow(labelName, lineName);
+        logDataLayout.addRow(labelPower, linePower);
+        logDataLayout.addRow(labelSlit, lineSlit);
+        logDataLayout.addRow(labelSens, lineSens);
+        logDataLayout.addRow(labelCount, lineCount);
+        QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &logData);
+        logDataLayout.addRow(&buttonBox);
+        QObject::connect(&buttonBox, SIGNAL(accepted()), &logData, SLOT(accept()));
+        QObject::connect(&buttonBox, SIGNAL(rejected()), &logData, SLOT(reject()));
+        if(logData.exec() == QDialog::Accepted)
+        {
+            newScanList.Scans[currentScanNumber-1].log.name = lineName->text();
+            newScanList.Scans[currentScanNumber-1].log.laserIntensity = linePower->text().toDouble();
+            newScanList.Scans[currentScanNumber-1].log.sensitivity = lineSens->text().toDouble();
+            newScanList.Scans[currentScanNumber-1].log.countNumber = lineCount->text().toDouble();
+            newScanList.Scans[currentScanNumber-1].log.slitWidth = lineSlit->text().toDouble();
+            newScanList.Scans[currentScanNumber-1].log.logfileSet = true;
+        }
+        else
+        {
+            newScanList.Scans[currentScanNumber-1].log.logfileSet = false;
+        }
+    }
     ui->progressBar->show();
+    ui->progressBar->setValue(1);
     newScan.finPos = ui->setTargetPosition->text().toDouble();
     newScan.startPos = ui->setStartPosition->text().toDouble();
     newScan.scanSpeed = ui->setScanSpeed->text().toDouble();
     newScan.scanName = ui->scanName->text();
-    //int counter = 0;
-//    for(int i = (ui->setStartPosition->text().toDouble()*100); i < (ui->setTargetPosition->text().toDouble()*100); i++)
-//    {
-//        //MonoOpp(1, signal);
-
-//        //Hier muss die Datenauswertung hinein
-//        //Für debugzwecke???FEHLT NOCH???
-//        usleep(5);
-//        //Muss ebenfalls noch verbessert werden
-//        if((int)(newScan.finPos*100-newScan.startPos*100)%i == 0)
-//        {
-//            ui->progressBar->setValue(counter);
-//            counter++;
-//        }
-//    }
-    scanner *newScanner = new scanner;
+    scanner *newScanner = new scanner(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.MonoPos, (newScan.finPos-newScan.startPos)>0?true:false);
     connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
     connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
-    newScanner->start(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.MonoPos, (newScan.finPos-newScan.startPos)>0?true:false);
-    MainWindow::changeState(EditState);
-    ui->progressBar->hide();
+    connect(newScanner, SIGNAL(finished()), this, SLOT(closeProgressBar()));
+    newScanner->start();
     //Analyze(MainWindow::newScanList);
+}
+
+void MainWindow::closeProgressBar()
+{
+    ui->progressBar->hide();
 }
 
 void MainWindow::CurrentScanStatus(qreal status)

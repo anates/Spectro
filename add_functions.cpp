@@ -226,16 +226,25 @@ qreal runScan(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool dire
     return MonoPos;
 }
 
-void scanner::start(qreal start, qreal stop, qreal speed, qreal &MonoPosOrig, bool direction)
+scanner::scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction)
+{
+    scanner::startpos = start_pos;
+    scanner::stoppos = stop_pos;
+    scanner::speed = _speed;
+    scanner::MonoPos = _MonoPosOrig;
+    scanner::direction = _direction;
+}
+
+void scanner::run()
 {
     int steps = 0;
-    qreal MonoPos = MonoPosOrig;
+    //qreal MonoPos = scanner::MonoPos;
     qDebug() << thread() << currentThread();
     qreal currentCount = 0;
-    if(speed > fabs(stop - start))
+    if(scanner::speed > fabs(scanner::stoppos - scanner::startpos))
         steps = 1;
     else
-        steps = (int)(fabs(stop-start)/speed) + 1;
+        steps = (int)(fabs(scanner::stoppos-scanner::startpos)/scanner::speed) + 1;
     for(int i = 0; i < steps; i++)
     {
         //For debug disabled//Not anymore

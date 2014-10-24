@@ -33,8 +33,10 @@ public:
     ~MainWindow();
     
 public slots:
-     void oncurrentCount(int counts);
-     void CurrentScanStatus(qreal status);
+    void oncurrentCount(int counts);
+    void CurrentScanStatus(qreal status);
+    void closeProgressBar();
+
 
 private slots:
     void on_loadGenericButton_clicked();

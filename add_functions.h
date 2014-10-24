@@ -100,8 +100,13 @@ signals:
 class scanner: public QThread
 {
     Q_OBJECT
+private:
+    qreal startpos, stoppos, speed;
+    qreal MonoPos;
+    bool direction;
 public:
-    void start(qreal start, qreal stop, qreal speed, qreal &MonoPosOrig, bool direction);
+    scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction);
+    void run();
 signals:
     void currentStatus(qreal);
 };
