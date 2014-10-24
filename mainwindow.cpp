@@ -383,6 +383,8 @@ void MainWindow::createMenus()
 
 void MainWindow::on_dispXValue_toggled(bool checked)
 {
+    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
+        return;
     if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
         newScanList.Scans[currentScanNumber-1].polSettings[0] = checked;
     else
@@ -395,6 +397,8 @@ void MainWindow::on_dispXValue_toggled(bool checked)
 
 void MainWindow::on_dispYValue_toggled(bool checked)
 {
+    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
+        return;
     if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
         newScanList.Scans[currentScanNumber-1].polSettings[1] = checked;
     else
@@ -407,6 +411,8 @@ void MainWindow::on_dispYValue_toggled(bool checked)
 
 void MainWindow::on_dispZValue_toggled(bool checked)
 {
+    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
+        return;
     if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
         newScanList.Scans[currentScanNumber-1].polSettings[2] = checked;
     else
