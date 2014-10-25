@@ -260,19 +260,32 @@ ScanList::ScanList()
     currentScan = -1;
 }
 
+void ScanList::addScan(Scan newScan)
+{
+    ScanList::Scans.push_back(newScan);
+    currentScan++;
+}
+
+void ScanList::dropScan(void)
+{
+    ScanList::Scans.remove(ScanList::currentScan);
+    currentScan = currentScan - 1;
+}
+
+int ScanList::getScanNumbers(void)
+{
+    return ScanList::Scans.size();
+}
+
 Scan ScanList::getCurrentScan(void)
 {
-    if(Scans.isEmpty())
-        return;
-    else
+    if(!Scans.isEmpty())
         return Scans[currentScan];
 }
 
 Scan ScanList::getNextScan(void)
 {
-    if(Scans.isEmpty())
-        return;
-    else
+    if(!Scans.isEmpty())
         if(ScanList::currentScan + 2 >= Scans.size())
         {
             currentScan = 0;
@@ -287,9 +300,7 @@ Scan ScanList::getNextScan(void)
 
 Scan ScanList::getLastScan(void)
 {
-    if(Scans.isEmpty())
-        return;
-    else
+    if(!Scans.isEmpty())
     {
         if(ScanList::currentScan == 0)
         {
@@ -304,11 +315,9 @@ Scan ScanList::getLastScan(void)
     }
 }
 
-Scan ScanList::getScan(qint32 ScanNumber)
+Scan & ScanList::getScan(qint32 ScanNumber)
 {
-    if(Scans.isEmpty())
-        return;
-    else
+    if(!Scans.isEmpty())
         if(ScanNumber >= 0 && ScanNumber < Scans.size())
             return Scans[ScanNumber];
 }
@@ -356,7 +365,7 @@ void Spectrometer::setMonoPos(qreal MonoPos)
     Spectrometer::MonoPos = MonoPos;
 }
 
-qreal Spectrometer::getMonoPos(void)
+qreal & Spectrometer::getMonoPos(void)
 {
     return Spectrometer::MonoPos;
 }
@@ -366,7 +375,7 @@ void Spectrometer::setMonoSpeed(qreal MonoSpeed)
     Spectrometer::MonoSpeed = MonoSpeed;
 }
 
-qreal Spectrometer::getMonoSpeed(void)
+qreal & Spectrometer::getMonoSpeed(void)
 {
     return Spectrometer::MonoSpeed;
 }

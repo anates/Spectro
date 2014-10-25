@@ -63,8 +63,9 @@ struct Scan
     LogFile log;
 };
 
-class ScanList
+class ScanList: public QObject
 {
+    Q_OBJECT
 private:
     QVector<Scan> Scans;
     QString fileName;
@@ -72,10 +73,13 @@ private:
     qint32 currentScan;
 public:
     ScanList();
+    void addScan(Scan newScan);
+    void dropScan(void);
+    int getScanNumbers(void);
     Scan getCurrentScan(void);
     Scan getNextScan(void);
     Scan getLastScan(void);
-    Scan getScan(qint32 ScanNumber);
+    Scan & getScan(qint32 ScanNumber);
     void setFileName(QString fileName);
     QString getFileName(void);
     QVector<QString> getFileNames(void);
@@ -83,8 +87,9 @@ public:
     void deleteFileName(QString fileName);
 };
 
-class Spectrometer
+class Spectrometer: public QObject
 {
+    Q_OBJECT
 private:
     qreal MonoPos = 0;
     qreal MonoSpeed = 0;
@@ -96,9 +101,9 @@ public slots:
 public:
     Spectrometer();
     void setMonoPos(qreal MonoPos);
-    qreal getMonoPos(void);
+    qreal & getMonoPos(void);
     void setMonoSpeed(qreal MonoSpeed);
-    qreal getMonoSpeed(void);
+    qreal & getMonoSpeed(void);
     void setPolarizers(QVector<bool> polarizers);
 
     bool getPolarizers(Polarizer pol);

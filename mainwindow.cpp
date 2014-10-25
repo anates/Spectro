@@ -44,8 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QString s = ui->progressBar->styleSheet().append(myStyleSheet);
     ui->progressBar->setStyleSheet(s);
 
-    ui->currentPosition->setText(QString::number(newSpectrometer.MonoPos));
-    ui->currentSpeed->setText(QString::number(newSpectrometer.MonoSpeed));
+    ui->currentPosition->setText(QString::number(newSpectrometer.getMonoPos()));
+    ui->currentSpeed->setText(QString::number(newSpectrometer.getMonoSpeed()));
 
     //DataProcessingThread dataProcessor;
     //connect(dataProcessor, SIGNAL(dataProcessor.currentCount(int)), ui->photoCounter, SLOT(ui->photoCounter->setText(QString)));
@@ -84,7 +84,7 @@ void MainWindow::replot()
 
     QVector<double> x, y;
     MainWindow::Scandata.clear();
-    vectorToMap(newScanList.Scans[currentScanNumber-1].values.Data/*currentScan.values.Data*/, MainWindow::Scandata);
+    vectorToMap(newScanList.getScan(currentScanNumber-1).values.Data/*currentScan.values.Data*/, MainWindow::Scandata);
     x = QVector<double>::fromList(Scandata.keys());
     y = QVector<double>::fromList(Scandata.values());
 
@@ -162,9 +162,9 @@ void MainWindow::open()
         else
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
-            MainWindow::newScanList.Scans.push_back(newScan);
-            MainWindow::newScanList.scanFileNames.push_back(fileName);
-            if(MainWindow::newScanList.Scans.size() > 1)
+            MainWindow::newScanList.addScan(newScan);
+            MainWindow::newScanList.addFileName(fileName);
+            if(MainWindow::newScanList.getScanNumbers() > 1)
             {
                 ui->LastScan->show();
                 ui->NextScan->show();
@@ -172,7 +172,7 @@ void MainWindow::open()
                 ui->selectScanLabel->show();
                 ui->selectScanBox->show();
             }
-            currentScan = newScanList.Scans[currentScanNumber];
+            currentScan = newScanList.getScan(currentScanNumber);
             currentScanNumber++;
             ui->selectScanBox->addItem(currentScan.scanName);
             //QMessageBox::information(this, tr("Info"),QString::number(currentScanNumber) + " " + QString::number(newScanList.Scans.size()));
@@ -208,9 +208,9 @@ void MainWindow::openGeneric()
         else
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
-            MainWindow::newScanList.Scans.push_back(newScan);
-            MainWindow::newScanList.scanFileNames.push_back(fileName);
-            if(MainWindow::newScanList.Scans.size() > 1)
+            MainWindow::newScanList.addScan(newScan);
+            MainWindow::newScanList.addFileName(fileName);
+            if(MainWindow::newScanList.getScanNumbers() > 1)
             {
                 ui->LastScan->show();
                 ui->NextScan->show();
@@ -218,7 +218,7 @@ void MainWindow::openGeneric()
                 ui->selectScanLabel->show();
                 ui->selectScanBox->show();
             }
-            currentScan = newScanList.Scans[currentScanNumber];
+            currentScan = newScanList.getScan(currentScanNumber);
             currentScanNumber++;
             ui->selectScanBox->addItem(currentScan.scanName);
             MainWindow::setWindowTitle(fileName);
@@ -238,7 +238,7 @@ void MainWindow::openGeneric()
 
 void MainWindow::save()
 {
-    if(newScanList.Scans.isEmpty())
+    if(newScanList.getScanNumbers() == 0)
     {
         QMessageBox::information(this, tr("Error"), tr("Sorry, no data loaded!"));
         return;
@@ -260,20 +260,20 @@ void MainWindow::save()
         out << (quint32)0x80081E5;
         out << (qint32)123;
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
-        if(!MainWindow::newScanList.Scans.isEmpty())
+        if(MainWindow::newScanList.getScanNumbers()!=0)
         {
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].scanName;
-            qint32 monoSetting = (int)(MainWindow::newScanList.Scans[currentScanNumber-1].polSettings[0]) + (int)(MainWindow::newScanList.Scans[0].polSettings[1])*2 + (int)(MainWindow::newScanList.Scans[0].polSettings[2])*4;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).scanName;
+            qint32 monoSetting = (int)(MainWindow::newScanList.getScan(currentScanNumber-1).polSettings[0]) + (int)(MainWindow::newScanList.getScan(currentScanNumber-1).polSettings[1])*2 + (int)(MainWindow::newScanList.getScan(currentScanNumber-1).polSettings[2])*4;
             out << monoSetting;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].startPos;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].finPos;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].scanSpeed;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].values.Data;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.countNumber;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.laserIntensity;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.name;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.sensitivity;
-            out << MainWindow::newScanList.Scans[currentScanNumber-1].log.slitWidth;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).startPos;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).finPos;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).scanSpeed;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).values.Data;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).log.countNumber;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).log.laserIntensity;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).log.name;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).log.sensitivity;
+            out << MainWindow::newScanList.getScan(currentScanNumber-1).log.slitWidth;
         }
         else
             QMessageBox::information(this, tr("No scan data"),tr("No scan opened!"));
@@ -283,7 +283,7 @@ void MainWindow::save()
 void MainWindow::saveGeneric()
 {
 
-    if(newScanList.Scans.isEmpty())
+    if(newScanList.getScanNumbers() == 0)
     {
         QMessageBox::information(this,tr("Error!"), tr("No data loaded!"));
         return;
@@ -310,25 +310,25 @@ void MainWindow::saveGeneric()
                 if(msgBox.clickedButton() == notsave)
                     saveLogFile = false;
             if(ui->scanName->text() == "")
-                newScanList.Scans[currentScanNumber-1].scanName = fileName;
+                newScanList.getScan(currentScanNumber-1).scanName = fileName;
             else
-                newScanList.Scans[currentScanNumber-1].scanName = ui->scanName->text();
+                newScanList.getScan(currentScanNumber-1).scanName = ui->scanName->text();
             if(ui->setScanSpeed->text() != "")
-                newScanList.Scans[currentScanNumber-1].scanSpeed = ui->setScanSpeed->text().toDouble();
+                newScanList.getScan(currentScanNumber-1).scanSpeed = ui->setScanSpeed->text().toDouble();
             if(ui->setStartPosition->text() != "")
-                newScanList.Scans[currentScanNumber-1].startPos = ui->setStartPosition->text().toDouble();
+                newScanList.getScan(currentScanNumber-1).startPos = ui->setStartPosition->text().toDouble();
             if(ui->setTargetPosition->text() != "")
-                newScanList.Scans[currentScanNumber-1].finPos = ui->setTargetPosition->text().toDouble();
-            write_unformatted_file(newScanList.Scans[currentScanNumber-1]/*MainWindow::Scandata*/, fileName);
+                newScanList.getScan(currentScanNumber-1).finPos = ui->setTargetPosition->text().toDouble();
+            write_unformatted_file(newScanList.getScan(currentScanNumber-1)/*MainWindow::Scandata*/, fileName);
             if(saveLogFile)
-                write_log_file(newScanList.Scans[currentScanNumber-1], fileName);
+                write_log_file(newScanList.getScan(currentScanNumber-1), fileName);
         }
     }
 }
 
 void MainWindow::saveGenericAllPlots()
 {
-    if(newScanList.Scans.isEmpty())
+    if(newScanList.getScanNumbers() == 0)
     {
         QMessageBox::information(this, tr("Error"), tr("Sorry, no data loaded!"));
         return;
@@ -339,9 +339,9 @@ void MainWindow::saveGenericAllPlots()
         return;
     }
     else
-        for(int i = 0; i < newScanList.Scans.size(); i++)
+        for(int i = 0; i < newScanList.getScanNumbers(); i++)
         {
-            write_unformatted_file(newScanList.Scans[i], fileName + QString::number(i+1));
+            write_unformatted_file(newScanList.getScan(i), fileName + QString::number(i+1));
         }
 }
 
@@ -383,44 +383,45 @@ void MainWindow::createMenus()
 
 void MainWindow::on_dispXValue_toggled(bool checked)
 {
-    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
-        return;
-    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
-        newScanList.Scans[currentScanNumber-1].polSettings[0] = checked;
-    else
-    {
-        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
-        getch();
-        exit(-1);
-    };
+//    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
+//        return;
+//    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
+//        newScanList.Scans[currentScanNumber-1].polSettings[0] = checked;
+//    else
+//    {
+//        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+//        getch();
+//        exit(-1);
+//    };
+
 }
 
 void MainWindow::on_dispYValue_toggled(bool checked)
 {
-    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
-        return;
-    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
-        newScanList.Scans[currentScanNumber-1].polSettings[1] = checked;
-    else
-    {
-        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
-        getch();
-        exit(-1);
-    };
+//    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
+//        return;
+//    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
+//        newScanList.Scans[currentScanNumber-1].polSettings[1] = checked;
+//    else
+//    {
+//        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+//        getch();
+//        exit(-1);
+//    };
 }
 
 void MainWindow::on_dispZValue_toggled(bool checked)
 {
-    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
-        return;
-    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
-        newScanList.Scans[currentScanNumber-1].polSettings[2] = checked;
-    else
-    {
-        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
-        getch();
-        exit(-1);
-    };
+//    if(newScanList.Scans.isEmpty())//Temporäre Fehlerbehebung, ist aber nicht dauerhaft einsetzbar!
+//        return;
+//    if(newScanList.Scans[currentScanNumber-1].polSettings.size() == 3)
+//        newScanList.Scans[currentScanNumber-1].polSettings[2] = checked;
+//    else
+//    {
+//        QMessageBox::information(this, tr("Exceptional Error"), tr("Exceptional error happened, program is exiting."));
+//        getch();
+//        exit(-1);
+//    };
 }
 
 void MainWindow::on_gridTabWidget_currentChanged(int index)
@@ -462,7 +463,8 @@ void MainWindow::changeState(State newState)
     }
 }
 
-void MainWindow::on_scanButton_clicked()
+
+void MainWindow::on_scanButton_clicked()//Bullshit, da zuerst gespeichert wird, und dann die Daten eingetragen werden!
 {
     if(ui->setScanSpeed->text().isEmpty() || ui->setStartPosition->text().isEmpty() || ui->setTargetPosition->text().isEmpty() || ui->scanName->text().isEmpty())
     {
@@ -470,7 +472,7 @@ void MainWindow::on_scanButton_clicked()
         return;
     }
     struct Scan newScan;
-    newScanList.Scans.push_back(newScan);
+    newScanList.addScan(newScan);
     currentScanNumber++;
     QMessageBox msgBox;
     msgBox.setText("Information.");
@@ -508,16 +510,16 @@ void MainWindow::on_scanButton_clicked()
         QObject::connect(&buttonBox, SIGNAL(rejected()), &logData, SLOT(reject()));
         if(logData.exec() == QDialog::Accepted)
         {
-            newScanList.Scans[currentScanNumber-1].log.name = lineName->text();
-            newScanList.Scans[currentScanNumber-1].log.laserIntensity = linePower->text().toDouble();
-            newScanList.Scans[currentScanNumber-1].log.sensitivity = lineSens->text().toDouble();
-            newScanList.Scans[currentScanNumber-1].log.countNumber = lineCount->text().toDouble();
-            newScanList.Scans[currentScanNumber-1].log.slitWidth = lineSlit->text().toDouble();
-            newScanList.Scans[currentScanNumber-1].log.logfileSet = true;
+            newScanList.getScan(currentScanNumber-1).log.name = lineName->text();
+            newScanList.getScan(currentScanNumber-1).log.laserIntensity = linePower->text().toDouble();
+            newScanList.getScan(currentScanNumber-1).log.sensitivity = lineSens->text().toDouble();
+            newScanList.getScan(currentScanNumber-1).log.countNumber = lineCount->text().toDouble();
+            newScanList.getScan(currentScanNumber-1).log.slitWidth = lineSlit->text().toDouble();
+            newScanList.getScan(currentScanNumber-1).log.logfileSet = true;
         }
         else
         {
-            newScanList.Scans[currentScanNumber-1].log.logfileSet = false;
+            newScanList.getScan(currentScanNumber-1).log.logfileSet = false;
         }
     }
     ui->progressBar->show();
@@ -526,7 +528,7 @@ void MainWindow::on_scanButton_clicked()
     newScan.startPos = ui->setStartPosition->text().toDouble();
     newScan.scanSpeed = ui->setScanSpeed->text().toDouble();
     newScan.scanName = ui->scanName->text();
-    scanner *newScanner = new scanner(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.MonoPos, (newScan.finPos-newScan.startPos)>0?true:false);
+    scanner *newScanner = new scanner(newScan.startPos, newScan.finPos, newScan.scanSpeed, newSpectrometer.getMonoPos(), (newScan.finPos-newScan.startPos)>0?true:false);
     connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
     connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
     connect(newScanner, SIGNAL(finished()), this, SLOT(closeProgressBar()));
@@ -549,8 +551,8 @@ void MainWindow::on_LastScan_clicked()
     MainWindow::currentScan.values.Data.clear();
     MainWindow::replot();
     int tmpCurrentScanNumber = currentScanNumber - 1;
-    tmpCurrentScanNumber = (tmpCurrentScanNumber <= 0)?MainWindow::newScanList.Scans.size() - 1:tmpCurrentScanNumber-1;
-    MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
+    tmpCurrentScanNumber = (tmpCurrentScanNumber <= 0)?MainWindow::newScanList.getScanNumbers() - 1:tmpCurrentScanNumber-1;
+    MainWindow::currentScan = MainWindow::newScanList.getScan(tmpCurrentScanNumber);
     MainWindow::setWindowTitle(MainWindow::currentScan.scanName);
     currentScanNumber = tmpCurrentScanNumber + 1;
     MainWindow::replot();
@@ -561,8 +563,8 @@ void MainWindow::on_NextScan_clicked()
     MainWindow::currentScan.values.Data.clear();
     MainWindow::replot();
     int tmpCurrentScanNumber = currentScanNumber - 1;
-    tmpCurrentScanNumber = (tmpCurrentScanNumber >= newScanList.Scans.size()-1)?0:tmpCurrentScanNumber+1;
-    MainWindow::currentScan = MainWindow::newScanList.Scans[tmpCurrentScanNumber];
+    tmpCurrentScanNumber = (tmpCurrentScanNumber >= newScanList.getScanNumbers()-1)?0:tmpCurrentScanNumber+1;
+    MainWindow::currentScan = MainWindow::newScanList.getScan(tmpCurrentScanNumber);
     currentScanNumber = tmpCurrentScanNumber + 1;
     MainWindow::setWindowTitle(MainWindow::currentScan.scanName);
     MainWindow::replot();
@@ -581,41 +583,41 @@ void MainWindow::on_saveScan_clicked()
 
 void MainWindow::reload_data()
 {
-    ui->setScanSpeed->setText(QString::number(newScanList.Scans[currentScanNumber-1].scanSpeed));
-    ui->setStartPosition->setText(QString::number(newScanList.Scans[currentScanNumber-1].startPos));
-    ui->setTargetPosition->setText(QString::number(newScanList.Scans[currentScanNumber-1].finPos));
-    ui->dispXValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[0]);
-    ui->dispYValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[1]);
-    ui->dispZValue->setChecked(newScanList.Scans[currentScanNumber-1].polSettings[2]);
-    ui->scanName->setText(newScanList.Scans[currentScanNumber-1].scanName);
-    ui->logfileName->setText(newScanList.Scans[currentScanNumber-1].log.name);
-    ui->laserPower->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.laserIntensity));
-    ui->slitWidth->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.slitWidth));
-    ui->countNumber->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.countNumber));
-    ui->sensitivity->setText(QString::number(newScanList.Scans[currentScanNumber-1].log.sensitivity));
-    ui->currentPosition->setText(QString::number(newSpectrometer.MonoPos));
-    ui->currentSpeed->setText(QString::number(newSpectrometer.MonoSpeed));
+    ui->setScanSpeed->setText(QString::number(newScanList.getScan(currentScanNumber-1).scanSpeed));
+    ui->setStartPosition->setText(QString::number(newScanList.getScan(currentScanNumber-1).startPos));
+    ui->setTargetPosition->setText(QString::number(newScanList.getScan(currentScanNumber-1).finPos));
+    ui->dispXValue->setChecked(newScanList.getScan(currentScanNumber-1).polSettings[0]);
+    ui->dispYValue->setChecked(newScanList.getScan(currentScanNumber-1).polSettings[1]);
+    ui->dispZValue->setChecked(newScanList.getScan(currentScanNumber-1).polSettings[2]);
+    ui->scanName->setText(newScanList.getScan(currentScanNumber-1).scanName);
+    ui->logfileName->setText(newScanList.getScan(currentScanNumber-1).log.name);
+    ui->laserPower->setText(QString::number(newScanList.getScan(currentScanNumber-1).log.laserIntensity));
+    ui->slitWidth->setText(QString::number(newScanList.getScan(currentScanNumber-1).log.slitWidth));
+    ui->countNumber->setText(QString::number(newScanList.getScan(currentScanNumber-1).log.countNumber));
+    ui->sensitivity->setText(QString::number(newScanList.getScan(currentScanNumber-1).log.sensitivity));
+    ui->currentPosition->setText(QString::number(newSpectrometer.getMonoPos()));
+    ui->currentSpeed->setText(QString::number(newSpectrometer.getMonoSpeed()));
     ui->currentWaveNumber->setText("Muss berechnet werden");
 }
-
+//Hier müssen die Signale eingebaut werden, da in Threads ausgelagert wird
 void MainWindow::on_stepBackMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    MonoNed(1, newSpectrometer.MonoPos);
+    MonoNed(1, newSpectrometer.getMonoPos());
 }
 
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    MonoOpp(1, newSpectrometer.MonoPos);
+    MonoOpp(1, newSpectrometer.getMonoPos());
 }
 
 void MainWindow::on_mvButton_2_clicked()
 {
     if(ui->moveData->text().toDouble() < 0)
-        MonoNed(ui->moveData->text().toDouble(), newSpectrometer.MonoPos);
+        MonoNed(ui->moveData->text().toDouble(), newSpectrometer.getMonoPos());
     else
-        MonoOpp(ui->moveData->text().toDouble(), newSpectrometer.MonoPos);
+        MonoOpp(ui->moveData->text().toDouble(), newSpectrometer.getMonoPos());
 }
 
 //Muss noch verbessert werden, funktioniert noch nicht
@@ -632,12 +634,12 @@ void MainWindow::on_mvButton_2_clicked()
 
 void MainWindow::on_logButton_clicked()
 {
-    if(newScanList.Scans.isEmpty())
+    if(newScanList.getScanNumbers() == 0)
     {
         QMessageBox::information(this, "Error", "No scan is currently loaded!");
         return;
     }
-    if(newScanList.Scans[currentScanNumber-1].log.logfileSet)
+    if(newScanList.getScan(currentScanNumber-1).log.logfileSet)
     {
         QMessageBox msgBox;
         msgBox.setText("Error");
@@ -652,17 +654,17 @@ void MainWindow::on_logButton_clicked()
     }
     else
     {
-        newScanList.Scans[currentScanNumber-1].log.countNumber = ui->countNumber->text().toDouble();
-        newScanList.Scans[currentScanNumber-1].log.laserIntensity = ui->laserPower->text().toDouble();
-        newScanList.Scans[currentScanNumber-1].log.sensitivity = ui->sensitivity->text().toDouble();
-        newScanList.Scans[currentScanNumber-1].log.slitWidth = ui->slitWidth->text().toDouble();
-        newScanList.Scans[currentScanNumber-1].log.name = ui->logfileName->text();
-        newScanList.Scans[currentScanNumber-1].log.logfileSet = true;
+        newScanList.getScan(currentScanNumber-1).log.countNumber = ui->countNumber->text().toDouble();
+        newScanList.getScan(currentScanNumber-1).log.laserIntensity = ui->laserPower->text().toDouble();
+        newScanList.getScan(currentScanNumber-1).log.sensitivity = ui->sensitivity->text().toDouble();
+        newScanList.getScan(currentScanNumber-1).log.slitWidth = ui->slitWidth->text().toDouble();
+        newScanList.getScan(currentScanNumber-1).log.name = ui->logfileName->text();
+        newScanList.getScan(currentScanNumber-1).log.logfileSet = true;
     }
     ui->gridTabWidget->setCurrentIndex(0);
 }
 
-void MainWindow::createLogData()
+void MainWindow::createLogData()//Deprecated, kann raus
 {
     ui->gridTabWidget->setCurrentIndex(2);
 //    if(ui->gridTabWidget->currentIndex() == 0)
@@ -681,8 +683,8 @@ void MainWindow::loadConfig()
     QString monoPos, monoSpeed;
     in >> monoPos;
     in >> monoSpeed;
-    newSpectrometer.MonoPos = monoPos.toDouble();
-    newSpectrometer.MonoSpeed = monoSpeed.toDouble();
+    newSpectrometer.setMonoPos(monoPos.toDouble());
+    newSpectrometer.setMonoSpeed(monoSpeed.toDouble());
 }
 
 void MainWindow::oncurrentCount(int counts)
@@ -700,8 +702,8 @@ void MainWindow::writeConfig()
         return;
     }
     QTextStream out(&file);
-    out << newSpectrometer.MonoPos << '\n';
-    out << newSpectrometer.MonoSpeed;
+    out << newSpectrometer.getMonoPos() << '\n';
+    out << newSpectrometer.getMonoSpeed();
     file.close();
 }
 
@@ -712,9 +714,9 @@ void MainWindow::on_activateCounter_clicked()
 
 void MainWindow::on_execButton_2_clicked()
 {
-    if(ui->newPosition->text().toDouble() != newSpectrometer.MonoPos)
-        moveToTarget(ui->newPosition->text().toDouble(), newSpectrometer.MonoPos);
-    else if(ui->newSpeed->text().toDouble() != newSpectrometer.MonoSpeed)
-        newSpectrometer.MonoSpeed = ui->newSpeed->text().toDouble();
+    if(ui->newPosition->text().toDouble() != newSpectrometer.getMonoPos())
+        moveToTarget(ui->newPosition->text().toDouble(), newSpectrometer.getMonoPos());
+    else if(ui->newSpeed->text().toDouble() != newSpectrometer.getMonoSpeed())
+        newSpectrometer.setMonoSpeed(ui->newSpeed->text().toDouble());
     reload_data();
 }
