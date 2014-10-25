@@ -35,16 +35,18 @@ public:
 public slots:
     void oncurrentCount(int counts);
     void CurrentScanStatus(qreal status);
-    void closeProgressBar();
+    void closeProgressBar(void);
+    void scanIsFinished(void);
+    void addNewValue(qreal wNumber, qreal counts);
 
 signals:
     //Polarizer signals
-    void xPolarizerMoved(bool);
-    void yPolarizerMoved(bool);
-    void zPolarizerMoved(bool);
+    void xPolarizerMoved(Polarizer, bool);
+    void yPolarizerMoved(Polarizer, bool);
+    void zPolarizerMoved(Polarizer, bool);
     //Stepper signals
-    void MoveStepUp(qreal);
-    void MoveStepDown(qreal);
+    void MoveStepUp(qreal, qreal, bool);
+    void MoveStepDown(qreal, qreal, bool);
 
 private slots:
     void on_loadGenericButton_clicked();
@@ -112,9 +114,9 @@ private:
     QMap<qreal, qreal> Scandata;
     QVector<bool> polarizerSettings;
     ScanList newScanList;
-    struct Scan currentScan;
+    struct Scan tmpScan;
     int currentScanNumber;
-    struct Spectrometer newSpectrometer;
+    struct Spectrometer *newSpectrometer;
 
     QPen pen;
     QwtPlotCurve Curve;
@@ -129,6 +131,8 @@ private:
 
     DPC *newDPC;
     Spec_Control *newSpecControl;
+    QThread *SCThread;
+    scanner *newScanner;
 };
 
 #endif // MAINWINDOW_H

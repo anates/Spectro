@@ -209,22 +209,22 @@ void DPC::run()
     }
 }
 
-qreal runScan(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)
-{
-    int steps = 0;
-    qreal currentCounts = 0;
-    qreal MonoPos = MonoPosOrig;
-    if(speed > fabs(stop - start))
-        steps = 1;
-    else
-        steps = (int)(fabs(stop-start)/speed) + 1;
-    for(int i = 0; i < steps; i++)
-    {
-        direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
-        currentCounts = Read_DPC();
-    }
-    return MonoPos;
-}
+//qreal runScan(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)//deprecated, not used anymore
+//{
+//    int steps = 0;
+//    qreal currentCounts = 0;
+//    qreal MonoPos = MonoPosOrig;
+//    if(speed > fabs(stop - start))
+//        steps = 1;
+//    else
+//        steps = (int)(fabs(stop-start)/speed) + 1;
+//    for(int i = 0; i < steps; i++)
+//    {
+//        direction?MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
+//        currentCounts = Read_DPC();
+//    }
+//    return MonoPos;
+//}
 
 scanner::scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction)
 {
@@ -235,24 +235,27 @@ scanner::scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOr
     scanner::direction = _direction;
 }
 
-void scanner::run()//Has to be rewritten with Spec_Control
+void scanner::run()
 {
-    int steps = 0;
     //qreal MonoPos = scanner::MonoPos;
-    qDebug() << thread() << currentThread();
+    //qDebug() << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
     qreal currentCount = 0;
-    if(scanner::speed > fabs(scanner::stoppos - scanner::startpos))
-        steps = 1;
-    else
-        steps = (int)(fabs(scanner::stoppos-scanner::startpos)/scanner::speed) + 1;
-    for(int i = 0; i < steps; i++)
+    qreal length = fabs(scanner::startpos - scanner::stoppos);
+    for(int i = (scanner::startpos <= scanner::stoppos)?scanner::startpos:scanner::stoppos; i < (scanner::startpos > scanner::stoppos)?scanner::startpos:scanner::stoppos; i++)
     {
         //For debug disabled//Not anymore
-        direction?1:0;//MonoOpp(((steps==1)||(i == (steps - 1)))?(int)(fabs(stop-start)):speed, MonoPos):MonoNed((steps==1)?(int)(fabs(stop-start)):speed, MonoPos);
-        currentCount = Read_DPC();
+        if(direction)
+            emit scanner::moveStepUp();
+        else
+            emit scanner::moveStepDown();
+        for(int j = 0; j < ((1.0/speed)*ACCURACY <= 1 ? 1 : (1.0/speed)*ACCURACY); j++)
+            currentCount += Read_DPC();
         usleep(50000);//For Debug
-        emit scanner::currentStatus(((qreal)(i)/steps)*100);
+        emit scanner::currentStatus(((qreal)(i)/length)*100);
+        emit scanner::currentValue(i, currentCount);
+        currentCount = 0;
     }
+
 }
 
 ScanList::ScanList()
@@ -291,6 +294,7 @@ Scan & ScanList::getCurrentScan(void)
 Scan ScanList::getNextScan(void)
 {
     if(!Scans.isEmpty())
+    {
         if(ScanList::currentScan + 1 == Scans.size())
         {
             currentScan = 0;
@@ -301,6 +305,7 @@ Scan ScanList::getNextScan(void)
             currentScan += 1;
             return Scans[currentScan];
         }
+    }
 }
 
 Scan ScanList::getLastScan(void)
@@ -368,6 +373,8 @@ Spectrometer::Spectrometer()
 {
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
+    Spectrometer::MonoPos = 0;
+    Spectrometer::MonoSpeed = 0;
 }
 
 void Spectrometer::setMonoPos(qreal MonoPos)
@@ -452,5 +459,17 @@ void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
         else
             MonoNed(1, Spec_Control::MonoPos);
     }
+    emit movedStepper(Spec_Control::MonoPos);
+}
+
+void Spec_Control::moveUp(void)
+{
+    MonoOpp(1, Spec_Control::MonoPos);
+    emit movedStepper(Spec_Control::MonoPos);
+}
+
+void Spec_Control::moveDown(void)
+{
+    MonoNed(1, Spec_Control::MonoPos);
     emit movedStepper(Spec_Control::MonoPos);
 }

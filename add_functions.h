@@ -29,7 +29,7 @@
 #include <QThread>
 #include <QDebug>
 
-//int read_DPC(void);
+#define ACCURACY 10
 
 enum AveMode{ NoAverage, Point, Intervall };
 enum Polarizer{xPol = 0, yPol = 1, zPol = 2};
@@ -152,6 +152,10 @@ public:
     void run();
 signals:
     void currentStatus(qreal);
+    void scanFinished(void);
+    void moveStepUp(void);
+    void moveStepDown(void);
+    void currentValue(qreal, qreal);
 };
 
 class Spec_Control: public QObject
@@ -163,6 +167,8 @@ private:
 public slots:
     void movePolarizer(Polarizer pol, bool state);
     void moveStepMotor(qreal CurrentPos, qreal newPos, bool dir);
+    void moveUp(void);
+    void moveDown(void);
 public:
     Spec_Control(qreal MonoPos);
 signals:
