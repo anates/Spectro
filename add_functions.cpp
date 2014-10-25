@@ -254,3 +254,156 @@ void scanner::run()
         emit scanner::currentStatus(((qreal)(i)/steps)*100);
     }
 }
+
+ScanList::ScanList()
+{
+    currentScan = -1;
+}
+
+Scan ScanList::getCurrentScan(void)
+{
+    if(Scans.isEmpty())
+        return;
+    else
+        return Scans[currentScan];
+}
+
+Scan ScanList::getNextScan(void)
+{
+    if(Scans.isEmpty())
+        return;
+    else
+        if(ScanList::currentScan + 2 >= Scans.size())
+        {
+            currentScan = 0;
+            return Scans[0];
+        }
+        else
+        {
+            currentScan += 1;
+            return Scans[currentScan];
+        }
+}
+
+Scan ScanList::getLastScan(void)
+{
+    if(Scans.isEmpty())
+        return;
+    else
+    {
+        if(ScanList::currentScan == 0)
+        {
+            currentScan = Scans.size() - 1;
+            return Scans[currentScan];
+        }
+        else
+        {
+            currentScan -= 1;
+            return Scans[currentScan];
+        }
+    }
+}
+
+Scan ScanList::getScan(qint32 ScanNumber)
+{
+    if(Scans.isEmpty())
+        return;
+    else
+        if(ScanNumber >= 0 && ScanNumber < Scans.size())
+            return Scans[ScanNumber];
+}
+
+void ScanList::setFileName(QString fileName)
+{
+    ScanList::fileName = fileName;
+}
+
+QString ScanList::getFileName(void)
+{
+    return ScanList::fileName;
+}
+
+QVector<QString> ScanList::getFileNames(void)
+{
+    return ScanList::scanFileNames;
+}
+
+void ScanList::addFileName(QString fileName)
+{
+    ScanList::scanFileNames.push_back(fileName);
+}
+
+void ScanList::deleteFileName(QString fileName)
+{
+    for(int i = 0; i < ScanList::scanFileNames.size(); i++)
+    {
+        if(ScanList::scanFileNames[i] == fileName)
+        {
+            ScanList::scanFileNames.remove(i);
+            return;
+        }
+    }
+}
+
+Spectrometer::Spectrometer()
+{
+    for(int i = 0; i < 3; i++)
+        polarizerSetting.push_back(false);
+}
+
+void Spectrometer::setMonoPos(qreal MonoPos)
+{
+    Spectrometer::MonoPos = MonoPos;
+}
+
+qreal Spectrometer::getMonoPos(void)
+{
+    return Spectrometer::MonoPos;
+}
+
+void Spectrometer::setMonoSpeed(qreal MonoSpeed)
+{
+    Spectrometer::MonoSpeed = MonoSpeed;
+}
+
+qreal Spectrometer::getMonoSpeed(void)
+{
+    return Spectrometer::MonoSpeed;
+}
+
+void Spectrometer::setPolarizers(QVector<bool> polarizers)
+{
+    if(polarizers.size() != 3)
+        return;
+    else
+    {
+        Spectrometer::polarizerSetting[0] = polarizers[0];
+        Spectrometer::polarizerSetting[1] = polarizers[1];
+        Spectrometer::polarizerSetting[2] = polarizers[2];
+    }
+}
+
+bool Spectrometer::getPolarizers(Polarizer pol)
+{
+    return Spectrometer::polarizerSetting[pol];
+}
+
+QVector<bool> Spectrometer::getPolarizers()
+{
+    return Spectrometer::polarizerSetting;
+}
+
+void Spectrometer::setMonoPosSlot(qreal MonoPos)
+{
+    Spectrometer::MonoPos = MonoPos;
+}
+
+void Spectrometer::setMonoSpeedSlot(qreal MonoSpeed)
+{
+    Spectrometer::MonoSpeed = MonoSpeed;
+}
+
+void Spectrometer::setPolarizersSlot(Polarizer pol, bool state)
+{
+    Spectrometer::polarizerSetting[pol] = state;
+}

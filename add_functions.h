@@ -32,6 +32,7 @@
 //int read_DPC(void);
 
 enum AveMode{ NoAverage, Point, Intervall };
+enum Polarizer{x, y, z};
 
 struct ScanData
 {
@@ -62,17 +63,46 @@ struct Scan
     LogFile log;
 };
 
-struct ScanList
+class ScanList
 {
+private:
     QVector<Scan> Scans;
     QString fileName;
     QVector<QString> scanFileNames;
+    qint32 currentScan;
+public:
+    ScanList();
+    Scan getCurrentScan(void);
+    Scan getNextScan(void);
+    Scan getLastScan(void);
+    Scan getScan(qint32 ScanNumber);
+    void setFileName(QString fileName);
+    QString getFileName(void);
+    QVector<QString> getFileNames(void);
+    void addFileName(QString fileName);
+    void deleteFileName(QString fileName);
 };
 
-struct Spectrometer
+class Spectrometer
 {
+private:
     qreal MonoPos = 0;
     qreal MonoSpeed = 0;
+    QVector<bool> polarizerSetting;
+public slots:
+    void setMonoPosSlot(qreal MonoPos);
+    void setMonoSpeedSlot(qreal MonoSpeed);
+    void setPolarizersSlot(Polarizer pol, bool state);
+public:
+    Spectrometer();
+    void setMonoPos(qreal MonoPos);
+    qreal getMonoPos(void);
+    void setMonoSpeed(qreal MonoSpeed);
+    qreal getMonoSpeed(void);
+    void setPolarizers(QVector<bool> polarizers);
+
+    bool getPolarizers(Polarizer pol);
+    QVector<bool> getPolarizers(void);
     //Something to add?
 };
 
