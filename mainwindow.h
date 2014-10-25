@@ -37,6 +37,14 @@ public slots:
     void CurrentScanStatus(qreal status);
     void closeProgressBar();
 
+signals:
+    //Polarizer signals
+    void xPolarizerMoved(bool);
+    void yPolarizerMoved(bool);
+    void zPolarizerMoved(bool);
+    //Stepper signals
+    void MoveStepUp(qreal);
+    void MoveStepDown(qreal);
 
 private slots:
     void on_loadGenericButton_clicked();
@@ -56,8 +64,6 @@ private slots:
     void on_dispYValue_toggled(bool checked);
 
     void on_dispZValue_toggled(bool checked);
-
-    void on_gridTabWidget_currentChanged(int index);
 
     void on_scanButton_clicked();
 
@@ -85,7 +91,7 @@ private slots:
 
     void writeConfig();
 
-    void on_activateCounter_clicked();
+//    void on_activateCounter_clicked();
 
     void on_execButton_2_clicked();
 
@@ -122,6 +128,7 @@ private:
     QAction *saveGenericAll;
 
     DPC *newDPC;
+    Spec_Control *newSpecControl;
 };
 
 #endif // MAINWINDOW_H

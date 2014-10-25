@@ -32,7 +32,7 @@
 //int read_DPC(void);
 
 enum AveMode{ NoAverage, Point, Intervall };
-enum Polarizer{x, y, z};
+enum Polarizer{xPol = 0, yPol = 1, zPol = 2};
 
 struct ScanData
 {
@@ -51,16 +51,22 @@ struct LogFile
     qreal countNumber = 0;
 };
 
-struct Scan
+struct ScanParams
 {
-    ScanData values;
-    QVector<bool> polSettings = {false, false, false};
-    QString scanName;
     qreal startPos;
     qreal finPos;
     qreal scanSpeed;
+    QVector<bool> polSettings = {false, false, false};
+};
+
+struct Scan
+{
+    ScanData values;
+    QString scanName;
+    ScanParams Params;
     AveMode av;
     LogFile log;
+    bool readonly = false;
 };
 
 class ScanList: public QObject
@@ -76,11 +82,13 @@ public:
     void addScan(Scan newScan);
     void dropScan(void);
     int getScanNumbers(void);
-    Scan getCurrentScan(void);
+    int getCurrentScanNumber(void);
+    Scan &getCurrentScan(void);
     Scan getNextScan(void);
     Scan getLastScan(void);
     Scan & getScan(qint32 ScanNumber);
     void setFileName(QString fileName);
+    void setCurrentScan(int ScanNumber);
     QString getFileName(void);
     QVector<QString> getFileNames(void);
     void addFileName(QString fileName);
@@ -105,7 +113,7 @@ public:
     void setMonoSpeed(qreal MonoSpeed);
     qreal & getMonoSpeed(void);
     void setPolarizers(QVector<bool> polarizers);
-
+    void setPolarizers(Polarizer pol, bool state);
     bool getPolarizers(Polarizer pol);
     QVector<bool> getPolarizers(void);
     //Something to add?
@@ -144,6 +152,22 @@ public:
     void run();
 signals:
     void currentStatus(qreal);
+};
+
+class Spec_Control: public QObject
+{
+    Q_OBJECT
+private:
+    QVector<bool> polState = {false, false, false};
+    qreal MonoPos;
+public slots:
+    void movePolarizer(Polarizer pol, bool state);
+    void moveStepMotor(qreal CurrentPos, qreal newPos, bool dir);
+public:
+    Spec_Control(qreal MonoPos);
+signals:
+    void movedPolarizer(Polarizer, bool);
+    void movedStepper(qreal);
 };
 
 #endif // ADD_FUNCTIONS_H

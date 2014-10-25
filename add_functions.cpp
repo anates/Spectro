@@ -43,13 +43,13 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
         if(version == "8008135" || version == "80081E5")
         {
             Data.scanName = in.readLine();
-            Data.startPos = in.readLine().toDouble();
-            Data.finPos = in.readLine().toDouble();
-            Data.scanSpeed = in.readLine().toDouble();
+            Data.Params.startPos = in.readLine().toDouble();
+            Data.Params.finPos = in.readLine().toDouble();
+            Data.Params.scanSpeed = in.readLine().toDouble();
             int polSettingsInt = in.readLine().toInt();
-            Data.polSettings[0] = (polSettingsInt%2 == 1);
-            Data.polSettings[1] = (polSettingsInt == 3 || polSettingsInt > 5);
-            Data.polSettings[2] = (polSettingsInt >= 4);
+            Data.Params.polSettings[0] = (polSettingsInt%2 == 1);
+            Data.Params.polSettings[1] = (polSettingsInt == 3 || polSettingsInt > 5);
+            Data.Params.polSettings[2] = (polSettingsInt >= 4);
         }
         if(version == "80081E5")
         {
@@ -109,12 +109,12 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
     QTextStream out(&file);
     out << "80081E5\n";
     out << Data.scanName << '\n';
-    out << Data.startPos << '\n';
-    out << Data.finPos << '\n';
-    out << Data.scanSpeed << '\n';
-    int polarSettings = Data.polSettings[0];
-    polarSettings += Data.polSettings[1]?2:0;
-    polarSettings += Data.polSettings[2]?4:0;
+    out << Data.Params.startPos << '\n';
+    out << Data.Params.finPos << '\n';
+    out << Data.Params.scanSpeed << '\n';
+    int polarSettings = Data.Params.polSettings[0];
+    polarSettings += Data.Params.polSettings[1]?2:0;
+    polarSettings += Data.Params.polSettings[2]?4:0;
     out << polarSettings << '\n';//(int)(Data.polSettings[0]?1:0) + (int)(Data.polSettings[1]?2:0) + (int)(Data.polSettings[2]?4:0) << '\n';
     out << Data.log.countNumber << '\n';
     out << Data.log.laserIntensity << '\n';
@@ -235,7 +235,7 @@ scanner::scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOr
     scanner::direction = _direction;
 }
 
-void scanner::run()
+void scanner::run()//Has to be rewritten with Spec_Control
 {
     int steps = 0;
     //qreal MonoPos = scanner::MonoPos;
@@ -277,7 +277,12 @@ int ScanList::getScanNumbers(void)
     return ScanList::Scans.size();
 }
 
-Scan ScanList::getCurrentScan(void)
+int ScanList::getCurrentScanNumber(void)
+{
+    return ScanList::currentScan;
+}
+
+Scan & ScanList::getCurrentScan(void)
 {
     if(!Scans.isEmpty())
         return Scans[currentScan];
@@ -286,7 +291,7 @@ Scan ScanList::getCurrentScan(void)
 Scan ScanList::getNextScan(void)
 {
     if(!Scans.isEmpty())
-        if(ScanList::currentScan + 2 >= Scans.size())
+        if(ScanList::currentScan + 1 == Scans.size())
         {
             currentScan = 0;
             return Scans[0];
@@ -320,6 +325,11 @@ Scan & ScanList::getScan(qint32 ScanNumber)
     if(!Scans.isEmpty())
         if(ScanNumber >= 0 && ScanNumber < Scans.size())
             return Scans[ScanNumber];
+}
+
+void ScanList::setCurrentScan(int ScanNumber)
+{
+    ScanList::currentScan = (ScanNumber >= 0 && ScanNumber < ScanList::getScanNumbers())?ScanNumber:ScanList::currentScan;
 }
 
 void ScanList::setFileName(QString fileName)
@@ -392,6 +402,11 @@ void Spectrometer::setPolarizers(QVector<bool> polarizers)
     }
 }
 
+void Spectrometer::setPolarizers(Polarizer pol, bool state)
+{
+    Spectrometer::polarizerSetting[pol] = state;
+}
+
 bool Spectrometer::getPolarizers(Polarizer pol)
 {
     return Spectrometer::polarizerSetting[pol];
@@ -415,4 +430,27 @@ void Spectrometer::setMonoSpeedSlot(qreal MonoSpeed)
 void Spectrometer::setPolarizersSlot(Polarizer pol, bool state)
 {
     Spectrometer::polarizerSetting[pol] = state;
+}
+
+Spec_Control::Spec_Control(qreal MonoPos)
+{
+    Spec_Control::MonoPos = MonoPos;
+}
+
+void Spec_Control::movePolarizer(Polarizer pol, bool state)
+{
+    //connect to pins is missing, has to be done###
+    emit movedPolarizer(pol, state);
+}
+
+void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
+{
+    for(int i = 0; i < fabs(CurrentPos-newPos); i++)
+    {
+        if(dir)
+            MonoOpp(1, Spec_Control::MonoPos);
+        else
+            MonoNed(1, Spec_Control::MonoPos);
+    }
+    emit movedStepper(Spec_Control::MonoPos);
 }
