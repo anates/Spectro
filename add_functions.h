@@ -33,6 +33,7 @@
 
 enum AveMode{ NoAverage, Point, Intervall };
 enum Polarizer{xPol = 0, yPol = 1, zPol = 2};
+Q_DECLARE_METATYPE(Polarizer);
 
 struct ScanData
 {
@@ -134,8 +135,13 @@ void moveToTarget(const double &NewMonoPos, qreal &MonoPos);
 class DPC: public QThread
 {
     Q_OBJECT
+private:
+    bool runThread;
 public:
+    DPC();
     void run();
+public slots:
+    void cancelThread(void);
 signals:
     void currentCount(int);
 };
@@ -148,7 +154,7 @@ private:
     qreal MonoPos;
     bool direction;
 public:
-    scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction);
+    void init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction);
     void run();
 signals:
     void currentStatus(qreal);
@@ -156,21 +162,25 @@ signals:
     void moveStepUp(void);
     void moveStepDown(void);
     void currentValue(qreal, qreal);
+    void moveToPosition(qreal, qreal, bool);
 };
 
-class Spec_Control: public QObject
+class Spec_Control: public QThread
 {
     Q_OBJECT
 private:
     QVector<bool> polState = {false, false, false};
     qreal MonoPos;
+    volatile bool control;
 public slots:
     void movePolarizer(Polarizer pol, bool state);
     void moveStepMotor(qreal CurrentPos, qreal newPos, bool dir);
     void moveUp(void);
     void moveDown(void);
+    void stopControl(void);
 public:
     Spec_Control(qreal MonoPos);
+    void run();
 signals:
     void movedPolarizer(Polarizer, bool);
     void movedStepper(qreal);

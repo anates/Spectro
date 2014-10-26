@@ -47,6 +47,10 @@ signals:
     //Stepper signals
     void MoveStepUp(qreal, qreal, bool);
     void MoveStepDown(qreal, qreal, bool);
+    //DPC signals
+    void stopCounting(void);
+    //Controller signals
+    void stopControlling(void);
 
 private slots:
     void on_loadGenericButton_clicked();
@@ -96,6 +100,8 @@ private slots:
 //    void on_activateCounter_clicked();
 
     void on_execButton_2_clicked();
+
+    void on_gridTabWidget_currentChanged(int index);
 
 private:
 

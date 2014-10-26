@@ -192,11 +192,17 @@ int Read_DPC(void)
     return Digit[3] * 1000 + Digit[2] * 100 + Digit[1] * 10 + Digit[0];
 }
 
+DPC::DPC()
+{
+    DPC::runThread = true;
+    qDebug() << "DPC: " << thread() << currentThread();
+}
+
 void DPC::run()
 {
     int counts = 0, old_counts = 0;
     qDebug() << thread() << currentThread();
-    while(1)
+    while(DPC::runThread)
     {
         msleep(50);
         counts = 50;//Read_DPC();
@@ -207,6 +213,13 @@ void DPC::run()
         }
 
     }
+    if(runThread == false)
+        qDebug() << "Counting should stop";
+}
+
+void DPC::cancelThread(void)
+{
+    DPC::runThread = false;
 }
 
 //qreal runScan(qreal start, qreal stop, qreal speed, qreal MonoPosOrig, bool direction)//deprecated, not used anymore
@@ -226,22 +239,25 @@ void DPC::run()
 //    return MonoPos;
 //}
 
-scanner::scanner(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction)
+void scanner::init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction)
 {
+    //qDebug() << "Scanner: " << thread() << QThread::currentThread();
     scanner::startpos = start_pos;
     scanner::stoppos = stop_pos;
     scanner::speed = _speed;
     scanner::MonoPos = _MonoPosOrig;
     scanner::direction = _direction;
+    emit moveToPosition(scanner::MonoPos, scanner::startpos, (scanner::startpos >= scanner::MonoPos)?true:false);
 }
 
 void scanner::run()
 {
     //qreal MonoPos = scanner::MonoPos;
-    //qDebug() << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
+    //qDebug() << "From scanner::run(): " << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
     qreal currentCount = 0;
     qreal length = fabs(scanner::startpos - scanner::stoppos);
-    for(int i = (scanner::startpos <= scanner::stoppos)?scanner::startpos:scanner::stoppos; i < (scanner::startpos > scanner::stoppos)?scanner::startpos:scanner::stoppos; i++)
+
+    for(int i = 0; i < length; i++)
     {
         //For debug disabled//Not anymore
         if(direction)
@@ -254,12 +270,15 @@ void scanner::run()
         emit scanner::currentStatus(((qreal)(i)/length)*100);
         emit scanner::currentValue(i, currentCount);
         currentCount = 0;
+        //qDebug() << "Current count: " << ((qreal)(i)/length)*100;
     }
-
+    //qDebug() << "Scan Finished";
+    emit scanFinished();
 }
 
 ScanList::ScanList()
 {
+    qDebug() << "ScanList: " << thread() << QThread::currentThread();
     currentScan = -1;
 }
 
@@ -371,6 +390,7 @@ void ScanList::deleteFileName(QString fileName)
 
 Spectrometer::Spectrometer()
 {
+    qDebug() << "Spectrometer: " << thread() << QThread::currentThread();
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
     Spectrometer::MonoPos = 0;
@@ -442,6 +462,17 @@ void Spectrometer::setPolarizersSlot(Polarizer pol, bool state)
 Spec_Control::Spec_Control(qreal MonoPos)
 {
     Spec_Control::MonoPos = MonoPos;
+    Spec_Control::control = true;
+    qDebug() << "SpecControl: " << thread() << QThread::currentThread();
+}
+
+void Spec_Control::run()
+{
+    bool i = false;
+    while(control)
+    {
+        i = !i;
+    }
 }
 
 void Spec_Control::movePolarizer(Polarizer pol, bool state)
@@ -452,24 +483,34 @@ void Spec_Control::movePolarizer(Polarizer pol, bool state)
 
 void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
 {
+    //qDebug() << "Now a signal from moveStepMotor should be emitted" << thread() << QThread::currentThread();
     for(int i = 0; i < fabs(CurrentPos-newPos); i++)
     {
         if(dir)
-            MonoOpp(1, Spec_Control::MonoPos);
+            //MonoOpp(1, Spec_Control::MonoPos);
+            MonoPos++;//Only for debug, after MonoOpp is not working at the moment###
         else
-            MonoNed(1, Spec_Control::MonoPos);
+            //MonoNed(1, Spec_Control::MonoPos);
+            MonoPos--;//Only for debug, after MonoOpp is not working at the moment###
     }
-    emit movedStepper(Spec_Control::MonoPos);
+    //qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;
 }
 
 void Spec_Control::moveUp(void)
 {
-    MonoOpp(1, Spec_Control::MonoPos);
+    //MonoOpp(1, Spec_Control::MonoPos);//For debug disabled###
+    Spec_Control::MonoPos++;
     emit movedStepper(Spec_Control::MonoPos);
 }
 
 void Spec_Control::moveDown(void)
 {
-    MonoNed(1, Spec_Control::MonoPos);
+    //MonoNed(1, Spec_Control::MonoPos);//For debug disabled###
+    Spec_Control::MonoPos--;
     emit movedStepper(Spec_Control::MonoPos);
+}
+
+void Spec_Control::stopControl(void)
+{
+    control = false;
 }
