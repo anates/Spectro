@@ -113,6 +113,8 @@ private slots:
 
     void on_stopScan_clicked();
 
+    void on_saveSettingsButton_clicked();
+
 private:
 
     enum State {ScanState, EditState, MoveState};

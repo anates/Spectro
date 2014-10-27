@@ -108,9 +108,9 @@ MainWindow::~MainWindow()
     newDPC->wait(500);
     newScanner->wait(500);
     //MainWindow::SCThread->wait(500);
-    qDebug() << "Is DPC still counting: " << newDPC->isRunning();
-    qDebug() << "Is ControlThread still running?" << newSpecControl->isRunning();
-    qDebug() << "Is scanner still running?" << newScanner->isRunning();
+    //qDebug() << "Is DPC still counting: " << newDPC->isRunning();
+    //qDebug() << "Is ControlThread still running?" << newSpecControl->isRunning();
+    //qDebug() << "Is scanner still running?" << newScanner->isRunning();
     delete MainWindow::SCThread;
     delete MainWindow::newDPC;
     delete MainWindow::newSpecControl;
@@ -460,9 +460,9 @@ void MainWindow::changeState(State newState)
     {
         case ScanState:
         {
-//            ui->gridTabWidget->setTabEnabled(1, false);
-//            ui->gridTabWidget->setTabEnabled(0, true);
-//            ui->gridTabWidget->setTabEnabled(2, false);
+            ui->gridTabWidget->setTabEnabled(1, false);
+            ui->gridTabWidget->setTabEnabled(0, true);
+            ui->gridTabWidget->setTabEnabled(2, false);
             ui->loadGenericButton->hide();
             ui->loadSettingsButton->hide();
             ui->dispXValue->setEnabled(0);
@@ -471,6 +471,7 @@ void MainWindow::changeState(State newState)
             ui->setScanSpeed->setReadOnly(false);
             ui->setStartPosition->setReadOnly(false);
             ui->setTargetPosition->setReadOnly(false);
+            ui->saveScan->hide();
             ui->scanName->setReadOnly(false);
             ui->scanButton->show();
             ui->stopScan->show();
@@ -492,6 +493,7 @@ void MainWindow::changeState(State newState)
             ui->gridTabWidget->setTabEnabled(2, true);
             ui->scanButton->hide();
             ui->stopScan->hide();
+            ui->saveScan->show();
             ui->newScan->show();
             break;
         }
@@ -564,9 +566,9 @@ void MainWindow::on_scanButton_clicked()
     tmpScan.Params.startPos = ui->setStartPosition->text().toDouble();
     tmpScan.Params.scanSpeed = ui->setScanSpeed->text().toDouble();
     tmpScan.scanName = ui->scanName->text();
-    qDebug() << "Scanner is initialized";
+    //qDebug() << "Scanner is initialized";
     emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
-    qDebug() << "Scanner is going to be started!";
+    //qDebug() << "Scanner is going to be started!";
     emit startScan();
     //Analyze(MainWindow::newScanList);
 }
@@ -580,8 +582,8 @@ void MainWindow::scanIsFinished(void)
 {
     newScanList.addScan(MainWindow::tmpScan);
     closeProgressBar();
-    qDebug() << "Check if Scanner is still running: " << newScanner->isRunning();
-    qDebug() << "Another check: " << newScanner->isFinished();
+    //qDebug() << "Check if Scanner is still running: " << newScanner->isRunning();
+    //qDebug() << "Another check: " << newScanner->isFinished();
 //    //newScanner->terminate();
     tmpScan.clear();
     changeState(EditState);
@@ -783,10 +785,12 @@ void MainWindow::on_execButton_2_clicked()
     {
         if(ui->newPosition->text().toDouble() > newSpectrometer->getMonoPos())
         {
+            qDebug() << "Emitting MoveStepUp";
             emit MoveStepUp(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble(), true);
         }
         else
         {
+            qDebug() << "Emitting MoveStepDown";
             emit MoveStepDown(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble(), false);
         }
     }
@@ -801,13 +805,13 @@ void MainWindow::on_gridTabWidget_currentChanged(int index)
     reload_data();
 }
 
-void MainWindow::on_newScan_clicked()
+void MainWindow::on_newScan_clicked(void)
 {
     tmpScan.clear();
     MainWindow::changeState(ScanState);
 }
 
-void MainWindow::on_stopScan_clicked()
+void MainWindow::on_stopScan_clicked(void)
 {
     tmpScan.clear();
     emit stopScan();
@@ -817,7 +821,30 @@ void MainWindow::on_stopScan_clicked()
 void MainWindow::scanIsInterrupted(void)
 {
     tmpScan.clear();
-    qDebug() << "Scan has stopped";
-    newScanner->terminate();
+    //qDebug() << "Scan has stopped";
     MainWindow::changeState(EditState);
+}
+
+void MainWindow::on_saveSettingsButton_clicked()
+{
+    if(newScanList.getScanNumbers() == 0)
+    {
+        QMessageBox::information(this, "Information", "Sorry, but no scan is loaded.");
+        return;
+    }
+    QString fileName = newScanList.getCurrentScan().scanName + ".dat";
+    QFile file(fileName);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::information(0, "Error!", file.errorString());
+        return;
+    }
+    QTextStream out(&file);
+    out << "This data file is for scan " << newScanList.getCurrentScan().scanName << ", written on " << QDate::currentDate().toString() << '\n';
+    out << newScanList.getCurrentScan().Params.startPos << '\n';
+    out << newScanList.getCurrentScan().Params.finPos << '\n';
+    out << newScanList.getCurrentScan().Params.scanSpeed << '\n';
+    out << (int)(newScanList.getCurrentScan().Params.polSettings[0])*1 + (int)(newScanList.getCurrentScan().Params.polSettings[1])*2 + (int)(newScanList.getCurrentScan().Params.polSettings[2])*4 << '\n';
+    out << "All these data has been saved to the scan file, too\n";
+    file.close();
 }

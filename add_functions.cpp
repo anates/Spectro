@@ -250,8 +250,8 @@ void DPC::run()
         }
 
     }
-    if(runThread == false)
-        qDebug() << "Counting should stop";
+    //if(runThread == false)
+        //qDebug() << "Counting should stop";
 }
 
 void DPC::cancelThread(void)
@@ -327,7 +327,7 @@ void scanner::scan()
             currentCount += Read_DPC();
         usleep(50000);//For Debug
         emit scanner::currentStatus(((qreal)(i)/length)*100);
-        emit scanner::currentValue(i, currentCount);
+        emit scanner::currentValue(i + scanner::startpos, currentCount);
         currentCount = 0;
         //qDebug() << "Current count: " << ((qreal)(i)/length)*100;
     }
@@ -559,7 +559,7 @@ void Spec_Control::movePolarizer(Polarizer pol, bool state)
 
 void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
 {
-    //qDebug() << "Now a signal from moveStepMotor should be emitted" << thread() << QThread::currentThread();
+    qDebug() << "Now a signal from moveStepMotor should be emitted" << thread() << QThread::currentThread();
     for(int i = 0; i < fabs(CurrentPos-newPos); i++)
     {
         if(dir)
@@ -569,7 +569,8 @@ void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
             //MonoNed(1, Spec_Control::MonoPos);
             MonoPos--;//Only for debug, after MonoOpp is not working at the moment###
     }
-    //qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;
+    qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;
+    emit movedStepper(Spec_Control::MonoPos);
 }
 
 void Spec_Control::moveUp(void)
