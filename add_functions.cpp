@@ -156,6 +156,43 @@ void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<qreal, qreal>
     }
 }
 
+void ScanParams::clear(void)
+{
+    ScanParams::finPos = 0;
+    ScanParams::scanSpeed = 0;
+    ScanParams::startPos = 0;
+    ScanParams::polSettings[0] = false;
+    ScanParams::polSettings[1] = false;
+    ScanParams::polSettings[2] = false;
+}
+
+void ScanData::clear(void)
+{
+    ScanData::Data.clear();
+    ScanData::FWHM.clear();
+    ScanData::Maxima.clear();
+}
+
+void LogFile::clear(void)
+{
+    LogFile::countNumber = 0;
+    LogFile::laserIntensity = 0;
+    LogFile::logfileSet = false;
+    LogFile::name = "";
+    LogFile::sensitivity = 0;
+    LogFile::slitWidth = 0;
+}
+
+void Scan::clear(void)
+{
+    Scan::av = NoAverage;
+    Scan::log.clear();
+    Scan::Params.clear();
+    Scan::readonly = false;
+    Scan::scanName = "";
+    Scan::values.clear();
+}
+
 int Read_DPC(void)
 {
     int Inhibit = 0x0, Enable = 0x4;
@@ -242,23 +279,45 @@ void DPC::cancelThread(void)
 void scanner::init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction)
 {
     //qDebug() << "Scanner: " << thread() << QThread::currentThread();
+    scanner::doScan = true;
     scanner::startpos = start_pos;
     scanner::stoppos = stop_pos;
     scanner::speed = _speed;
     scanner::MonoPos = _MonoPosOrig;
+    scanner::MonoPosOrig = _MonoPosOrig;
     scanner::direction = _direction;
+    qDebug() << "Scanner has been initialized with Monopos: " << scanner::MonoPos << " and " << scanner::startpos;
     emit moveToPosition(scanner::MonoPos, scanner::startpos, (scanner::startpos >= scanner::MonoPos)?true:false);
+    qDebug() << "Returning to main thread";
+}
+
+void scanner::runScan()
+{
+    doScan = true;
 }
 
 void scanner::run()
 {
+    while(stopScanDevice == false)
+    {
+        if(scanner::doScan)
+            scan();
+    }
+}
+
+void scanner::scan()
+{
     //qreal MonoPos = scanner::MonoPos;
-    //qDebug() << "From scanner::run(): " << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
+    qDebug() << "From scanner::run(): " << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
     qreal currentCount = 0;
     qreal length = fabs(scanner::startpos - scanner::stoppos);
-
     for(int i = 0; i < length; i++)
     {
+        if(doScan == false)
+        {
+            scanner::resetScanner();
+            break;
+        };
         //For debug disabled//Not anymore
         if(direction)
             emit scanner::moveStepUp();
@@ -273,7 +332,24 @@ void scanner::run()
         //qDebug() << "Current count: " << ((qreal)(i)/length)*100;
     }
     //qDebug() << "Scan Finished";
+    doScan = false;
     emit scanFinished();
+}
+
+void scanner::resetScanner(void)
+{
+    emit moveToPosition(scanner::MonoPos, scanner::MonoPosOrig, (scanner::MonoPos >= scanner::MonoPosOrig)?false:true);
+    emit scanInterrupted();
+}
+
+void scanner::cancelScan(void)
+{
+    scanner::doScan = false;
+}
+
+void scanner::stopScanner(void)
+{
+    stopScanDevice = true;
 }
 
 ScanList::ScanList()

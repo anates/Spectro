@@ -35,39 +35,51 @@ enum AveMode{ NoAverage, Point, Intervall };
 enum Polarizer{xPol = 0, yPol = 1, zPol = 2};
 Q_DECLARE_METATYPE(Polarizer);
 
-struct ScanData
+class ScanData
 {
+public:
     QVector<QPair<qreal, qreal> > Data;
     QVector<QPair<qreal, qreal> > Maxima;
     QVector<QPair<qreal, qreal> > FWHM;
+
+    void clear(void);
 };
 
-struct LogFile
+class LogFile
 {
+public:
     bool logfileSet = false;
     QString name = "";
     qreal laserIntensity = 0;
     qreal slitWidth = 0;
     qreal sensitivity = 0;
     qreal countNumber = 0;
+
+    void clear(void);
 };
 
-struct ScanParams
+class ScanParams
 {
+public:
     qreal startPos;
     qreal finPos;
     qreal scanSpeed;
     QVector<bool> polSettings = {false, false, false};
+
+    void clear();
 };
 
-struct Scan
+class Scan
 {
+public:
     ScanData values;
     QString scanName;
     ScanParams Params;
     AveMode av;
     LogFile log;
     bool readonly = false;
+
+    void clear(void);
 };
 
 class ScanList: public QObject
@@ -150,15 +162,25 @@ class scanner: public QThread
 {
     Q_OBJECT
 private:
+    bool doScan = false;
     qreal startpos, stoppos, speed;
     qreal MonoPos;
+    qreal MonoPosOrig;
     bool direction;
-public:
+    volatile bool stopScanDevice = false;
+public slots:
+    void cancelScan(void);
+    void runScan(void);
+    void stopScanner(void);
     void init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction);
+public:
+    void resetScanner(void);
     void run();
+    void scan();
 signals:
     void currentStatus(qreal);
     void scanFinished(void);
+    void scanInterrupted(void);
     void moveStepUp(void);
     void moveStepDown(void);
     void currentValue(qreal, qreal);

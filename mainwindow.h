@@ -38,6 +38,7 @@ public slots:
     void closeProgressBar(void);
     void scanIsFinished(void);
     void addNewValue(qreal wNumber, qreal counts);
+    void scanIsInterrupted(void);
 
 signals:
     //Polarizer signals
@@ -51,6 +52,11 @@ signals:
     void stopCounting(void);
     //Controller signals
     void stopControlling(void);
+    //Scanner signals
+    void stopScan(void);
+    void startScan(void);
+    void killScanner(void);
+    void initScanner(qreal, qreal, qreal, qreal, bool);
 
 private slots:
     void on_loadGenericButton_clicked();
@@ -102,6 +108,10 @@ private slots:
     void on_execButton_2_clicked();
 
     void on_gridTabWidget_currentChanged(int index);
+
+    void on_newScan_clicked();
+
+    void on_stopScan_clicked();
 
 private:
 
