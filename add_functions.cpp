@@ -62,7 +62,9 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
         }
     }
     else
+    {
         Data.scanName = fileName;
+    }
     while(!in.atEnd()) {
         std::string line = in.readLine().toStdString();
         std::stringstream iss(line);
@@ -75,6 +77,14 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
         }while(iss);
         if(tmpline.size() == 3)
             Data.values.Data.push_back(qMakePair(convertToNumber<qreal>(tmpline[0]), convertToNumber<qreal>(tmpline[1])));
+    }
+    if(Data.Params.startPos == -1)
+    {
+        Data.Params.startPos = Data.values.Data.first().first;
+    }
+    if(Data.Params.finPos == -1)
+    {
+        Data.Params.finPos = Data.values.Data.last().first;
     }
     file.close();
 }
@@ -232,13 +242,13 @@ int Read_DPC(void)
 DPC::DPC()
 {
     DPC::runThread = true;
-    qDebug() << "DPC: " << thread() << currentThread();
+    //qDebug() << "DPC: " << thread() << currentThread();
 }
 
 void DPC::run()
 {
     int counts = 0, old_counts = 0;
-    qDebug() << thread() << currentThread();
+    //qDebug() << thread() << currentThread();
     while(DPC::runThread)
     {
         msleep(50);
@@ -286,9 +296,9 @@ void scanner::init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPos
     scanner::MonoPos = _MonoPosOrig;
     scanner::MonoPosOrig = _MonoPosOrig;
     scanner::direction = _direction;
-    qDebug() << "Scanner has been initialized with Monopos: " << scanner::MonoPos << " and " << scanner::startpos;
+    //qDebug() << "Scanner has been initialized with Monopos: " << scanner::MonoPos << " and " << scanner::startpos;
     emit moveToPosition(scanner::MonoPos, scanner::startpos, (scanner::startpos >= scanner::MonoPos)?true:false);
-    qDebug() << "Returning to main thread";
+    //qDebug() << "Returning to main thread";
 }
 
 void scanner::runScan()
@@ -308,7 +318,7 @@ void scanner::run()
 void scanner::scan()
 {
     //qreal MonoPos = scanner::MonoPos;
-    qDebug() << "From scanner::run(): " << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
+    //qDebug() << "From scanner::run(): " << thread() << currentThread();//Sei speed als Verweildauer pro Punkt definiert
     qreal currentCount = 0;
     qreal length = fabs(scanner::startpos - scanner::stoppos);
     for(int i = 0; i < length; i++)
@@ -354,7 +364,7 @@ void scanner::stopScanner(void)
 
 ScanList::ScanList()
 {
-    qDebug() << "ScanList: " << thread() << QThread::currentThread();
+    //qDebug() << "ScanList: " << thread() << QThread::currentThread();
     currentScan = -1;
 }
 
@@ -466,7 +476,7 @@ void ScanList::deleteFileName(QString fileName)
 
 Spectrometer::Spectrometer()
 {
-    qDebug() << "Spectrometer: " << thread() << QThread::currentThread();
+    //qDebug() << "Spectrometer: " << thread() << QThread::currentThread();
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
     Spectrometer::MonoPos = 0;
@@ -539,7 +549,7 @@ Spec_Control::Spec_Control(qreal MonoPos)
 {
     Spec_Control::MonoPos = MonoPos;
     Spec_Control::control = true;
-    qDebug() << "SpecControl: " << thread() << QThread::currentThread();
+    //qDebug() << "SpecControl: " << thread() << QThread::currentThread();
 }
 
 void Spec_Control::run()
@@ -559,7 +569,7 @@ void Spec_Control::movePolarizer(Polarizer pol, bool state)
 
 void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
 {
-    qDebug() << "Now a signal from moveStepMotor should be emitted" << thread() << QThread::currentThread();
+    //qDebug() << "Now a signal from moveStepMotor should be emitted" << thread() << QThread::currentThread();
     for(int i = 0; i < fabs(CurrentPos-newPos); i++)
     {
         if(dir)
@@ -569,7 +579,7 @@ void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
             //MonoNed(1, Spec_Control::MonoPos);
             MonoPos--;//Only for debug, after MonoOpp is not working at the moment###
     }
-    qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;
+    //qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;
     emit movedStepper(Spec_Control::MonoPos);
 }
 

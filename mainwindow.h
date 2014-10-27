@@ -115,6 +115,8 @@ private slots:
 
     void on_saveSettingsButton_clicked();
 
+    void on_loadSettingsButton_clicked();
+
 private:
 
     enum State {ScanState, EditState, MoveState};

@@ -277,15 +277,18 @@ void MainWindow::openGeneric()
             }
             ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
             MainWindow::setWindowTitle(fileName);
-            if(newScan.Params.finPos != -1 && newScan.Params.scanSpeed != -1 && newScan.Params.startPos != -1)
-            {
+//            if(newScan.Params.finPos != -1 && newScan.Params.scanSpeed != -1 && newScan.Params.startPos != -1)
+//            {
                 ui->setStartPosition->setText(QString::number(newScan.Params.startPos));
                 ui->setTargetPosition->setText(QString::number(newScan.Params.finPos));
-                ui->setScanSpeed->setText(QString::number(newScan.Params.scanSpeed));
+                if(newScan.Params.scanSpeed == (-1))
+                    ui->setScanSpeed->setText("n/A");
+                else
+                    ui->setScanSpeed->setText(QString::number(newScan.Params.scanSpeed));
                 ui->dispXValue->setChecked(newScan.Params.polSettings[0]);
                 ui->dispYValue->setChecked(newScan.Params.polSettings[1]);
                 ui->dispZValue->setChecked(newScan.Params.polSettings[2]);
-            }
+//            }
             MainWindow::replot();
         }
     }
@@ -472,6 +475,8 @@ void MainWindow::changeState(State newState)
             ui->setStartPosition->setReadOnly(false);
             ui->setTargetPosition->setReadOnly(false);
             ui->saveScan->hide();
+            ui->saveSettingsButton->hide();
+            ui->loadSettingsButton->show();
             ui->scanName->setReadOnly(false);
             ui->scanButton->show();
             ui->stopScan->show();
@@ -491,6 +496,8 @@ void MainWindow::changeState(State newState)
             ui->dispZValue->setEnabled(1);
             ui->gridTabWidget->setTabEnabled(1, true);
             ui->gridTabWidget->setTabEnabled(2, true);
+            ui->loadSettingsButton->hide();
+            ui->saveSettingsButton->show();
             ui->scanButton->hide();
             ui->stopScan->hide();
             ui->saveScan->show();
@@ -581,6 +588,7 @@ void MainWindow::closeProgressBar()
 void MainWindow::scanIsFinished(void)
 {
     newScanList.addScan(MainWindow::tmpScan);
+    ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
     closeProgressBar();
     //qDebug() << "Check if Scanner is still running: " << newScanner->isRunning();
     //qDebug() << "Another check: " << newScanner->isFinished();
@@ -632,7 +640,10 @@ void MainWindow::reload_data()
 {
     if(!(newScanList.getScanNumbers() == 0))
     {
-        ui->setScanSpeed->setText(QString::number(newScanList.getCurrentScan().Params.scanSpeed));
+        if(newScanList.getCurrentScan().Params.scanSpeed == -1)
+            ui->setScanSpeed->setText("n/A");
+        else
+            ui->setScanSpeed->setText(QString::number(newScanList.getCurrentScan().Params.scanSpeed));
         ui->setStartPosition->setText(QString::number(newScanList.getCurrentScan().Params.startPos));
         ui->setTargetPosition->setText(QString::number(newScanList.getCurrentScan().Params.finPos));
         ui->dispXValue->setChecked(newScanList.getCurrentScan().Params.polSettings[0]);
@@ -667,7 +678,8 @@ void MainWindow::reload_data()
 void MainWindow::on_stepBackMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    emit MoveStepDown(newSpectrometer->getMonoPos(), 1, false);
+    emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() - 1, false);
+    reload_data();
     //Muss ausgebaut werden
     //MonoNed(1, newSpectrometer.getMonoPos());
 }
@@ -675,19 +687,21 @@ void MainWindow::on_stepBackMono_clicked()
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    emit MoveStepUp(newSpectrometer->getMonoPos(), 1, true);
+    emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + 1, true);
+    reload_data();
 }
 
 void MainWindow::on_mvButton_2_clicked()
 {
     if(ui->moveData->text().toDouble() < 0)
     {   //Hier müssen Signale und Slots rein!
-        MonoNed(ui->moveData->text().toDouble(), newSpectrometer->getMonoPos());
+        emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toDouble(), false);
     }
     else
     {
-        MonoOpp(ui->moveData->text().toDouble(), newSpectrometer->getMonoPos());
+        emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toDouble(), true);
     }
+    reload_data();
 }
 
 void MainWindow::on_logButton_clicked()
@@ -785,12 +799,12 @@ void MainWindow::on_execButton_2_clicked()
     {
         if(ui->newPosition->text().toDouble() > newSpectrometer->getMonoPos())
         {
-            qDebug() << "Emitting MoveStepUp";
+            //qDebug() << "Emitting MoveStepUp";
             emit MoveStepUp(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble(), true);
         }
         else
         {
-            qDebug() << "Emitting MoveStepDown";
+            //qDebug() << "Emitting MoveStepDown";
             emit MoveStepDown(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble(), false);
         }
     }
@@ -847,4 +861,9 @@ void MainWindow::on_saveSettingsButton_clicked()
     out << (int)(newScanList.getCurrentScan().Params.polSettings[0])*1 + (int)(newScanList.getCurrentScan().Params.polSettings[1])*2 + (int)(newScanList.getCurrentScan().Params.polSettings[2])*4 << '\n';
     out << "All these data has been saved to the scan file, too\n";
     file.close();
+}
+
+void MainWindow::on_loadSettingsButton_clicked()
+{
+    QMessageBox::information(this, "Information", "Sorry, not implemented yet. Come back later!");
 }
