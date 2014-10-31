@@ -311,6 +311,7 @@ void scanner::run()
 {
     while(stopScanDevice == false)
     {
+        msleep(50);
         if(scanner::doScan)
             scan();
     }
@@ -558,6 +559,7 @@ void Spec_Control::run()
     bool i = false;
     while(control)
     {
+        msleep(50);
         i = !i;
     }
 }

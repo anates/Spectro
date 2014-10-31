@@ -696,10 +696,12 @@ void MainWindow::on_mvButton_2_clicked()
     if(ui->moveData->text().toDouble() < 0)
     {   //Hier müssen Signale und Slots rein!
         emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toDouble(), false);
+        ui->moveData->setText("");
     }
     else
     {
         emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toDouble(), true);
+        ui->moveData->setText("");
     }
     reload_data();
 }
