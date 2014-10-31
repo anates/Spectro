@@ -200,6 +200,7 @@ void Scan::clear(void)
     Scan::Params.clear();
     Scan::readonly = false;
     Scan::scanName = "";
+    Scan::isLoaded = false;
     Scan::values.clear();
 }
 

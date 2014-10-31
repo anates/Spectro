@@ -78,6 +78,7 @@ public:
     AveMode av;
     LogFile log;
     bool readonly = false;
+    bool isLoaded = false;
 
     void clear(void);
 };

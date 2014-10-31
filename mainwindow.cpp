@@ -822,6 +822,8 @@ void MainWindow::on_gridTabWidget_currentChanged(int index)
 void MainWindow::on_newScan_clicked(void)
 {
     tmpScan.clear();
+    tmpScan.isLoaded = true;
+    MainWindow::clear_window();
     MainWindow::changeState(ScanState);
 }
 
@@ -829,6 +831,7 @@ void MainWindow::on_stopScan_clicked(void)
 {
     tmpScan.clear();
     emit stopScan();
+    reload_data();
     MainWindow::changeState(EditState);
 }
 
@@ -846,7 +849,8 @@ void MainWindow::on_saveSettingsButton_clicked()
         QMessageBox::information(this, "Information", "Sorry, but no scan is loaded.");
         return;
     }
-    QString fileName = newScanList.getCurrentScan().scanName + ".dat";
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save scan"), "", tr("Scan data file (*.dat);;All Files(*)"));
+    //QString fileName = newScanList.getCurrentScan().scanName + ".dat";
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly))
     {
@@ -865,5 +869,63 @@ void MainWindow::on_saveSettingsButton_clicked()
 
 void MainWindow::on_loadSettingsButton_clicked()
 {
+    if(tmpScan.isLoaded == false)
+    {
+        QMessageBox::information(this, "Information", "Sorry, but no scan is loaded.");
+        return;
+    }
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Scan data file"), "", tr("Scan Data(*.dat);;All Files(*)"));
+    if(fileName.isEmpty())
+        return;
+    else
+    {
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::information(0, "error", file.errorString());
+            return;
+        }
+        QTextStream in(&file);
+        in.readLine();
+        tmpScan.Params.startPos = in.readLine().toDouble();
+        ui->setStartPosition->setText(QString::number(tmpScan.Params.startPos));
+        tmpScan.Params.finPos = in.readLine().toDouble();
+        ui->setTargetPosition->setText(QString::number(tmpScan.Params.finPos));
+        tmpScan.Params.scanSpeed = in.readLine().toDouble();
+        ui->setScanSpeed->setText(QString::number(tmpScan.Params.scanSpeed));
+        qreal polPos = in.readLine().toDouble();
+        tmpScan.Params.polSettings[0] = (polPos == 1 || polPos == 3 || polPos == 5 || polPos == 7);
+        tmpScan.Params.polSettings[1] = (polPos == 2 || polPos == 6);
+        tmpScan.Params.polSettings[2] = (polPos >= 4);
+        ui->dispXValue->setChecked(tmpScan.Params.polSettings[0]);
+        ui->dispYValue->setChecked(tmpScan.Params.polSettings[1]);
+        ui->dispZValue->setChecked(tmpScan.Params.polSettings[2]);
+        file.close();
+    }
+
+
+}
+
+void MainWindow::on_centerMono_clicked(void)
+{
     QMessageBox::information(this, "Information", "Sorry, not implemented yet. Come back later!");
+}
+
+void MainWindow::clear_window(void)
+{
+    ui->setScanSpeed->setText("");
+    ui->setStartPosition->setText("");
+    ui->setTargetPosition->setText("");
+    ui->scanName->setText("");
+    QVector<qreal> x, y;
+    for(int i = 0; i < 1; i++)
+    {
+        x.push_back((double)i);
+        y.push_back(0.0);
+    }
+    MainWindow::Curve.setSamples(x, y);
+    MainWindow::Curve.attach(ui->qwtPlot);
+    ui->qwtPlot->updateAxes();
+    ui->qwtPlot->show();
+    ui->qwtPlot->replot();
+    //ui->qwtPlot->detachItems(QwtPlotItem::Rtti_PlotItem, true);
 }

@@ -109,13 +109,17 @@ private slots:
 
     void on_gridTabWidget_currentChanged(int index);
 
-    void on_newScan_clicked();
+    void on_newScan_clicked(void);
 
-    void on_stopScan_clicked();
+    void on_stopScan_clicked(void);
 
     void on_saveSettingsButton_clicked();
 
     void on_loadSettingsButton_clicked();
+
+    void on_centerMono_clicked(void);
+
+
 
 private:
 
@@ -124,6 +128,7 @@ private:
     void createActions();
     void createMenus();
     void changeState(State newState);
+    void clear_window(void);
     //void contextMenuEvent(QContextMenuEvent *event);
 
     //void customContextMenuRequested(const QPoint &pos);
