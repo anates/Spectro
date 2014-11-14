@@ -33,6 +33,9 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 INCLUDEPATH += /usr/include/qwt
-LIBS += -L/usr/lib/ -lqwt
+#Has to be changed back to -L/usr/lib/ afterwards
+LIBS += -L/home/roland/Downloads/qwt-6.1.1/lib/ -lqwt
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -std=gnu++0x
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
