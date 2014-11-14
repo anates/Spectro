@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QMap>
 #include <QWidget>
 #include <qwt_plot.h>
@@ -136,7 +136,7 @@ private:
 
     Ui::MainWindow *ui;
 
-    QMap<qreal, qreal> Scandata;
+    QMap<double, double> Scandata;
     QVector<bool> polarizerSettings;
     ScanList newScanList;
     struct Scan tmpScan;

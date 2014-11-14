@@ -1,5 +1,6 @@
 #ifndef ADD_FUNCTIONS_H
 #define ADD_FUNCTIONS_H
+#define _GLIBCXX_USE_NANOSLEEP
 
 #include <cstring>
 #include <stdio.h>
@@ -28,6 +29,8 @@
 #include <QDate>
 #include <QThread>
 #include <QDebug>
+#include <QFileDialog>
+#include <QDialogButtonBox>
 
 #define ACCURACY 10
 
@@ -138,7 +141,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName);
 void write_unformatted_file(const Scan &Data, QString fileName);
 void write_log_file(const Scan &Data, QString fileName);
 void splitToDoubles(QPair<double, double> &valuePair, QString input);
-void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<qreal, qreal> &outdata);
+void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<double, double> &outdata);
 
 //New inserted from Monokrom
 void MonoOpp(const qreal step, qreal &MonoPos);

@@ -918,7 +918,7 @@ void MainWindow::clear_window(void)
     ui->setStartPosition->setText("");
     ui->setTargetPosition->setText("");
     ui->scanName->setText("");
-    QVector<qreal> x, y;
+    QVector<double> x, y;
     for(int i = 0; i < 1; i++)
     {
         x.push_back((double)i);

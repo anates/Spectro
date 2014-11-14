@@ -158,7 +158,7 @@ void splitToDoubles(QPair<double, double> &valuePair, QString input)
     valuePair = qMakePair(x, y);
 }
 
-void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<qreal, qreal> &outdata)//Assumes that all values are already ordered
+void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<double, double> &outdata)//Assumes that all values are already ordered
 {
     for(int i = 0; i < indata.size(); i++)
     {
