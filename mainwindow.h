@@ -9,6 +9,7 @@
 #include <qwt_plot_grid.h>
 #include <QThread>
 #include "Globale.h"
+#include "../remoteController/tx_thread.h"
 //#include "Maaling.h"
 //#include "add_functions.h"
 
@@ -39,6 +40,24 @@ public slots:
     void scanIsFinished(void);
     void addNewValue(qreal wNumber, qreal counts);
     void scanIsInterrupted(void);
+    //TX Slots
+    //MainTX slots
+    void wrongDeviceMain(void);
+    void gotNewDataMain(QVariant data);
+    void MainKilled(void);
+    void NoServer(void);
+    //PCTX slots
+    void wrongDevicePC(void);
+    void gotNewDataPC(QVariant data);
+    void PCkilled(void);
+    //PolTX slots
+    void wrongDevicePol(void);
+    void gotNewConnectionPol(QString address);
+    void Polkilled(void);
+    //STPTX slots
+    void wrongDeviceSTP(void);
+    void gotNewConnectionSTP(QString address);
+    void STPkilled(void);
 
 signals:
     //Polarizer signals
@@ -57,6 +76,18 @@ signals:
     void startScan(void);
     void killScanner(void);
     void initScanner(qreal, qreal, qreal, qreal, bool);
+    //MainTX signals
+    void killMain(void);
+    void connectMain(QString, quint32);
+    //PCTX signals
+    void killPC(void);
+    void connectPC(QString, quint32);
+    //PolTX signals
+    void killPol(void);
+    void sendDataPoll(QVariant);
+    //STPTX signals
+    void killSTP(void);
+    void sendDataSTP(QVariant);
 
 private slots:
     void on_loadGenericButton_clicked();
@@ -119,7 +150,7 @@ private slots:
 
     void on_centerMono_clicked(void);
 
-
+    void on_connect_clicked();
 
 private:
 
@@ -143,10 +174,20 @@ private:
     int currentScanNumber;
     struct Spectrometer *newSpectrometer;
 
+    //TX
+    QString ipAddr;
+    quint32 port;
+    TX_thread *Main_TX;//Client
+    TX_thread *PolTX;//Server
+    TX_thread *PCTX;//Client
+    TX_thread *STPTX;//Server
+
+    bool MainTXRun, PolTXRun, PCTXRun, STPTXRun;
+    //QWT tools
     QPen pen;
     QwtPlotCurve Curve;
     QwtPlotGrid Grid;
-
+    //Menu actions
     QMenu *fileMenu;
     QAction *openAct;
     QAction *openGenericAct;

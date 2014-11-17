@@ -18,7 +18,31 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::loadConfig();
     MainWindow::newSpecControl = new Spec_Control(newSpectrometer->getMonoPos());
     MainWindow::newScanner = new scanner;
+    //Setup of TX-Clients
+    MainWindow::ipAddr = "127.0.0.1";
+    MainWindow::port = 40000;
+    MainWindow::Main_TX = new TX_thread(MainWindow::ipAddr, MainWindow::port, false);
+    MainWindow::PCTX = NULL;
+    MainWindow::PolTX = NULL;
+    MainWindow::STPTX = NULL;
 
+    //Setup of TX data in UI
+    ui->STPTXcon->setDisabled(true);
+    ui->MainTXcon->setDisabled(true);
+    ui->PCTXcon->setDisabled(true);
+    ui->PolTXcon->setDisabled(true);
+    ui->ipAddress->setInputMask("000.000.000.000");
+
+    MainWindow::MainTXRun = false;
+    MainWindow::PolTXRun = false;
+    MainWindow::PCTXRun = false;
+    MainWindow::STPTXRun = false;
+
+    //Connecting mainTX
+    connect(this, SIGNAL(killMain()), Main_TX, SLOT(killTX()));
+    connect(this, SIGNAL(connectMain(QString,quint32)), Main_TX, SLOT(connect_to_TX(QString,quint32)));
+    connect(Main_TX, SIGNAL(gotNewData(QVariant)), this, SLOT(gotNewDataMain(QVariant)));
+    connect(Main_TX, SIGNAL(noServer()), this, SLOT(NoServer()));
     //Create Menus
     createActions();
     createMenus();
@@ -96,6 +120,8 @@ MainWindow::MainWindow(QWidget *parent) :
     newSpecControl->start();
     newDPC->start();
     newScanner->start();
+    Main_TX->start();
+
 }
 
 MainWindow::~MainWindow()
@@ -930,4 +956,114 @@ void MainWindow::clear_window(void)
     ui->qwtPlot->show();
     ui->qwtPlot->replot();
     //ui->qwtPlot->detachItems(QwtPlotItem::Rtti_PlotItem, true);
+}
+
+void MainWindow::on_connect_clicked()
+{
+    if(ui->ipAddress->text().isEmpty() || ui->port->text().isEmpty())
+    {
+        QMessageBox::information(this, "Information", "One of the required fields has not been filled out. Please fill out all fields before connecting!");
+        return;
+    }
+    QHostAddress myIp;
+    if(!myIp.setAddress(ui->ipAddress->text()))
+    {
+        QMessageBox::information(this, "Information", "No valid ip address entered. Please verify!");
+        return;
+    }
+    qDebug() << "Connecting now!";
+    emit connectMain(ui->ipAddress->text(), ui->port->text().toUInt());
+}
+
+void MainWindow::gotNewDataMain(QVariant data)
+{
+    if(data.toString() == "BBB")
+    {
+        ui->MainTXcon->setChecked(true);
+        emit MainWindow::connectPC(ui->ipAddress->text(), ui->port->text().toUInt() + 1);//Has to be verified!
+    }
+    else
+    {
+        QMessageBox::information(this, "Error", data.toString());
+        return;
+    }
+    MainWindow::MainTXRun = true;
+    ui->MainTXcon->setChecked(true);
+}
+
+void MainWindow::wrongDeviceMain()
+{
+
+}
+
+void MainWindow::MainKilled()
+{
+    MainTXRun = false;
+}
+
+void MainWindow::NoServer()
+{
+    QMessageBox::information(this, "Error", "No server found, please check connection!");
+}
+
+void MainWindow::gotNewDataPC(QVariant data)
+{
+    if(data.toString() == "INIT")
+    {
+        MainWindow::PCTXRun = true;
+        ui->PCTXcon->setChecked(true);
+    }
+    //ToDo something with data!
+}
+
+void MainWindow::wrongDevicePC()
+{
+
+}
+
+void MainWindow::PCkilled()
+{
+    MainWindow::PCTXRun = false;
+}
+
+void MainWindow::gotNewConnectionPol(QString address)
+{
+    if(address == ui->ipAddress->text())
+    {
+        ui->PolTXcon->setChecked(true);
+        PolTXRun = true;
+    }
+    else
+        QMessageBox::information(this, "Error", "PolTX got connected from an alien ip address!");
+}
+
+void MainWindow::wrongDevicePol()
+{
+
+}
+
+void MainWindow::Polkilled()
+{
+    PolTXRun = false;
+}
+
+void MainWindow::gotNewConnectionSTP(QString address)
+{
+    if(address == ui->ipAddress->text())
+    {
+        ui->STPTXcon->setChecked(true);
+        STPTXRun = true;
+    }
+    else
+        QMessageBox::information(this, "Error", "STPTX got connected from an alien ip address!");
+}
+
+void MainWindow::wrongDeviceSTP()
+{
+
+}
+
+void MainWindow::STPkilled()
+{
+    STPTXRun = false;
 }

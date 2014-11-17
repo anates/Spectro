@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network testlib
 
 TARGET = RamanII
 TEMPLATE = app
@@ -20,7 +20,10 @@ SOURCES += main.cpp\
     Analyse.cpp \
     add_functions.cpp \
     Raman_old.cpp \
-    Raman.cpp
+    Raman.cpp \
+    ../tcp_client_test/client.cpp \
+    ../tcp_client_test/server.cpp \
+    ../remoteController/tx_thread.cpp
 
 HEADERS  += mainwindow.h \
     Raman.h \
@@ -28,7 +31,10 @@ HEADERS  += mainwindow.h \
     Maaling.h \
     Globale.h \
     COM_PROC.h \
-    add_functions.h
+    add_functions.h \
+    ../tcp_client_test/client.h \
+    ../tcp_client_test/server.h \
+    ../remoteController/tx_thread.h
 
 FORMS    += mainwindow.ui
 
