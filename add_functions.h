@@ -210,6 +210,8 @@ public:
 signals:
     void movedPolarizer(Polarizer, bool);
     void movedStepper(qreal);
+    void movedStepperTX(bool);
+    void movedPolarizerTX(int);
 };
 
 #endif // ADD_FUNCTIONS_H

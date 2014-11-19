@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Setup of TX-Clients
     MainWindow::ipAddr = "127.0.0.1";
     MainWindow::port = 40000;
-    MainWindow::Main_TX = new TX_thread(MainWindow::ipAddr, MainWindow::port, false);
+    MainWindow::Main_TX = NULL;//new TX_thread(MainWindow::ipAddr, MainWindow::port);
     MainWindow::PCTX = NULL;
     MainWindow::PolTX = NULL;
     MainWindow::STPTX = NULL;
@@ -38,11 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::PCTXRun = false;
     MainWindow::STPTXRun = false;
 
-    //Connecting mainTX
-    connect(this, SIGNAL(killMain()), Main_TX, SLOT(killTX()));
-    connect(this, SIGNAL(connectMain(QString,quint32)), Main_TX, SLOT(connect_to_TX(QString,quint32)));
-    connect(Main_TX, SIGNAL(gotNewData(QVariant)), this, SLOT(gotNewDataMain(QVariant)));
-    connect(Main_TX, SIGNAL(noServer()), this, SLOT(NoServer()));
+
     //Create Menus
     createActions();
     createMenus();
@@ -97,6 +93,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
     connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
     connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
+    connect(newSpecControl, &Spec_Control::movedStepperTX, this, &MainWindow::sendDataSTP);
+    connect(newSpecControl, &Spec_Control::movedPolarizerTX, this, &MainWindow::sendDataPoll);
     connect(newSpecControl, SIGNAL(movedPolarizer(Polarizer,bool)), newSpectrometer, SLOT(setPolarizersSlot(Polarizer,bool)));
     connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
     connect(newSpecControl, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
@@ -110,7 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newScanner, SIGNAL(moveToPosition(qreal,qreal,bool)), newSpecControl, SLOT(moveStepMotor(qreal,qreal,bool)));
     connect(newScanner, SIGNAL(scanInterrupted()), this, SLOT(scanIsInterrupted()));
 
-
     //Thread work
 //    newSpecControl->moveToThread(SCThread);
     //set current state:
@@ -120,7 +117,6 @@ MainWindow::MainWindow(QWidget *parent) :
     newSpecControl->start();
     newDPC->start();
     newScanner->start();
-    Main_TX->start();
 
 }
 
@@ -972,6 +968,27 @@ void MainWindow::on_connect_clicked()
         return;
     }
     qDebug() << "Connecting now!";
+    MainWindow::Main_TX = new TX_thread(MainWindow::ipAddr, MainWindow::port);
+    MainWindow::PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2);
+    MainWindow::PolTX = new Server(MainWindow::ipAddr, MainWindow::port + 3);
+    MainWindow::STPTX = new Server(MainWindow::ipAddr, MainWindow::port + 1);
+    //Connecting mainTX
+    connect(this, SIGNAL(killMain()), Main_TX, SLOT(killTX()));
+    connect(this, SIGNAL(connectMain(QString,quint32)), Main_TX, SLOT(connect_to_TX(QString,quint32)));
+    connect(Main_TX, SIGNAL(gotNewData(QVariant)), this, SLOT(gotNewDataMain(QVariant)));
+    connect(Main_TX, SIGNAL(noServer()), this, SLOT(NoServer()));
+    //connecting PCTX
+    connect(this, &MainWindow::killPC, PCTX, &TX_thread::killTX);
+    connect(this, &MainWindow::connectPC, PCTX, &TX_thread::connect_to_TX);
+    connect(PCTX, &TX_thread::gotNewData, this, &MainWindow::gotNewDataPC);
+    connect(PCTX, &TX_thread::noServer, this, &MainWindow::NoServer);
+    //Connecting PolTX && STPTX
+    connect(this, &MainWindow::sendDataPoll, PolTX, &Server::sendData);
+    connect(this, &MainWindow::sendDataSTP, STPTX, &Server::sendData);
+    connect(PolTX, &Server::gotNewConnection, this, &MainWindow::gotNewConnectionPol);
+    connect(STPTX, &Server::gotNewConnection, this, &MainWindow::gotNewConnectionSTP);
+    Main_TX->start();
+    PCTX->start();
     emit connectMain(ui->ipAddress->text(), ui->port->text().toUInt());
 }
 
@@ -980,7 +997,16 @@ void MainWindow::gotNewDataMain(QVariant data)
     if(data.toString() == "BBB")
     {
         ui->MainTXcon->setChecked(true);
-        emit MainWindow::connectPC(ui->ipAddress->text(), ui->port->text().toUInt() + 1);//Has to be verified!
+        if(PCTX == NULL)
+        {
+            PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2);
+            //connect PC
+            connect(this, &MainWindow::killPC, PCTX, &TX_thread::killTX);
+            connect(this, &MainWindow::connectPC, PCTX, &TX_thread::connect_to_TX);
+            connect(PCTX, &TX_thread::gotNewData, this, &MainWindow::gotNewDataPC);
+            connect(PCTX, &TX_thread::noServer, this, &MainWindow::NoServer);
+        }
+        emit MainWindow::connectPC(ui->ipAddress->text(), ui->port->text().toUInt() + 2);//Has to be verified!
     }
     else
     {
@@ -1013,7 +1039,11 @@ void MainWindow::gotNewDataPC(QVariant data)
         MainWindow::PCTXRun = true;
         ui->PCTXcon->setChecked(true);
     }
-    //ToDo something with data!
+    else
+    {
+        quint32 counts = data.toUInt();
+        //Now Data has to be saved!
+    }
 }
 
 void MainWindow::wrongDevicePC()
@@ -1026,11 +1056,12 @@ void MainWindow::PCkilled()
     MainWindow::PCTXRun = false;
 }
 
-void MainWindow::gotNewConnectionPol(QString address)
+void MainWindow::gotNewConnectionPol(QVariant address)
 {
-    if(address == ui->ipAddress->text())
+    if(/*address.toString() == ui->ipAddress->text()*/true)
     {
         ui->PolTXcon->setChecked(true);
+        qDebug() << "Pol got connected";
         PolTXRun = true;
     }
     else
@@ -1047,11 +1078,12 @@ void MainWindow::Polkilled()
     PolTXRun = false;
 }
 
-void MainWindow::gotNewConnectionSTP(QString address)
+void MainWindow::gotNewConnectionSTP(QVariant address)
 {
-    if(address == ui->ipAddress->text())
+    if(address.toString() == ui->ipAddress->text())
     {
         ui->STPTXcon->setChecked(true);
+        qDebug() << "STP got connected!";
         STPTXRun = true;
     }
     else

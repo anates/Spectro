@@ -52,11 +52,11 @@ public slots:
     void PCkilled(void);
     //PolTX slots
     void wrongDevicePol(void);
-    void gotNewConnectionPol(QString address);
+    void gotNewConnectionPol(QVariant address);
     void Polkilled(void);
     //STPTX slots
     void wrongDeviceSTP(void);
-    void gotNewConnectionSTP(QString address);
+    void gotNewConnectionSTP(QVariant address);
     void STPkilled(void);
 
 signals:
@@ -178,9 +178,9 @@ private:
     QString ipAddr;
     quint32 port;
     TX_thread *Main_TX;//Client
-    TX_thread *PolTX;//Server
+    Server *PolTX;//Server
     TX_thread *PCTX;//Client
-    TX_thread *STPTX;//Server
+    Server *STPTX;//Server
 
     bool MainTXRun, PolTXRun, PCTXRun, STPTXRun;
     //QWT tools

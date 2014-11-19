@@ -567,6 +567,8 @@ void Spec_Control::run()
 void Spec_Control::movePolarizer(Polarizer pol, bool state)
 {
     //connect to pins is missing, has to be done###
+    int pol_intValue = Spec_Control::polState[0]*1 + Spec_Control::polState[1]*2 + Spec_Control::polState[2]*4;
+    emit movedPolarizerTX(pol_intValue);
     emit movedPolarizer(pol, state);
 }
 
@@ -582,7 +584,8 @@ void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
             //MonoNed(1, Spec_Control::MonoPos);
             MonoPos--;//Only for debug, after MonoOpp is not working at the moment###
     }
-    //qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;
+    //qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;7
+    emit movedStepperTX(dir);
     emit movedStepper(Spec_Control::MonoPos);
 }
 
@@ -590,6 +593,7 @@ void Spec_Control::moveUp(void)
 {
     //MonoOpp(1, Spec_Control::MonoPos);//For debug disabled###
     Spec_Control::MonoPos++;
+    emit movedStepperTX(true);
     emit movedStepper(Spec_Control::MonoPos);
 }
 
@@ -597,6 +601,7 @@ void Spec_Control::moveDown(void)
 {
     //MonoNed(1, Spec_Control::MonoPos);//For debug disabled###
     Spec_Control::MonoPos--;
+    emit movedStepperTX(false);
     emit movedStepper(Spec_Control::MonoPos);
 }
 
