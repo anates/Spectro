@@ -85,6 +85,7 @@ public:
     bool isLoaded = false;
 
     void clear(void);
+    Scan();
 };
 
 class ScanList: public QObject

@@ -368,11 +368,28 @@ ScanParams::ScanParams()
 {
     for(int i = 0; i < 3; i++)
         ScanParams::polSettings.push_back(false);
+    ScanParams::finPos = 0;
+    ScanParams::scanSpeed = 0;
+    ScanParams::startPos = 0;
+}
+
+Scan::Scan()
+{
+    Scan::isLoaded = false;
+    Scan::log.clear();
+    Scan::Params.clear();
+    Scan::readonly = false;
+    Scan::scanName = "";
+    Scan::values.clear();
 }
 
 ScanList::ScanList()
 {
     //qDebug() << "ScanList: " << thread() << QThread::currentThread();
+    ScanList::currentScan = 0;
+    ScanList::fileName = "";
+    ScanList::scanFileNames.clear();
+    ScanList::Scans.clear();
     currentScan = -1;
 }
 
