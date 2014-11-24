@@ -8,6 +8,8 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <QThread>
+#include <QJsonObject>
+#include <QJsonValue>
 #include "Globale.h"
 #include "../remoteController/tx_thread.h"
 //#include "Maaling.h"
@@ -50,6 +52,10 @@ public slots:
     void wrongDevicePC(void);
     void gotNewDataPC(QVariant data);
     void PCkilled(void);
+    //FLTX slots
+    void wrongDeviceFL(void);
+    void gotNewFileFL(QVariant data);
+    void FLkilled(void);
     //PolTX slots
     void wrongDevicePol(void);
     void gotNewConnectionPol(QVariant address);
@@ -79,6 +85,9 @@ signals:
     //MainTX signals
     void killMain(void);
     void connectMain(QString, quint32);
+    //FLTX signals
+    void killFL(void);
+    void connectFL(QString, quint32);
     //PCTX signals
     void killPC(void);
     void connectPC(QString, quint32);
@@ -181,8 +190,9 @@ private:
     Server *PolTX;//Server
     TX_thread *PCTX;//Client
     Server *STPTX;//Server
+    TX_thread *FLTX; //Client
 
-    bool MainTXRun, PolTXRun, PCTXRun, STPTXRun;
+    bool MainTXRun, PolTXRun, PCTXRun, STPTXRun, FLRun;
     //QWT tools
     QPen pen;
     QwtPlotCurve Curve;

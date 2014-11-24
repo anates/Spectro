@@ -25,12 +25,14 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::PCTX = NULL;
     MainWindow::PolTX = NULL;
     MainWindow::STPTX = NULL;
+    MainWindow::FLTX = NULL;
 
     //Setup of TX data in UI
     ui->STPTXcon->setDisabled(true);
     ui->MainTXcon->setDisabled(true);
     ui->PCTXcon->setDisabled(true);
     ui->PolTXcon->setDisabled(true);
+    ui->FLTXcon->setDisabled(true);
     ui->ipAddress->setInputMask("000.000.000.000");
 
     MainWindow::MainTXRun = false;
@@ -772,7 +774,7 @@ void MainWindow::loadConfig()
     QString filename = "Config.txt";
     QFile file(filename);
     if(!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::information(0, "error", file.errorString());
+        QMessageBox::information(0, "error", "No config file found!");
         return;
     }
     QTextStream in(&file);
@@ -968,10 +970,11 @@ void MainWindow::on_connect_clicked()
         return;
     }
     qDebug() << "Connecting now!";
-    MainWindow::Main_TX = new TX_thread(MainWindow::ipAddr, MainWindow::port);
-    MainWindow::PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2);
+    MainWindow::Main_TX = new TX_thread(MainWindow::ipAddr, MainWindow::port, "DATA");
+    MainWindow::PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2, "DATA");
     MainWindow::PolTX = new Server(MainWindow::ipAddr, MainWindow::port + 3);
     MainWindow::STPTX = new Server(MainWindow::ipAddr, MainWindow::port + 1);
+    MainWindow::FLTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 4, "FILE");
     //Connecting mainTX
     connect(this, SIGNAL(killMain()), Main_TX, SLOT(killTX()));
     connect(this, SIGNAL(connectMain(QString,quint32)), Main_TX, SLOT(connect_to_TX(QString,quint32)));
@@ -982,6 +985,11 @@ void MainWindow::on_connect_clicked()
     connect(this, &MainWindow::connectPC, PCTX, &TX_thread::connect_to_TX);
     connect(PCTX, &TX_thread::gotNewData, this, &MainWindow::gotNewDataPC);
     connect(PCTX, &TX_thread::noServer, this, &MainWindow::NoServer);
+    //Connect FLTX
+    connect(this, &MainWindow::killFL, FLTX, &TX_thread::killTX);
+    connect(this, &MainWindow::connectFL, FLTX, &TX_thread::connect_to_TX);
+    connect(FLTX, &TX_thread::gotNewData, this, &MainWindow::gotNewFileFL);
+    connect(FLTX, &TX_thread::noServer, this, &MainWindow::NoServer);
     //Connecting PolTX && STPTX
     connect(this, &MainWindow::sendDataPoll, PolTX, &Server::sendData);
     connect(this, &MainWindow::sendDataSTP, STPTX, &Server::sendData);
@@ -989,6 +997,7 @@ void MainWindow::on_connect_clicked()
     connect(STPTX, &Server::gotNewConnection, this, &MainWindow::gotNewConnectionSTP);
     Main_TX->start();
     PCTX->start();
+    FLTX->start();
     emit connectMain(ui->ipAddress->text(), ui->port->text().toUInt());
 }
 
@@ -999,14 +1008,15 @@ void MainWindow::gotNewDataMain(QVariant data)
         ui->MainTXcon->setChecked(true);
         if(PCTX == NULL)
         {
-            PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2);
+            PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2, "DATA");
             //connect PC
             connect(this, &MainWindow::killPC, PCTX, &TX_thread::killTX);
             connect(this, &MainWindow::connectPC, PCTX, &TX_thread::connect_to_TX);
             connect(PCTX, &TX_thread::gotNewData, this, &MainWindow::gotNewDataPC);
             connect(PCTX, &TX_thread::noServer, this, &MainWindow::NoServer);
         }
-        emit MainWindow::connectPC(ui->ipAddress->text(), ui->port->text().toUInt() + 2);//Has to be verified!
+        emit MainWindow::connectPC(ui->ipAddress->text(), ui->port->text().toUInt() + 2);
+        emit MainWindow::connectFL(ui->ipAddress->text(), ui->port->text().toUInt() + 4);
     }
     else
     {
@@ -1098,4 +1108,39 @@ void MainWindow::wrongDeviceSTP()
 void MainWindow::STPkilled()
 {
     STPTXRun = false;
+}
+
+void MainWindow::wrongDeviceFL()
+{
+
+}
+
+void MainWindow::FLkilled()
+{
+    MainWindow::FLRun = false;
+}
+
+void MainWindow::gotNewFileFL(QVariant data)
+{
+    if(data.toString() == "FILE")
+    {
+        MainWindow::FLRun = true;
+        ui->FLTXcon->setChecked(true);
+    }
+    else
+    {
+        QString fileName = "Data.txt";
+        QString new_fileName = fileName;
+        int i = 0;
+        while(access(fileName.toStdString().c_str(), F_OK) == -1)
+        {
+            new_fileName = fileName;
+            i++;
+            new_fileName += i;
+        }
+        QFile file(new_fileName);
+        file.open(QIODevice::WriteOnly);
+        file.write(data.toByteArray());
+        file.close();
+    }
 }

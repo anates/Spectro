@@ -364,6 +364,12 @@ void scanner::stopScanner(void)
     stopScanDevice = true;
 }
 
+ScanParams::ScanParams()
+{
+    for(int i = 0; i < 3; i++)
+        ScanParams::polSettings.push_back(false);
+}
+
 ScanList::ScanList()
 {
     //qDebug() << "ScanList: " << thread() << QThread::currentThread();
@@ -549,6 +555,10 @@ void Spectrometer::setPolarizersSlot(Polarizer pol, bool state)
 
 Spec_Control::Spec_Control(qreal MonoPos)
 {
+    for(int i = 0; i < 3; i++)
+    {
+        Spec_Control::polState.push_back(false);
+    }
     Spec_Control::MonoPos = MonoPos;
     Spec_Control::control = true;
     //qDebug() << "SpecControl: " << thread() << QThread::currentThread();

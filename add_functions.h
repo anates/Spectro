@@ -67,9 +67,10 @@ public:
     qreal startPos;
     qreal finPos;
     qreal scanSpeed;
-    QVector<bool> polSettings = {false, false, false};
+    QVector<bool> polSettings;
 
     void clear();
+    ScanParams();
 };
 
 class Scan
@@ -195,7 +196,7 @@ class Spec_Control: public QThread
 {
     Q_OBJECT
 private:
-    QVector<bool> polState = {false, false, false};
+    QVector<bool> polState;
     qreal MonoPos;
     volatile bool control;
 public slots:

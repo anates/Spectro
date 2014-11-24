@@ -484,8 +484,12 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="ipAddress"/>
+         <item row="5" column="1">
+          <widget class="QCheckBox" name="STPTXcon">
+           <property name="text">
+            <string>Connected?</string>
+           </property>
+          </widget>
          </item>
          <item row="0" column="1">
           <widget class="QLabel" name="portLabel">
@@ -494,12 +498,8 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
-          <widget class="QCheckBox" name="STPTXcon">
-           <property name="text">
-            <string>Connected?</string>
-           </property>
-          </widget>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="ipAddress"/>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_17">
@@ -536,6 +536,20 @@
            </property>
           </widget>
          </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_21">
+           <property name="text">
+            <string>File-TX connected?</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QCheckBox" name="FLTXcon">
+           <property name="text">
+            <string>Connected?</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </widget>
@@ -549,7 +563,7 @@
      <x>0</x>
      <y>0</y>
      <width>891</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
