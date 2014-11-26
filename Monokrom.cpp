@@ -80,30 +80,31 @@ void MonoNed(const double step, qreal &MonoPos)
 
 void MonoOpp(const qreal step, qreal &MonoPos)
 {
-	long int i, iMonoStep, limit1, limit2, limit3;
-	i = 0;
-	iMonoStep = (int)(step / MonoFaktor);
-	limit1 = iMonoStep - 100;
-	limit2 = iMonoStep - 200;
-	limit3 = iMonoStep - 300;
-    while ((i < iMonoStep) && (MonoPos <= MaxMonoPos))
-	{
-		if ((i < 100) || (i > limit1))
-		{
-			ShortDelay(StepTime);
-			if ((i < 200) || (i > limit2))
-			{
-				ShortDelay(StepTime);
-				if ((i < 300) || (i > limit3))
-					ShortDelay(StepTime);
-			}
-		}
-        //Port[monoport] = Current | Step_Ned; Hier muss der Port angepasst werden
-        ShortDelay(StepTime);
-        //Port[monoport] = Current | Ned; Hier muss der Port angepasst werden
-        MonoPos = MonoPos + MonoFaktor;
-        i++;
-    }
+//	long int i, iMonoStep, limit1, limit2, limit3;
+//	i = 0;
+//	iMonoStep = (int)(step / MonoFaktor);
+//	limit1 = iMonoStep - 100;
+//	limit2 = iMonoStep - 200;
+//	limit3 = iMonoStep - 300;
+//    while ((i < iMonoStep) && (MonoPos <= MaxMonoPos))
+//	{
+//		if ((i < 100) || (i > limit1))
+//		{
+//			ShortDelay(StepTime);
+//			if ((i < 200) || (i > limit2))
+//			{
+//				ShortDelay(StepTime);
+//				if ((i < 300) || (i > limit3))
+//					ShortDelay(StepTime);
+//			}
+//		}
+//        //Port[monoport] = Current | Step_Ned; Hier muss der Port angepasst werden
+//        ShortDelay(StepTime);
+//        //Port[monoport] = Current | Ned; Hier muss der Port angepasst werden
+//        MonoPos = MonoPos + MonoFaktor;
+//        i++;
+//    }
+
 }
 
 void moveToTarget(const double &NewMonoPos, qreal &MonoPos)

@@ -84,14 +84,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(xPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer, bool)));
     connect(this, SIGNAL(yPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
     connect(this, SIGNAL(zPolarizerMoved(Polarizer,bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
-    connect(this, SIGNAL(MoveStepUp(qreal, qreal, bool)), newSpecControl, SLOT(moveStepMotor(qreal, qreal, bool)));
-    connect(this, SIGNAL(MoveStepDown(qreal, qreal, bool)), newSpecControl, SLOT(moveStepMotor(qreal, qreal, bool)));
+    connect(this, SIGNAL(MoveStepUp(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
+    connect(this, SIGNAL(MoveStepDown(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
+    connect(this, SIGNAL(MoveToTarget(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
     connect(this, SIGNAL(stopControlling(void)), newSpecControl, SLOT(stopControl(void)));
     connect(this, SIGNAL(stopCounting(void)), newDPC, SLOT(cancelThread(void)));
     connect(this, SIGNAL(stopScan()), newScanner, SLOT(cancelScan()));
     connect(this, SIGNAL(startScan()), newScanner, SLOT(runScan()));
     connect(this, SIGNAL(killScanner()), newScanner, SLOT(stopScanner()));
-    connect(this, SIGNAL(initScanner(qreal,qreal,qreal,qreal,bool)), newScanner, SLOT(init(qreal,qreal,qreal,qreal,bool)));
+    connect(this, SIGNAL(initScanner(int, int, int , int, bool)), newScanner, SLOT(init(int, int, int, int,bool)));
     connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
     connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
     connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
@@ -107,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newScanner, SIGNAL(currentValue(qreal,qreal)), this, SLOT(addNewValue(qreal,qreal)));
     connect(newScanner, SIGNAL(moveStepUp(void)), MainWindow::newSpecControl, SLOT(moveUp()));
     connect(newScanner, SIGNAL(moveStepDown(void)), MainWindow::newSpecControl, SLOT(moveDown()));
-    connect(newScanner, SIGNAL(moveToPosition(qreal,qreal,bool)), newSpecControl, SLOT(moveStepMotor(qreal,qreal,bool)));
+    connect(newScanner, SIGNAL(moveToPosition(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
     connect(newScanner, SIGNAL(scanInterrupted()), this, SLOT(scanIsInterrupted()));
 
     //Thread work
@@ -184,7 +185,7 @@ void MainWindow::open()
         return;
     else
     {
-        struct Scan newScan;
+        class Scan newScan;
         QFile file(fileName);
         int monoSetting;
         qreal startScan, finScan, scanSpeed;
@@ -601,6 +602,8 @@ void MainWindow::on_scanButton_clicked()
     emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
     emit startScan();
+    yes = NULL;
+    no = NULL;
     //Analyze(MainWindow::newScanList);
 }
 
@@ -702,7 +705,7 @@ void MainWindow::reload_data()
 void MainWindow::on_stepBackMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() - 1, false);
+    emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() - 1);
     reload_data();
     //Muss ausgebaut werden
     //MonoNed(1, newSpectrometer.getMonoPos());
@@ -711,7 +714,7 @@ void MainWindow::on_stepBackMono_clicked()
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + 1, true);
+    emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + 1);
     reload_data();
 }
 
@@ -719,12 +722,12 @@ void MainWindow::on_mvButton_2_clicked()
 {
     if(ui->moveData->text().toDouble() < 0)
     {   //Hier müssen Signale und Slots rein!
-        emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toDouble(), false);
+        emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
         ui->moveData->setText("");
     }
     else
     {
-        emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toDouble(), true);
+        emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
         ui->moveData->setText("");
     }
     reload_data();
@@ -748,7 +751,11 @@ void MainWindow::on_logButton_clicked()
         //msgBox.setDefaultButton(QMessageBox::Discard);
         msgBox.exec();
         if(msgBox.clickedButton() == cancel)
+        {
+            replace = NULL;
+            cancel = NULL;
             return;
+        }
     }
     else
     {
@@ -821,18 +828,19 @@ void MainWindow::writeConfig()
 
 void MainWindow::on_execButton_2_clicked()
 {
-    if((ui->newPosition->text().toDouble() != newSpectrometer->getMonoPos()) && !ui->newPosition->text().isEmpty())
+    if((ui->newPosition->text().toInt() != newSpectrometer->getMonoPos()) && !ui->newPosition->text().isEmpty())
     {
-        if(ui->newPosition->text().toDouble() > newSpectrometer->getMonoPos())
-        {
-            //qDebug() << "Emitting MoveStepUp";
-            emit MoveStepUp(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble(), true);
-        }
-        else
-        {
-            //qDebug() << "Emitting MoveStepDown";
-            emit MoveStepDown(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble(), false);
-        }
+//        if(ui->newPosition->text().toDouble() > newSpectrometer->getMonoPos())
+//        {
+//            qDebug() << "Emitting MoveStepUp";
+//            emit MoveStepUp(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble());
+//        }
+//        else
+//        {
+//            //qDebug() << "Emitting MoveStepDown";
+//            emit MoveStepDown(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble());
+//        }
+        emit MainWindow::MoveToTarget(newSpectrometer->getMonoPos(), ui->newPosition->text().toInt());
     }
         //moveToTarget(ui->newPosition->text().toDouble(), newSpectrometer->getMonoPos());
     else if(ui->newSpeed->text().toDouble() != newSpectrometer->getMonoSpeed() && !ui->newSpeed->text().isEmpty())

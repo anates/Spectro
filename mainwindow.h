@@ -71,8 +71,9 @@ signals:
     void yPolarizerMoved(Polarizer, bool);
     void zPolarizerMoved(Polarizer, bool);
     //Stepper signals
-    void MoveStepUp(qreal, qreal, bool);
-    void MoveStepDown(qreal, qreal, bool);
+    void MoveStepUp(int, int);
+    void MoveStepDown(int, int);
+    void MoveToTarget(int, int);
     //DPC signals
     void stopCounting(void);
     //Controller signals
@@ -81,7 +82,7 @@ signals:
     void stopScan(void);
     void startScan(void);
     void killScanner(void);
-    void initScanner(qreal, qreal, qreal, qreal, bool);
+    void initScanner(int, int, int, int, bool);
     //MainTX signals
     void killMain(void);
     void connectMain(QString, quint32);
@@ -181,7 +182,7 @@ private:
     ScanList newScanList;
     struct Scan tmpScan;
     int currentScanNumber;
-    struct Spectrometer *newSpectrometer;
+    Spectrometer *newSpectrometer;
 
     //TX
     QString ipAddr;

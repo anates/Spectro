@@ -23,7 +23,10 @@ SOURCES += main.cpp\
     Raman.cpp \
     ../tcp_client_test/client.cpp \
     ../tcp_client_test/server.cpp \
-    ../remoteController/tx_thread.cpp
+    ../remoteController/tx_thread.cpp \
+    ../BlackLib/v1_0/BlackLib.cpp \
+    ../BlackLib/v2_0/BlackCore.cpp \
+    ../BlackLib/v2_0/BlackGPIO.cpp
 
 HEADERS  += mainwindow.h \
     Raman.h \
@@ -34,7 +37,12 @@ HEADERS  += mainwindow.h \
     add_functions.h \
     ../tcp_client_test/client.h \
     ../tcp_client_test/server.h \
-    ../remoteController/tx_thread.h
+    ../remoteController/tx_thread.h \
+    ../BlackLib/v2_0/BlackCore.h \
+    ../BlackLib/v2_0/BlackDef.h \
+    ../BlackLib/v2_0/BlackErr.h \
+    ../BlackLib/v2_0/BlackGPIO.h \
+    ../BlackLib/v2_0/BlackLib.h
 
 FORMS    += mainwindow.ui
 

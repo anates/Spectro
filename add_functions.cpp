@@ -243,7 +243,43 @@ int Read_DPC(void)
 DPC::DPC()
 {
     DPC::runThread = true;
+    DPC::A[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_32, BlackLib::input);
+    DPC::A[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_33, BlackLib::input);
+    DPC::A[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_34, BlackLib::input);
+    DPC::A[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_35, BlackLib::input);
+    DPC::A[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_36, BlackLib::input);
+    DPC::A[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_37, BlackLib::input);
+    DPC::A[6] = new BlackLib::BlackGPIO(BlackLib::GPIO_38, BlackLib::input);
+    DPC::A[7] = new BlackLib::BlackGPIO(BlackLib::GPIO_39, BlackLib::input);
+
+    DPC::B[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_65, BlackLib::input);
+    DPC::B[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_66, BlackLib::input);
+    DPC::B[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_67, BlackLib::input);
+    DPC::B[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_68, BlackLib::input);
+    DPC::B[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_69, BlackLib::input);
+    DPC::B[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_72, BlackLib::input);
+    DPC::B[6] = new BlackLib::BlackGPIO(BlackLib::GPIO_73, BlackLib::input);
+    DPC::B[7] = new BlackLib::BlackGPIO(BlackLib::GPIO_74, BlackLib::input);
+
+    DPC::C[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input);
+    DPC::C[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_3, BlackLib::input);
+    DPC::C[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_4, BlackLib::input);
+    DPC::C[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_5, BlackLib::input);
+    DPC::C[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_10, BlackLib::input);
+    DPC::C[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_11, BlackLib::input);
+    //DPC::C[6] = new BlackLib::BlackGPIO(BlackLib::I2C_0, BlackLib::input);
+    //DPC::C[7] = new BlackLib::BlackGPIO(BlackLib::I2C_1, BlackLib::input);
     //qDebug() << "DPC: " << thread() << currentThread();
+}
+
+DPC::~DPC()
+{
+    qDebug() << "Clearing up DPC!";
+    delete[] *(DPC::A);
+    qDebug() << "Cleared A";
+    delete[] *DPC::B;
+    delete[] *DPC::C;
+    qDebug() << "Finished clearing up DPC!";
 }
 
 void DPC::run()
@@ -287,24 +323,25 @@ void DPC::cancelThread(void)
 //    return MonoPos;
 //}
 
-void scanner::init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction)
+void scanner::init(int start_pos, int stop_pos, int _accuracy, int _MonoPosOrig, bool _direction)
 {
     //qDebug() << "Scanner: " << thread() << QThread::currentThread();
     scanner::doScan = true;
     scanner::startpos = start_pos;
     scanner::stoppos = stop_pos;
-    scanner::speed = _speed;
+    scanner::accuracy = _accuracy;
     scanner::MonoPos = _MonoPosOrig;
     scanner::MonoPosOrig = _MonoPosOrig;
     scanner::direction = _direction;
     //qDebug() << "Scanner has been initialized with Monopos: " << scanner::MonoPos << " and " << scanner::startpos;
-    emit moveToPosition(scanner::MonoPos, scanner::startpos, (scanner::startpos >= scanner::MonoPos)?true:false);
+    emit moveToPosition(scanner::MonoPos, scanner::startpos);
     //qDebug() << "Returning to main thread";
 }
 
 void scanner::runScan()
 {
     doScan = true;
+    scanner::scan();
 }
 
 void scanner::run()
@@ -335,7 +372,7 @@ void scanner::scan()
             emit scanner::moveStepUp();
         else
             emit scanner::moveStepDown();
-        for(int j = 0; j < ((1.0/speed)*ACCURACY <= 1 ? 1 : (1.0/speed)*ACCURACY); j++)
+        for(int j = 0; j < ((accuracy <= 1 )? 1 : accuracy); j++)
             currentCount += Read_DPC();
         usleep(50000);//For Debug
         emit scanner::currentStatus(((qreal)(i)/length)*100);
@@ -350,7 +387,7 @@ void scanner::scan()
 
 void scanner::resetScanner(void)
 {
-    emit moveToPosition(scanner::MonoPos, scanner::MonoPosOrig, (scanner::MonoPos >= scanner::MonoPosOrig)?false:true);
+    emit moveToPosition(scanner::MonoPos, scanner::MonoPosOrig);
     emit scanInterrupted();
 }
 
@@ -508,12 +545,12 @@ Spectrometer::Spectrometer()
     Spectrometer::MonoSpeed = 0;
 }
 
-void Spectrometer::setMonoPos(qreal MonoPos)
+void Spectrometer::setMonoPos(int MonoPos)
 {
     Spectrometer::MonoPos = MonoPos;
 }
 
-qreal & Spectrometer::getMonoPos(void)
+int & Spectrometer::getMonoPos(void)
 {
     return Spectrometer::MonoPos;
 }
@@ -570,7 +607,7 @@ void Spectrometer::setPolarizersSlot(Polarizer pol, bool state)
     Spectrometer::polarizerSetting[pol] = state;
 }
 
-Spec_Control::Spec_Control(qreal MonoPos)
+Spec_Control::Spec_Control(int MonoPos)
 {
     for(int i = 0; i < 3; i++)
     {
@@ -578,7 +615,24 @@ Spec_Control::Spec_Control(qreal MonoPos)
     }
     Spec_Control::MonoPos = MonoPos;
     Spec_Control::control = true;
+    Spec_Control::POL[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_120, BlackLib::output);
+    Spec_Control::POL[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_121, BlackLib::output);
+    Spec_Control::POL[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_122, BlackLib::output);
+    Spec_Control::POL[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_123, BlackLib::output);
+    Spec_Control::POL[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output);
+    //Spec_Control::POL[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_115, BlackLib::output);
+
+    Spec_Control::STP[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_86, BlackLib::output);
+    Spec_Control::STP[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_87, BlackLib::output);
+    Spec_Control::STP[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_88, BlackLib::output);
+    Spec_Control::STP[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_89, BlackLib::output);
     //qDebug() << "SpecControl: " << thread() << QThread::currentThread();
+}
+
+Spec_Control::~Spec_Control()
+{
+    delete[] *Spec_Control::STP;
+    delete[] *Spec_Control::POL;
 }
 
 void Spec_Control::run()
@@ -594,22 +648,31 @@ void Spec_Control::run()
 void Spec_Control::movePolarizer(Polarizer pol, bool state)
 {
     //connect to pins is missing, has to be done###
+    //Connections done, but I have no clue which pin connects to which polarizer...
     int pol_intValue = Spec_Control::polState[0]*1 + Spec_Control::polState[1]*2 + Spec_Control::polState[2]*4;
     emit movedPolarizerTX(pol_intValue);
     emit movedPolarizer(pol, state);
 }
 
-void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
+void Spec_Control::moveStepMotor(int CurrentPos, int newPos)
 {
     //qDebug() << "Now a signal from moveStepMotor should be emitted" << thread() << QThread::currentThread();
+
+    bool dir = (newPos - CurrentPos) >= 0;
     for(int i = 0; i < fabs(CurrentPos-newPos); i++)
     {
         if(dir)
-            //MonoOpp(1, Spec_Control::MonoPos);
-            MonoPos++;//Only for debug, after MonoOpp is not working at the moment###
+        {
+            Spec_Control::moveUp();
+            emit movedStepper(Spec_Control::MonoPos);
+            //MonoPos++;//Only for debug, after MonoOpp is not working at the moment###
+        }
         else
-            //MonoNed(1, Spec_Control::MonoPos);
-            MonoPos--;//Only for debug, after MonoOpp is not working at the moment###
+        {
+            Spec_Control::moveDown();//MonoNed(1, Spec_Control::MonoPos);
+            emit movedStepper(Spec_Control::MonoPos);
+            //MonoPos--;//Only for debug, after MonoOpp is not working at the moment###
+        }
     }
     //qDebug() << "Current position of Stepper should be: " << Spec_Control::MonoPos;7
     emit movedStepperTX(dir);
@@ -619,6 +682,11 @@ void Spec_Control::moveStepMotor(qreal CurrentPos, qreal newPos, bool dir)
 void Spec_Control::moveUp(void)
 {
     //MonoOpp(1, Spec_Control::MonoPos);//For debug disabled###
+    Spec_Control::STP[1]->setValue(BlackLib::high);
+    Spec_Control::STP[0]->setValue(BlackLib::high);
+    msleep(50);
+    qDebug() << "Stepper moved for one step!";
+    Spec_Control::STP[0]->setValue(BlackLib::low);
     Spec_Control::MonoPos++;
     emit movedStepperTX(true);
     emit movedStepper(Spec_Control::MonoPos);
@@ -627,6 +695,11 @@ void Spec_Control::moveUp(void)
 void Spec_Control::moveDown(void)
 {
     //MonoNed(1, Spec_Control::MonoPos);//For debug disabled###
+    Spec_Control::STP[1]->setValue(BlackLib::low);
+    Spec_Control::STP[0]->setValue(BlackLib::high);
+    msleep(50);
+    qDebug() << "Stepper moved for one step!";
+    Spec_Control::STP[0]->setValue(BlackLib::low);
     Spec_Control::MonoPos--;
     emit movedStepperTX(false);
     emit movedStepper(Spec_Control::MonoPos);

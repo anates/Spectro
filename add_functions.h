@@ -17,7 +17,6 @@
 #include <unistd.h>
 #include <chrono>
 #include <thread>
-
 #include <cmath>
 
 #include <QMainWindow>
@@ -31,6 +30,8 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QDialogButtonBox>
+
+#include "../BlackLib/v2_0/BlackGPIO.h"
 
 #define ACCURACY 10
 
@@ -68,7 +69,7 @@ public:
     qreal finPos;
     qreal scanSpeed;
     QVector<bool> polSettings;
-
+public:
     void clear();
     ScanParams();
 };
@@ -83,7 +84,7 @@ public:
     LogFile log;
     bool readonly = false;
     bool isLoaded = false;
-
+public:
     void clear(void);
     Scan();
 };
@@ -118,7 +119,7 @@ class Spectrometer: public QObject
 {
     Q_OBJECT
 private:
-    qreal MonoPos = 0;
+    int MonoPos = 0;
     qreal MonoSpeed = 0;
     QVector<bool> polarizerSetting;
 public slots:
@@ -127,8 +128,8 @@ public slots:
     void setPolarizersSlot(Polarizer pol, bool state);
 public:
     Spectrometer();
-    void setMonoPos(qreal MonoPos);
-    qreal & getMonoPos(void);
+    void setMonoPos(int MonoPos);
+    int & getMonoPos(void);
     void setMonoSpeed(qreal MonoSpeed);
     qreal & getMonoSpeed(void);
     void setPolarizers(QVector<bool> polarizers);
@@ -155,8 +156,10 @@ class DPC: public QThread
     Q_OBJECT
 private:
     bool runThread;
+    BlackLib::BlackGPIO *A[8], *B[8], *C[8];
 public:
     DPC();
+    ~DPC();
     void run();
 public slots:
     void cancelThread(void);
@@ -169,20 +172,21 @@ class scanner: public QThread
     Q_OBJECT
 private:
     bool doScan = false;
-    qreal startpos, stoppos, speed;
-    qreal MonoPos;
-    qreal MonoPosOrig;
+    int startpos, stoppos, accuracy;
+    int MonoPos;
+    int MonoPosOrig;
     bool direction;
     volatile bool stopScanDevice = false;
 public slots:
     void cancelScan(void);
     void runScan(void);
     void stopScanner(void);
-    void init(qreal start_pos, qreal stop_pos, qreal _speed, qreal _MonoPosOrig, bool _direction);
+    void init(int start_pos, int stop_pos, int _accuracy, int _MonoPosOrig, bool _direction);
+    void scan();
 public:
     void resetScanner(void);
     void run();
-    void scan();
+
 signals:
     void currentStatus(qreal);
     void scanFinished(void);
@@ -190,7 +194,7 @@ signals:
     void moveStepUp(void);
     void moveStepDown(void);
     void currentValue(qreal, qreal);
-    void moveToPosition(qreal, qreal, bool);
+    void moveToPosition(int, int);
 };
 
 class Spec_Control: public QThread
@@ -200,14 +204,17 @@ private:
     QVector<bool> polState;
     qreal MonoPos;
     volatile bool control;
+    BlackLib::BlackGPIO *STP[4];
+    BlackLib::BlackGPIO *POL[6];
 public slots:
     void movePolarizer(Polarizer pol, bool state);
-    void moveStepMotor(qreal CurrentPos, qreal newPos, bool dir);
+    void moveStepMotor(int CurrentPos, int newPos);
     void moveUp(void);
     void moveDown(void);
     void stopControl(void);
 public:
-    Spec_Control(qreal MonoPos);
+    Spec_Control(int MonoPos);
+    ~Spec_Control();
     void run();
 signals:
     void movedPolarizer(Polarizer, bool);
