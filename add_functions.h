@@ -1,6 +1,6 @@
 #ifndef ADD_FUNCTIONS_H
 #define ADD_FUNCTIONS_H
-#define _GLIBCXX_USE_NANOSLEEP
+//#define _GLIBCXX_USE_NANOSLEEP
 
 #include <cstring>
 #include <stdio.h>

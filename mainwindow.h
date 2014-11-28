@@ -180,10 +180,12 @@ private slots:
 
 private:
 
+
     QwtPlotPicker* plotPicker;
     QwtPickerMachine* pickerMachine;
 
     enum State {ScanState, EditState, MoveState, CalibState};
+    State currentState;
     void replot();
     void createActions();
     void createMenus();

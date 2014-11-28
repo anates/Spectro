@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Setup of all variables
     MainWindow::polarizerSettings.resize(3);
     SCThread = new QThread;
+    MainWindow::currentState = EditState;
     MainWindow::currentScanNumber = 0;
     MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     MainWindow::setWindowTitle("");
@@ -531,6 +532,7 @@ void MainWindow::changeState(State newState)
     {
         case ScanState:
         {
+            currentState = ScanState;
             ui->gridTabWidget->setTabEnabled(1, false);
             ui->gridTabWidget->setTabEnabled(0, true);
             ui->gridTabWidget->setTabEnabled(2, false);
@@ -553,6 +555,7 @@ void MainWindow::changeState(State newState)
         }
         case EditState:
         {
+            currentState = EditState;
             ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 19);
             ui->horizontalLayout_2->setStretchFactor(ui->formLayout_2, 1);
             ui->scanName->show();
@@ -595,6 +598,8 @@ void MainWindow::changeState(State newState)
         }
         case CalibState:
         {
+            currentState = CalibState;
+            clear_window();
             ui->CalibReVal->show();
             ui->CalibConfirm->show();
             ui->CalibMesVal->show();
@@ -774,13 +779,17 @@ void MainWindow::scanIsFinished(void)
         MainWindow::tmpScan.isCalibrated = true;
     };
     newScanList.addScan(MainWindow::tmpScan);
-    ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
+    if(currentState != CalibState)
+        ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
+    else
+        ui->selectScanBox->addItem("Calibration");
     closeProgressBar();
     //qDebug() << "Check if Scanner is still running: " << newScanner->isRunning();
     //qDebug() << "Another check: " << newScanner->isFinished();
 //    //newScanner->terminate();
     tmpScan.clear();
-    changeState(EditState);
+    if(currentState != CalibState)
+        changeState(EditState);
 }
 
 void MainWindow::CurrentScanStatus(qreal status)
@@ -1357,7 +1366,7 @@ void MainWindow::gotNewFileFL(QVariant data)
 
 void MainWindow::on_CalibButton_clicked()
 {
-    if(ui->setScanSpeed->text().isEmpty() || ui->setStartPosition->text().isEmpty() || ui->setTargetPosition->text().isEmpty() || ui->scanName->text().isEmpty())
+    if(ui->setScanSpeed->text().isEmpty() || ui->setStartPosition->text().isEmpty() || ui->setTargetPosition->text().isEmpty())
     {
         QMessageBox::information(this, tr("Error!"), tr("Not all neccessary information entered, please check your entered data!"));
         return;
@@ -1369,9 +1378,9 @@ void MainWindow::on_CalibButton_clicked()
     tmpScan.Params.scanSpeed = ui->setScanSpeed->text().toDouble();
     tmpScan.scanName = ui->scanName->text();
     //qDebug() << "Scanner is initialized";
-    //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
+    emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
-    //emit startScan();
+    emit startScan();
 }
 
 void MainWindow::on_CalibFinished_clicked()
