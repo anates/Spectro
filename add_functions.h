@@ -82,6 +82,7 @@ public:
     QString scanName;
     ScanParams Params;
     AveMode av;
+    bool isCalibrated;
     LogFile log;
     bool readonly = false;
     bool isLoaded = false;

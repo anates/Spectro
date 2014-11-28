@@ -7,6 +7,9 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
+#include <qwt_picker.h>
+#include <qwt_plot_picker.h>
+#include <qwt_picker_machine.h>
 #include <QThread>
 #include <QJsonObject>
 #include <QJsonValue>
@@ -65,7 +68,13 @@ public slots:
     void wrongDeviceSTP(void);
     void gotNewConnectionSTP(QVariant address);
     void STPkilled(void);
-
+    //Mouse slots
+    void mousePoint(const QPointF &point);
+    //Analyst slots
+    void calibrateScan(ScanData &newScan);
+    void sortPoints(void);
+    QPair<QPair<int, int>, QPair<int, int> > getNearestPoints(int xVal);
+    int calculateValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
 signals:
     //Polarizer signals
     void xPolarizerMoved(Polarizer, bool);
@@ -167,7 +176,12 @@ private slots:
 
     void on_CalibFinished_clicked();
 
+    void on_CalibConfirm_clicked();
+
 private:
+
+    QwtPlotPicker* plotPicker;
+    QwtPickerMachine* pickerMachine;
 
     enum State {ScanState, EditState, MoveState, CalibState};
     void replot();
@@ -175,10 +189,7 @@ private:
     void createMenus();
     void changeState(State newState);
     void clear_window(void);
-    //void contextMenuEvent(QContextMenuEvent *event);
-
-    //void customContextMenuRequested(const QPoint &pos);
-
+    QVector<QPair<int, int> > CorrectionValues;
 
     Ui::MainWindow *ui;
 
@@ -188,6 +199,7 @@ private:
     struct Scan tmpScan;
     int currentScanNumber;
     Spectrometer *newSpectrometer;
+    bool calibrated;
 
     //TX
     QString ipAddr;

@@ -40,7 +40,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
     }while(iss_temp);
     if(linecheck.size() != 3)
     {
-        if(version == "8008135" || version == "80081E5")
+        if(version == "8008135" || version == "80081E5" || version == "B0081E5")
         {
             Data.scanName = in.readLine();
             Data.Params.startPos = in.readLine().toDouble();
@@ -51,7 +51,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
             Data.Params.polSettings[1] = (polSettingsInt == 3 || polSettingsInt > 5);
             Data.Params.polSettings[2] = (polSettingsInt >= 4);
         }
-        if(version == "80081E5")
+        if(version == "80081E5" || version == "B0081E5")
         {
             Data.log.countNumber = in.readLine().toDouble();
             Data.log.laserIntensity = in.readLine().toDouble();
@@ -59,6 +59,10 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
             Data.log.sensitivity = in.readLine().toDouble();
             Data.log.slitWidth = in.readLine().toDouble();
             Data.log.logfileSet = true;
+        }
+        if(version == "B0081E5")
+        {
+            Data.isCalibrated = (bool)in.readLine().toInt();
         }
     }
     else
@@ -117,7 +121,7 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
         return;
     }
     QTextStream out(&file);
-    out << "80081E5\n";
+    out << "B0081E5\n";//Update auf v0.3
     out << Data.scanName << '\n';
     out << Data.Params.startPos << '\n';
     out << Data.Params.finPos << '\n';
@@ -131,6 +135,7 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
     out << Data.log.name << '\n';
     out << Data.log.sensitivity << '\n';
     out << Data.log.slitWidth << '\n';
+    out << (int)Data.isCalibrated << '\n';
     out << Data.values.Data[0].first << '\t' << Data.values.Data[0].second << '\n';
     for(int i = 0; i < Data.values.Data.size(); i++)
     {
@@ -413,6 +418,7 @@ ScanParams::ScanParams()
 Scan::Scan()
 {
     Scan::isLoaded = false;
+    Scan::isCalibrated = false;
     Scan::log.clear();
     Scan::Params.clear();
     Scan::readonly = false;

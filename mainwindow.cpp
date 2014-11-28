@@ -15,7 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::setWindowTitle("");
     MainWindow::newDPC = new DPC;
     MainWindow::newSpectrometer = new Spectrometer;
+    MainWindow::calibrated = false;
+    ui->CalibratedBox->setCheckable(false);
     MainWindow::loadConfig();
+
     MainWindow::newSpecControl = new Spec_Control(newSpectrometer->getMonoPos());
     MainWindow::newScanner = new scanner;
     //Setup of TX-Clients
@@ -40,6 +43,10 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::PCTXRun = false;
     MainWindow::STPTXRun = false;
 
+    //Setup of QWT picker
+    MainWindow::plotPicker= new QwtPlotPicker(ui->qwtPlot->xBottom, ui->qwtPlot->yLeft, QwtPicker::CrossRubberBand, QwtPicker::AlwaysOn, ui->qwtPlot->canvas());
+    pickerMachine = new QwtPickerClickPointMachine();
+    plotPicker->setStateMachine(pickerMachine);
 
     //Create Menus
     createActions();
@@ -121,6 +128,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newScanner, SIGNAL(moveToPosition(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
     connect(newScanner, SIGNAL(scanInterrupted()), this, SLOT(scanIsInterrupted()));
 
+    connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
+
     //Thread work
 //    newSpecControl->moveToThread(SCThread);
     //set current state:
@@ -146,11 +155,22 @@ MainWindow::~MainWindow()
     //qDebug() << "Is DPC still counting: " << newDPC->isRunning();
     //qDebug() << "Is ControlThread still running?" << newSpecControl->isRunning();
     //qDebug() << "Is scanner still running?" << newScanner->isRunning();
+    qDebug() << "Cleaning main!";
     delete MainWindow::SCThread;
     delete MainWindow::newDPC;
     delete MainWindow::newSpecControl;
+    qDebug() << "SC, DPC and SC cleaned";
     delete MainWindow::newSpectrometer;
     delete MainWindow::newScanner;
+    qDebug() << "Scanner and Spec cleaned";
+    delete MainWindow::plotPicker;
+    qDebug() << "plotPicker cleaned";
+    if(MainWindow::pickerMachine != NULL)
+    {
+        qDebug() << pickerMachine;
+        //delete MainWindow::pickerMachine;//Leads to crash, strange
+    }
+    qDebug() << "pickerMachine cleaned";
     delete ui;
 }
 
@@ -208,7 +228,7 @@ void MainWindow::open()
         QDataStream in(&file);
         quint32 magic;
         in >> magic;
-        if(magic != 0x8008135 || magic != 0x80081E5)
+        if(magic != 0x8008135 || magic != 0x80081E5 || magic != 0xB0081E5)//Three versions, newest one last
         {
             QMessageBox::information(this, tr("Wrong file format!"),"Sorry, wrong file format! Please try to open it with \"Load old Data\"!");
             return;
@@ -231,7 +251,7 @@ void MainWindow::open()
         in >> finScan;
         in >> scanSpeed;
         in >> newScan.values.Data;
-        if(magic == 0x80081E5)
+        if(magic == 0x80081E5 || magic == 0xB0081E5)
         {
             in >> newScan.log.countNumber;
             in >> newScan.log.laserIntensity;
@@ -239,6 +259,8 @@ void MainWindow::open()
             in >> newScan.log.sensitivity;
             in >> newScan.log.slitWidth;
         }
+        if(magic == 0xB0081E5)
+            in >> newScan.isCalibrated;
         newScan.scanName = scanName;
         newScan.Params.finPos = finScan;
         newScan.Params.startPos = startScan;
@@ -350,7 +372,7 @@ void MainWindow::save()
             return;
         }
         QDataStream out(&file);
-        out << (quint32)0x80081E5;
+        out << (quint32)0xB0081E5;
         out << (qint32)123;
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
         if(MainWindow::newScanList.getScanNumbers()!=0)
@@ -367,6 +389,7 @@ void MainWindow::save()
             out << MainWindow::newScanList.getCurrentScan().log.name;
             out << MainWindow::newScanList.getCurrentScan().log.sensitivity;
             out << MainWindow::newScanList.getCurrentScan().log.slitWidth;
+            out << MainWindow::newScanList.getCurrentScan().isCalibrated;
         }
         else
             QMessageBox::information(this, tr("No scan data"),tr("No scan opened!"));
@@ -567,11 +590,13 @@ void MainWindow::changeState(State newState)
             ui->PolarizerLabel->show();
             ui->CalibReVal->hide();
             ui->CalibMesVal->hide();
+            ui->CalibConfirm->hide();
             break;
         }
         case CalibState:
         {
             ui->CalibReVal->show();
+            ui->CalibConfirm->show();
             ui->CalibMesVal->show();
             ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 15);
             ui->horizontalLayout_2->setStretchFactor(ui->CalibLayout, 5);
@@ -674,6 +699,7 @@ void MainWindow::on_scanButton_clicked()
     tmpScan.Params.startPos = ui->setStartPosition->text().toDouble();
     tmpScan.Params.scanSpeed = ui->setScanSpeed->text().toDouble();
     tmpScan.scanName = ui->scanName->text();
+    tmpScan.isCalibrated = false;
     //qDebug() << "Scanner is initialized";
     emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
@@ -688,8 +714,65 @@ void MainWindow::closeProgressBar()
     ui->progressBar->hide();
 }
 
+void MainWindow::sortPoints()
+{
+    qSort(CorrectionValues);
+}
+
+QPair<QPair<int, int>, QPair<int, int> > MainWindow::getNearestPoints(int xVal)
+{
+    QPair<QPair<int, int>, QPair<int, int> > points;
+    if(CorrectionValues.size() < 2)
+    {
+        QMessageBox::information(this, "Error", "Too few data for calibration avaliable. Can not calibrate scan!");
+        return qMakePair(qMakePair(0, 0), qMakePair(0, 0));
+    }
+    for(int i = 0; i < CorrectionValues.size(); i++)
+    {
+        points.first = CorrectionValues[i];
+        points.second = CorrectionValues[i+1];
+        if(i+1 == CorrectionValues.size())
+            return points;
+        else
+        {
+            if(xVal < points.first.first)
+                return points;
+            else
+                if((points.first.first - xVal) < 0 && (points.second.first - xVal) > 0)
+                    return points;
+        }
+
+    }
+}
+
+int MainWindow::calculateValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint = qMakePair(0, 0), QPair<int, int> secondPoint = qMakePair(0, 0))
+{
+    if((firstPoint.first == 0 && secondPoint.first == 0) || (firstPoint.second == 0 && secondPoint.second == 0))
+    {
+        QMessageBox::information(this, "Error", "No sufficient informations for calculating correction values");
+        return -1000;
+    }
+    double m = (double)(firstPoint.second - secondPoint.second)/(double)(firstPoint.first - secondPoint.second);
+    int nextPointX = (fabs(targetPoint.first - firstPoint.first) <= fabs(targetPoint.first - secondPoint.first))?firstPoint.first : secondPoint.first;
+    return m*(targetPoint.first - nextPointX) + (fabs(targetPoint.first - firstPoint.first) <= fabs(targetPoint.first - secondPoint.first))?firstPoint.second : secondPoint.second;
+}
+
+void MainWindow::calibrateScan(ScanData &newScan)
+{
+    for(int i = 0; i < newScan.Data.size(); i++)
+    {
+        QPair<QPair<int, int>, QPair<int, int> > nextPoints = getNearestPoints(newScan.Data[i].first);
+        newScan.Data[i].first = calculateValue(newScan.Data[i], nextPoints.first, nextPoints.second);
+    }
+}
+
 void MainWindow::scanIsFinished(void)
 {
+    if(calibrated)
+    {
+        calibrateScan(MainWindow::tmpScan.values);
+        MainWindow::tmpScan.isCalibrated = true;
+    };
     newScanList.addScan(MainWindow::tmpScan);
     ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
     closeProgressBar();
@@ -698,7 +781,6 @@ void MainWindow::scanIsFinished(void)
 //    //newScanner->terminate();
     tmpScan.clear();
     changeState(EditState);
-
 }
 
 void MainWindow::CurrentScanStatus(qreal status)
@@ -770,6 +852,7 @@ void MainWindow::reload_data()
         ui->slitWidth->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->countNumber->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->sensitivity->setReadOnly(!newScanList.getCurrentScan().readonly);
+        ui->CalibratedBox->setChecked(newScanList.getCurrentScan().isCalibrated);
     }
     ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
     ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
@@ -862,10 +945,42 @@ void MainWindow::loadConfig()
     }
     QTextStream in(&file);
     QString monoPos, monoSpeed;
+    QString calibData;
+    QStringList Data;
     int PolarizerConfig;
     in >> monoPos;
     in >> monoSpeed;
     in >> PolarizerConfig;
+    in >> calibData;
+    if(calibData.isEmpty())
+        calibrated = false;
+    else
+    {
+        Data = calibData.split(" ");
+        if(Data.size()%2 == 0)
+        {
+            for(int i = 0; i < Data.size()/2; i+=2)
+            {
+                CorrectionValues.push_back(qMakePair(Data[i].toInt(), Data[i+1].toInt()));
+            }
+        }
+        else
+        {
+            Data.pop_back();
+            for(int i = 0; i < Data.size()/2; i+=2)
+            {
+                CorrectionValues.push_back(qMakePair(Data[i].toInt(), Data[i+1].toInt()));
+            }
+        }
+        if(CorrectionValues.size() > 0)
+        {
+            sortPoints();
+            calibrated = true;
+            ui->CalibratedBox->setChecked(true);
+        }
+    }
+
+
     newSpectrometer->setMonoPos(monoPos.toDouble());
     newSpectrometer->setMonoSpeed(monoSpeed.toDouble());
     newSpectrometer->setPolarizers(xPol, (PolarizerConfig % 2 == 1)?true:false );
@@ -891,9 +1006,20 @@ void MainWindow::writeConfig()
         return;
     }
     QTextStream out(&file);
+    QString CalibrationData;
+    if(calibrated == true)
+    {
+
+        for(int i = 0; i < CorrectionValues.size(); i++)
+        {
+            CalibrationData += QString::number(CorrectionValues[i].first) + " " + QString::number(CorrectionValues[i].second) + " ";
+        }
+    }
     out << newSpectrometer->getMonoPos() << '\n';
     out << newSpectrometer->getMonoSpeed() << '\n';
-    out << (int)(newSpectrometer->getPolarizers()[0])*1 + (int)(newSpectrometer->getPolarizers()[1])*2 + (int)(newSpectrometer->getPolarizers()[2])*4;
+    out << (int)(newSpectrometer->getPolarizers()[0])*1 + (int)(newSpectrometer->getPolarizers()[1])*2 + (int)(newSpectrometer->getPolarizers()[2])*4 << '\n';
+    if(calibrated == true)
+        out << CalibrationData;
     file.close();
 }
 
@@ -1251,4 +1377,32 @@ void MainWindow::on_CalibButton_clicked()
 void MainWindow::on_CalibFinished_clicked()
 {
     changeState(EditState);
+}
+
+void MainWindow::on_CalibConfirm_clicked()
+{
+    //Hardcoded is evil, replace it!
+    if(!ui->CalibDataMes1->text().isEmpty() && !ui->CalibDataRe1->text().isEmpty())
+        CorrectionValues.push_back(qMakePair(ui->CalibDataMes1->text().toInt(), ui->CalibDataRe1->text().toInt()));
+    if(!ui->CalibDataMes2->text().isEmpty() && !ui->CalibDataRe2->text().isEmpty())
+        CorrectionValues.push_back(qMakePair(ui->CalibDataMes2->text().toInt(), ui->CalibDataRe2->text().toInt()));
+    if(CorrectionValues.size() == 0)
+    {
+        QMessageBox::information(this, "Error", "No correction values entered, please check your input!");
+        return;
+    }
+    else
+        QMessageBox::information(this, "Information", "All correction data has been saved!");
+    ui->CalibDataMes1->clear();
+    ui->CalibDataMes2->clear();
+    ui->CalibDataRe1->clear();
+    ui->CalibDataRe2->clear();
+    changeState(EditState);
+}
+
+void MainWindow::mousePoint(const QPointF &point)
+{
+    QPointF newPoint = point;
+    ui->xPos->setText(QString::number(newPoint.rx()));
+    ui->yPos->setText(QString::number(newPoint.ry()));
 }
