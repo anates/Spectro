@@ -243,43 +243,43 @@ int Read_DPC(void)
 DPC::DPC()
 {
     DPC::runThread = true;
-    DPC::A[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_32, BlackLib::input);
-    DPC::A[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_33, BlackLib::input);
-    DPC::A[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_34, BlackLib::input);
-    DPC::A[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_35, BlackLib::input);
-    DPC::A[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_36, BlackLib::input);
-    DPC::A[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_37, BlackLib::input);
-    DPC::A[6] = new BlackLib::BlackGPIO(BlackLib::GPIO_38, BlackLib::input);
-    DPC::A[7] = new BlackLib::BlackGPIO(BlackLib::GPIO_39, BlackLib::input);
+    /*DPC::A[0] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_32, BlackLib::input));
+    /*DPC::A[1] = new B*/A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_33, BlackLib::input));
+    /*DPC::A[2] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_34, BlackLib::input));
+    /*DPC::A[3] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_35, BlackLib::input));
+    /*DPC::A[4] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_36, BlackLib::input));
+    /*DPC::A[5] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_37, BlackLib::input));
+    /*DPC::A[6] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_38, BlackLib::input));
+    /*DPC::A[7] = new */A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_39, BlackLib::input));
 
-    DPC::B[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_65, BlackLib::input);
-    DPC::B[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_66, BlackLib::input);
-    DPC::B[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_67, BlackLib::input);
-    DPC::B[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_68, BlackLib::input);
-    DPC::B[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_69, BlackLib::input);
-    DPC::B[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_72, BlackLib::input);
-    DPC::B[6] = new BlackLib::BlackGPIO(BlackLib::GPIO_73, BlackLib::input);
-    DPC::B[7] = new BlackLib::BlackGPIO(BlackLib::GPIO_74, BlackLib::input);
+    /*DPC::B[0] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_65, BlackLib::input));
+    /*DPC::B[1] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_66, BlackLib::input));
+    /*DPC::B[2] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_67, BlackLib::input));
+    /*DPC::B[3] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_68, BlackLib::input));
+    /*DPC::B[4] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_69, BlackLib::input));
+    /*DPC::B[5] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_72, BlackLib::input));
+    /*DPC::B[6] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_73, BlackLib::input));
+    /*DPC::B[7] = new */B.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_74, BlackLib::input));
 
-    DPC::C[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input);
-    DPC::C[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_3, BlackLib::input);
-    DPC::C[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_4, BlackLib::input);
-    DPC::C[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_5, BlackLib::input);
-    DPC::C[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_10, BlackLib::input);
-    DPC::C[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_11, BlackLib::input);
-    //DPC::C[6] = new BlackLib::BlackGPIO(BlackLib::I2C_0, BlackLib::input);
-    //DPC::C[7] = new BlackLib::BlackGPIO(BlackLib::I2C_1, BlackLib::input);
-    //qDebug() << "DPC: " << thread() << currentThread();
+    /*DPC::C[0] = new */C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_2, BlackLib::input));
+    /*DPC::C[1] = new */C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_3, BlackLib::input));
+    /*DPC::C[2] = new */C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_4, BlackLib::input));
+    /*DPC::C[3] = new */C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_5, BlackLib::input));
+    /*DPC::C[4] = new */C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_10, BlackLib::input));
+    /*DPC::C[5] = new */C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_11, BlackLib::input));
+//    //DPC::C[6] = new BlackLib::BlackGPIO(BlackLib::I2C_0, BlackLib::input);
+//    //DPC::C[7] = new BlackLib::BlackGPIO(BlackLib::I2C_1, BlackLib::input);
+//    //qDebug() << "DPC: " << thread() << currentThread();
 }
 
 DPC::~DPC()
 {
     qDebug() << "Clearing up DPC!";
-    delete[] *(DPC::A);
-    qDebug() << "Cleared A";
-    delete[] *DPC::B;
-    delete[] *DPC::C;
-    qDebug() << "Finished clearing up DPC!";
+    //delete[] *(DPC::A);
+    //qDebug() << "Cleared A";
+    //delete[] *DPC::B;
+    //delete[] *DPC::C;
+    //qDebug() << "Finished clearing up DPC!";
 }
 
 void DPC::run()
@@ -615,24 +615,23 @@ Spec_Control::Spec_Control(int MonoPos)
     }
     Spec_Control::MonoPos = MonoPos;
     Spec_Control::control = true;
-    Spec_Control::POL[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_120, BlackLib::output);
-    Spec_Control::POL[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_121, BlackLib::output);
-    Spec_Control::POL[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_122, BlackLib::output);
-    Spec_Control::POL[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_123, BlackLib::output);
-    Spec_Control::POL[4] = new BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output);
+    Spec_Control::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_120, BlackLib::output));
+    Spec_Control::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_121, BlackLib::output));
+    Spec_Control::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_122, BlackLib::output));
+    Spec_Control::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_123, BlackLib::output));
+    Spec_Control::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output));
     //Spec_Control::POL[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_115, BlackLib::output);
 
-    Spec_Control::STP[0] = new BlackLib::BlackGPIO(BlackLib::GPIO_86, BlackLib::output);
-    Spec_Control::STP[1] = new BlackLib::BlackGPIO(BlackLib::GPIO_87, BlackLib::output);
-    Spec_Control::STP[2] = new BlackLib::BlackGPIO(BlackLib::GPIO_88, BlackLib::output);
-    Spec_Control::STP[3] = new BlackLib::BlackGPIO(BlackLib::GPIO_89, BlackLib::output);
+    Spec_Control::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_86, BlackLib::output));
+    Spec_Control::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_87, BlackLib::output));
+    Spec_Control::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_88, BlackLib::output));
+    Spec_Control::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_89, BlackLib::output));
     //qDebug() << "SpecControl: " << thread() << QThread::currentThread();
 }
 
 Spec_Control::~Spec_Control()
 {
-    delete[] *Spec_Control::STP;
-    delete[] *Spec_Control::POL;
+    qDebug() << "Clearing up Spec_control";
 }
 
 void Spec_Control::run()

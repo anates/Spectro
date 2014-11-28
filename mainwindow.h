@@ -36,6 +36,7 @@ public:
     ~MainWindow();
     
 public slots:
+    void calibrate(void);
     void oncurrentCount(int counts);
     void CurrentScanStatus(qreal status);
     void closeProgressBar(void);
@@ -162,9 +163,13 @@ private slots:
 
     void on_connect_clicked();
 
+    void on_CalibButton_clicked();
+
+    void on_CalibFinished_clicked();
+
 private:
 
-    enum State {ScanState, EditState, MoveState};
+    enum State {ScanState, EditState, MoveState, CalibState};
     void replot();
     void createActions();
     void createMenus();
@@ -205,6 +210,7 @@ private:
     QAction *saveAct;
     QAction *saveGenericAct;
     QAction *saveGenericAll;
+    QAction *calibrateAct;
 
     DPC *newDPC;
     Spec_Control *newSpecControl;

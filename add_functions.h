@@ -18,6 +18,7 @@
 #include <chrono>
 #include <thread>
 #include <cmath>
+#include <memory>
 
 #include <QMainWindow>
 #include <QMap>
@@ -156,7 +157,8 @@ class DPC: public QThread
     Q_OBJECT
 private:
     bool runThread;
-    BlackLib::BlackGPIO *A[8], *B[8], *C[8];
+    std::vector<std::unique_ptr<BlackLib::BlackGPIO> > A, B, C;
+    //BlackLib::BlackGPIO *A[8], *B[8], *C[8];
 public:
     DPC();
     ~DPC();
@@ -204,8 +206,7 @@ private:
     QVector<bool> polState;
     qreal MonoPos;
     volatile bool control;
-    BlackLib::BlackGPIO *STP[4];
-    BlackLib::BlackGPIO *POL[6];
+    std::vector<std::unique_ptr<BlackLib::BlackGPIO> > STP, POL;
 public slots:
     void movePolarizer(Polarizer pol, bool state);
     void moveStepMotor(int CurrentPos, int newPos);

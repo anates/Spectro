@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>891</width>
-    <height>654</height>
+    <width>1013</width>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,13 +18,20 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
         <string>Plot</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="0">
+         <widget class="QProgressBar" name="progressBar">
+          <property name="value">
+           <number>24</number>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -35,8 +42,46 @@
             <property name="fieldGrowthPolicy">
              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
             </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>Current photo count</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLineEdit" name="photoCounter"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="activateCounter">
+                <property name="text">
+                 <string>Activate Counter</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="NameLabel">
+              <property name="text">
+               <string>Scan name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="scanName"/>
+            </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="StartLabel">
               <property name="text">
                <string>Start Position [cm-1]</string>
               </property>
@@ -46,7 +91,7 @@
              <widget class="QLineEdit" name="setStartPosition"/>
             </item>
             <item row="4" column="0">
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="TargetLabel">
               <property name="text">
                <string>Target Position [cm-1]</string>
               </property>
@@ -56,9 +101,9 @@
              <widget class="QLineEdit" name="setTargetPosition"/>
             </item>
             <item row="5" column="0">
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="AccurLabel">
               <property name="text">
-               <string>Scan speed</string>
+               <string>Accuracy</string>
               </property>
              </widget>
             </item>
@@ -97,10 +142,31 @@
               </item>
              </layout>
             </item>
+            <item row="7" column="1">
+             <widget class="QPushButton" name="newScan">
+              <property name="text">
+               <string>New Scan</string>
+              </property>
+             </widget>
+            </item>
             <item row="8" column="1">
              <widget class="QPushButton" name="scanButton">
               <property name="text">
                <string>Start scan</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QPushButton" name="stopScan">
+              <property name="text">
+               <string>Stop Scan</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="QPushButton" name="saveSettingsButton">
+              <property name="text">
+               <string>Save scan settings</string>
               </property>
              </widget>
             </item>
@@ -115,6 +181,20 @@
              <widget class="QPushButton" name="loadGenericButton">
               <property name="text">
                <string>Load old scan data</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QPushButton" name="saveScan">
+              <property name="text">
+               <string>Save scan data</string>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="0">
+             <widget class="QLabel" name="ChooseScanLabel">
+              <property name="text">
+               <string>Switch to next Scan</string>
               </property>
              </widget>
             </item>
@@ -136,99 +216,91 @@
               </item>
              </layout>
             </item>
-            <item row="14" column="0">
-             <widget class="QLabel" name="ChooseScanLabel">
+            <item row="17" column="0">
+             <widget class="QLabel" name="CalibLabel">
               <property name="text">
-               <string>Switch to next Scan</string>
+               <string>Calibration Data</string>
               </property>
              </widget>
             </item>
-            <item row="15" column="1">
-             <widget class="QComboBox" name="selectScanBox"/>
-            </item>
-            <item row="15" column="0">
+            <item row="18" column="0">
              <widget class="QLabel" name="selectScanLabel">
               <property name="text">
                <string>Select Scan</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="scanName"/>
+            <item row="18" column="1">
+             <widget class="QComboBox" name="selectScanBox"/>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label">
+            <item row="15" column="1">
+             <widget class="QPushButton" name="CalibButton">
               <property name="text">
-               <string>Scan name</string>
+               <string>Start Calibration</string>
               </property>
              </widget>
             </item>
-            <item row="13" column="1">
-             <widget class="QPushButton" name="saveScan">
+            <item row="16" column="1">
+             <widget class="QPushButton" name="CalibFinished">
               <property name="text">
-               <string>Save scan data</string>
+               <string>Calibration finished</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="Line" name="line">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_16">
-              <property name="text">
-               <string>Current photo count</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item>
-               <widget class="QLineEdit" name="photoCounter"/>
+            <item row="17" column="1">
+             <layout class="QGridLayout" name="CalibLayout">
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="CalibDataMes1"/>
               </item>
-              <item>
-               <widget class="QPushButton" name="activateCounter">
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="CalibDataMes2"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="CalibLabel1">
                 <property name="text">
-                 <string>Activate Counter</string>
+                 <string>Point 1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="CalibDataRe2"/>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="CalibReVal">
+                <property name="text">
+                 <string>Real value</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="CalibMesVal">
+                <property name="text">
+                 <string>Measured value</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLineEdit" name="CalibDataRe1"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="CalibLabel2">
+                <property name="text">
+                 <string>Point 2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="AddCalibration">
+                <property name="text">
+                 <string>Add new calibration data</string>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
-            <item row="7" column="1">
-             <widget class="QPushButton" name="newScan">
-              <property name="text">
-               <string>New Scan</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
-             <widget class="QPushButton" name="stopScan">
-              <property name="text">
-               <string>Stop Scan</string>
-              </property>
-             </widget>
-            </item>
-            <item row="10" column="1">
-             <widget class="QPushButton" name="saveSettingsButton">
-              <property name="text">
-               <string>Save scan settings</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
          </layout>
-        </item>
-        <item row="2" column="0">
-         <widget class="QProgressBar" name="progressBar">
-          <property name="value">
-           <number>24</number>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
@@ -562,8 +634,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>891</width>
-     <height>22</height>
+     <width>1013</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>

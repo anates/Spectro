@@ -64,6 +64,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->scanButton->hide();
     ui->newScan->show();
     ui->stopScan->hide();
+    ui->CalibButton->hide();
+    ui->CalibDataMes1->hide();
+    ui->CalibDataMes2->hide();
+    ui->CalibDataRe1->hide();
+    ui->CalibDataRe2->hide();
+    ui->CalibFinished->hide();
+    ui->CalibLabel->hide();
+    ui->CalibLabel1->hide();
+    ui->CalibLabel2->hide();
+    ui->AddCalibration->hide();
     ui->gridTabWidget->setCurrentIndex(0);
 
     ui->currentPosition->setReadOnly(true);
@@ -452,6 +462,15 @@ void MainWindow::createActions()
     saveGenericAll->setStatusTip(tr("Save all open plots in old style"));
     connect(saveGenericAll, SIGNAL(triggered()), this, SLOT(saveGenericAllPlots()));
 
+    calibrateAct = new QAction(tr("&Calibrate spectrometer"), this);
+    calibrateAct->setStatusTip(tr("Calibrate spectrometer"));
+    connect(calibrateAct, SIGNAL(triggered()), this, SLOT(calibrate()));
+
+}
+
+void MainWindow::calibrate()
+{
+    changeState(CalibState);
 }
 
 void MainWindow::createMenus()
@@ -462,6 +481,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveGenericAct);
     fileMenu->addAction(saveGenericAll);
+    fileMenu->addAction(calibrateAct);
 }
 
 void MainWindow::on_dispXValue_toggled(bool checked)
@@ -510,12 +530,19 @@ void MainWindow::changeState(State newState)
         }
         case EditState:
         {
+            ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 19);
+            ui->horizontalLayout_2->setStretchFactor(ui->formLayout_2, 1);
+            ui->scanName->show();
             ui->loadGenericButton->show();
+            ui->NameLabel->show();
             ui->setScanSpeed->setReadOnly(true);
             ui->setStartPosition->setReadOnly(true);
             ui->setTargetPosition->setReadOnly(true);
             ui->scanName->setReadOnly(true);
             ui->loadSettingsButton->show();
+            ui->dispXValue->show();
+            ui->dispYValue->show();
+            ui->dispZValue->show();
             ui->dispXValue->setEnabled(1);
             ui->dispYValue->setEnabled(1);
             ui->dispZValue->setEnabled(1);
@@ -527,6 +554,55 @@ void MainWindow::changeState(State newState)
             ui->stopScan->hide();
             ui->saveScan->show();
             ui->newScan->show();
+            ui->CalibButton->hide();
+            ui->CalibDataMes1->hide();
+            ui->CalibDataMes2->hide();
+            ui->CalibDataRe1->hide();
+            ui->CalibDataRe2->hide();
+            ui->CalibFinished->hide();
+            ui->CalibLabel->hide();
+            ui->CalibLabel1->hide();
+            ui->CalibLabel2->hide();
+            ui->AddCalibration->hide();
+            ui->PolarizerLabel->show();
+            ui->CalibReVal->hide();
+            ui->CalibMesVal->hide();
+            break;
+        }
+        case CalibState:
+        {
+            ui->CalibReVal->show();
+            ui->CalibMesVal->show();
+            ui->horizontalLayout_2->setStretchFactor(ui->qwtPlot, 15);
+            ui->horizontalLayout_2->setStretchFactor(ui->CalibLayout, 5);
+            ui->CalibLayout->setColumnStretch(1, 10);
+            ui->CalibLayout->setColumnStretch(2, 200);
+            ui->scanName->hide();
+            ui->NameLabel->hide();
+            ui->setScanSpeed->setReadOnly(false);
+            ui->setStartPosition->setReadOnly(false);
+            ui->setTargetPosition->setReadOnly(false);
+            ui->loadGenericButton->hide();
+            ui->loadSettingsButton->hide();
+            ui->NextScan->hide();
+            ui->saveScan->hide();
+            ui->newScan->hide();
+            ui->LastScan->hide();
+            ui->dispXValue->hide();
+            ui->dispYValue->hide();
+            ui->dispZValue->hide();
+            ui->CalibButton->show();
+            ui->CalibDataMes1->show();
+            ui->CalibDataMes2->show();
+            ui->CalibDataRe1->show();
+            ui->CalibDataRe2->show();
+            ui->CalibFinished->show();
+            ui->CalibLabel->show();
+            ui->AddCalibration->show();
+            ui->CalibLabel1->show();
+            ui->CalibLabel2->show();
+            ui->PolarizerLabel->hide();
+            ui->saveSettingsButton->hide();
             break;
         }
         case MoveState:
@@ -1151,4 +1227,28 @@ void MainWindow::gotNewFileFL(QVariant data)
         file.write(data.toByteArray());
         file.close();
     }
+}
+
+void MainWindow::on_CalibButton_clicked()
+{
+    if(ui->setScanSpeed->text().isEmpty() || ui->setStartPosition->text().isEmpty() || ui->setTargetPosition->text().isEmpty() || ui->scanName->text().isEmpty())
+    {
+        QMessageBox::information(this, tr("Error!"), tr("Not all neccessary information entered, please check your entered data!"));
+        return;
+    }
+    ui->progressBar->show();
+    ui->progressBar->setValue(1);
+    tmpScan.Params.finPos = ui->setTargetPosition->text().toDouble();
+    tmpScan.Params.startPos = ui->setStartPosition->text().toDouble();
+    tmpScan.Params.scanSpeed = ui->setScanSpeed->text().toDouble();
+    tmpScan.scanName = ui->scanName->text();
+    //qDebug() << "Scanner is initialized";
+    //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
+    //qDebug() << "Scanner is going to be started!";
+    //emit startScan();
+}
+
+void MainWindow::on_CalibFinished_clicked()
+{
+    changeState(EditState);
 }
