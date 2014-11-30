@@ -13,6 +13,8 @@ private:
     QVector<QPair<qreal, qreal> > FWHM;
 public:
     ScanData();
+    QVector<QPair<qreal, qreal> > getData(void);
+    QVector<QPair<qreal, qreal> > &setData(void);
     void clear(void);
 };
 

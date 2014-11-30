@@ -28,7 +28,7 @@ Stepper_Control_Master::Stepper_Control_Master(int MonoPos)
 {
     Spec_Control::MonoPos = MonoPos;
     Stepper_Control_Worker *newWorker = new Stepper_Control_Worker;
-    newWorker->moveToThread(workerThread);
+    newWorker->moveToThread(&workerThread);
     connect(workerThread, &QThread::finished, newWorker, &QObject::deleteLater);
     connect(this, &Stepper_Control_Master::moveStepper, newWorker, &Stepper_Control_Worker::moveStepper);
     connect(newWorker, &Stepper_Control_Worker::StepperMoved, this, &Stepper_Control_Master::StepMotorMoved);

@@ -13,10 +13,11 @@
 #include <QThread>
 #include <QJsonObject>
 #include <QJsonValue>
-#include "Globale.h"
+
 #include "../remoteController/tx_thread.h"
-//#include "Maaling.h"
-//#include "add_functions.h"
+#include "add_functions.h"
+#include "scanlist.h"
+#include "spectrometer.h"
 
 class QPushButton;
 class QLabel;
@@ -226,10 +227,10 @@ private:
     QAction *saveGenericAll;
     QAction *calibrateAct;
 
-    DPC *newDPC;
-    Spec_Control *newSpecControl;
+    //DPC *newDPC;
+    //Spec_Control *newSpecControl;
     QThread *SCThread;
-    scanner *newScanner;
+    //scanner *newScanner;
 };
 
 #endif // MAINWINDOW_H

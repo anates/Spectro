@@ -14,14 +14,14 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::currentScanNumber = 0;
     MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     MainWindow::setWindowTitle("");
-    MainWindow::newDPC = new DPC;
+    //MainWindow::newDPC = new DPC;
     MainWindow::newSpectrometer = new Spectrometer;
     MainWindow::calibrated = false;
     ui->CalibratedBox->setCheckable(false);
     MainWindow::loadConfig();
 
-    MainWindow::newSpecControl = new Spec_Control(newSpectrometer->getMonoPos());
-    MainWindow::newScanner = new scanner;
+    //MainWindow::newSpecControl = new Spec_Control(newSpectrometer->getMonoPos());
+    //MainWindow::newScanner = new scanner;
     //Setup of TX-Clients
     MainWindow::ipAddr = "127.0.0.1";
     MainWindow::port = 40000;
@@ -88,8 +88,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->currentSpeed->setReadOnly(true);
     ui->currentWaveNumber->setReadOnly(true);
     ui->photoCounter->setReadOnly(true);
-    ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
-    ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
+    //ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
+    //ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
 
     //Some fancy stuff for style
     QString myStyleSheet = QString("QProgressBar{ border: 2px solid black; border-radius: 5px; text-align: center} QProgressBar::chunk { background: green; width: 10px; margin: 0.5px}");
@@ -99,35 +99,35 @@ MainWindow::MainWindow(QWidget *parent) :
     //Creating connections
     //connect(SCThread, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
     //connect(SCThread, SIGNAL(terminated()), newSpecControl, SLOT(deleteLater()));
-    connect(this, SIGNAL(xPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer, bool)));
-    connect(this, SIGNAL(yPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
-    connect(this, SIGNAL(zPolarizerMoved(Polarizer,bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
-    connect(this, SIGNAL(MoveStepUp(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    connect(this, SIGNAL(MoveStepDown(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    connect(this, SIGNAL(MoveToTarget(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    connect(this, SIGNAL(stopControlling(void)), newSpecControl, SLOT(stopControl(void)));
-    connect(this, SIGNAL(stopCounting(void)), newDPC, SLOT(cancelThread(void)));
-    connect(this, SIGNAL(stopScan()), newScanner, SLOT(cancelScan()));
-    connect(this, SIGNAL(startScan()), newScanner, SLOT(runScan()));
-    connect(this, SIGNAL(killScanner()), newScanner, SLOT(stopScanner()));
-    connect(this, SIGNAL(initScanner(int, int, int , int, bool)), newScanner, SLOT(init(int, int, int, int,bool)));
-    connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
-    connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
-    connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
-    connect(newSpecControl, &Spec_Control::movedStepperTX, this, &MainWindow::sendDataSTP);
-    connect(newSpecControl, &Spec_Control::movedPolarizerTX, this, &MainWindow::sendDataPoll);
-    connect(newSpecControl, SIGNAL(movedPolarizer(Polarizer,bool)), newSpectrometer, SLOT(setPolarizersSlot(Polarizer,bool)));
+    //connect(this, SIGNAL(xPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer, bool)));
+    //connect(this, SIGNAL(yPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
+    //connect(this, SIGNAL(zPolarizerMoved(Polarizer,bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
+    //connect(this, SIGNAL(MoveStepUp(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
+    //connect(this, SIGNAL(MoveStepDown(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
+    //connect(this, SIGNAL(MoveToTarget(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
+    //connect(this, SIGNAL(stopControlling(void)), newSpecControl, SLOT(stopControl(void)));
+    //connect(this, SIGNAL(stopCounting(void)), newDPC, SLOT(cancelThread(void)));
+    //connect(this, SIGNAL(stopScan()), newScanner, SLOT(cancelScan()));
+    //connect(this, SIGNAL(startScan()), newScanner, SLOT(runScan()));
+    //connect(this, SIGNAL(killScanner()), newScanner, SLOT(stopScanner()));
+    //connect(this, SIGNAL(initScanner(int, int, int , int, bool)), newScanner, SLOT(init(int, int, int, int,bool)));
+    //connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
+    //connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
     //connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
-    connect(newSpecControl, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
-    connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
-    connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
+    //connect(newSpecControl, &Spec_Control::movedStepperTX, this, &MainWindow::sendDataSTP);
+    //connect(newSpecControl, &Spec_Control::movedPolarizerTX, this, &MainWindow::sendDataPoll);
+    //connect(newSpecControl, SIGNAL(movedPolarizer(Polarizer,bool)), newSpectrometer, SLOT(setPolarizersSlot(Polarizer,bool)));
+    //connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
+    //connect(newSpecControl, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
+    //connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
+    //connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
     //connect(newScanner, SIGNAL(finished()), this, SLOT(closeProgressBar()));
-    connect(newScanner, SIGNAL(scanFinished()), this, SLOT(scanIsFinished()));
-    connect(newScanner, SIGNAL(currentValue(qreal,qreal)), this, SLOT(addNewValue(qreal,qreal)));
-    connect(newScanner, SIGNAL(moveStepUp(void)), MainWindow::newSpecControl, SLOT(moveUp()));
-    connect(newScanner, SIGNAL(moveStepDown(void)), MainWindow::newSpecControl, SLOT(moveDown()));
-    connect(newScanner, SIGNAL(moveToPosition(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    connect(newScanner, SIGNAL(scanInterrupted()), this, SLOT(scanIsInterrupted()));
+    //connect(newScanner, SIGNAL(scanFinished()), this, SLOT(scanIsFinished()));
+    //connect(newScanner, SIGNAL(currentValue(qreal,qreal)), this, SLOT(addNewValue(qreal,qreal)));
+    //connect(newScanner, SIGNAL(moveStepUp(void)), MainWindow::newSpecControl, SLOT(moveUp()));
+    //connect(newScanner, SIGNAL(moveStepDown(void)), MainWindow::newSpecControl, SLOT(moveDown()));
+    //connect(newScanner, SIGNAL(moveToPosition(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
+    //connect(newScanner, SIGNAL(scanInterrupted()), this, SLOT(scanIsInterrupted()));
 
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
 
@@ -138,9 +138,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //Running subthreads
 //    SCThread->start();
     qDebug() << "Mainthread is " << thread();
-    newSpecControl->start();
-    newDPC->start();
-    newScanner->start();
+    //newSpecControl->start();
+    //newDPC->start();
+    //newScanner->start();
 
 }
 
@@ -150,20 +150,20 @@ MainWindow::~MainWindow()
     emit stopCounting();
     emit stopControlling();
     emit killScanner();
-    newSpecControl->wait(5000);
-    newDPC->wait(500);
-    newScanner->wait(500);
+    //newSpecControl->wait(5000);
+    //newDPC->wait(500);
+    //newScanner->wait(500);
     //MainWindow::SCThread->wait(500);
     //qDebug() << "Is DPC still counting: " << newDPC->isRunning();
     //qDebug() << "Is ControlThread still running?" << newSpecControl->isRunning();
     //qDebug() << "Is scanner still running?" << newScanner->isRunning();
     qDebug() << "Cleaning main!";
-    delete MainWindow::SCThread;
-    delete MainWindow::newDPC;
-    delete MainWindow::newSpecControl;
+    //delete MainWindow::SCThread;
+    //delete MainWindow::newDPC;
+    //delete MainWindow::newSpecControl;
     qDebug() << "SC, DPC and SC cleaned";
-    delete MainWindow::newSpectrometer;
-    delete MainWindow::newScanner;
+    //delete MainWindow::newSpectrometer;
+    //delete MainWindow::newScanner;
     qDebug() << "Scanner and Spec cleaned";
     delete MainWindow::plotPicker;
     qDebug() << "plotPicker cleaned";
@@ -198,7 +198,7 @@ void MainWindow::replot()
 
     QVector<double> x, y;
     MainWindow::Scandata.clear();
-    vectorToMap(newScanList.getCurrentScan().values.Data/*currentScan.values.Data*/, MainWindow::Scandata);
+    vectorToMap(newScanList.getCurrentScan().getValues().getData()/*currentScan.values.Data*/, MainWindow::Scandata);
     x = QVector<double>::fromList(Scandata.keys());
     y = QVector<double>::fromList(Scandata.values());
 
@@ -246,13 +246,15 @@ void MainWindow::open()
             in.setVersion(QDataStream::Qt_3_3);
         else
             in.setVersion(QDataStream::Qt_4_5);
-        newScan.values.Data.empty();
+        //newScan.values.Data.empty();
+        newScan.getValues().setData().empty();//Highly risky, try to replace it???
         in >> scanName;
         in >> monoSetting;
         in >> startScan;
         in >> finScan;
         in >> scanSpeed;
-        in >> newScan.values.Data;
+        //in >> newScan.values.Data;
+        in >> newScan.setValues().setData();
         if(magic == 0x80081E5 || magic == 0xB0081E5)
         {
             in >> newScan.log.countNumber;

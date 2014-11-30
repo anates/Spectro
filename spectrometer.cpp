@@ -12,9 +12,16 @@ Spectrometer::Spectrometer()
     connect(stepperControl, &Stepper_Control_Master::StepMotorMoved, this, &Spectrometer::stepperMoved);
 
     connect(this, &Spectrometer::switchPolarizer, polarizerControl, &polarizer_control_master::setPolarizers);
-    connect(polarizerControl, &polarizer_control_master, this, &Spectrometer::switchingSuccess);
+    connect(polarizerControl, &polarizer_control_master::switchingSuccess, this, &Spectrometer::switchingSuccess);
 
+    connect(dpcControl, &DPC_Master::currentCount, this, &Spectrometer::currentCounts);
+    connect(dpcControl, &DPC_Master::currentCount, scannerControl, &Scanner_Master::currentCounts);
 
+    connect(this, &Spectrometer::scanNow, scannerControl, &Scanner_Master::runScan);
+    connect(this, &Spectrometer::interruptScan, scannerControl, &Scanner_Master::interruptScan);
+    connect(scannerControl, &Scanner_Master::currentDataToExt, this, &Spectrometer::currentData);
+    connect(scannerControl, &Scanner_Master::moveStepperToTarget, this, &Spectrometer::updatePosition);
+    connect(scannerControl, &Scanner_Master::moveStepperToTarget, stepperControl, &Stepper_Control_Master::moveStepMotor);
 }
 
 void Spectrometer::setMonoPos(int MonoPos)
@@ -26,7 +33,6 @@ void Spectrometer::runScan(int start, int stop, int accuracy)
 {
     emit scanNow(start, stop, accuracy);
 }
-
 
 int & Spectrometer::getMonoPos(void)
 {
@@ -52,3 +58,6 @@ void Spectrometer::setMonoSpeedSlot(qreal MonoSpeed)
 {
     Spectrometer::MonoSpeed = MonoSpeed;
 }
+
+
+//Spectrometer-Controller functions

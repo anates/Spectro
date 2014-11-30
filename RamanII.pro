@@ -12,9 +12,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Globale.cpp \
-    COM_PROC.cpp \
-    Analyse.cpp \
     add_functions.cpp \
     ../tcp_client_test/client.cpp \
     ../tcp_client_test/server.cpp \
@@ -34,8 +31,6 @@ SOURCES += main.cpp\
     polarizer_control.cpp
 
 HEADERS  += mainwindow.h \
-    Globale.h \
-    COM_PROC.h \
     add_functions.h \
     ../tcp_client_test/client.h \
     ../tcp_client_test/server.h \

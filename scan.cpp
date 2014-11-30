@@ -22,3 +22,13 @@ void Scan::clear(void)
     Scan::isLoaded = false;
     Scan::values.clear();
 }
+
+ScanData Scan::getValues()
+{
+    return values;
+}
+
+ScanData& Scan::setValues(void)
+{
+    return &values;
+}

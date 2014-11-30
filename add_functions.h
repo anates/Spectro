@@ -32,21 +32,12 @@
 #include <QFileDialog>
 #include <QDialogButtonBox>
 
-#include "../BlackLib/v2_0/BlackGPIO.h"
-
-#define ACCURACY 10
+#include "scan.h"
 
 void read_unformatted_file(Scan &Data, const QString &fileName);
 void write_unformatted_file(const Scan &Data, QString fileName);
 void write_log_file(const Scan &Data, QString fileName);
 void splitToDoubles(QPair<double, double> &valuePair, QString input);
 void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<double, double> &outdata);
-
-//New inserted from Monokrom
-void MonoOpp(const qreal step, qreal &MonoPos);
-void MonoNed(const qreal step, qreal &MonoPos);
-void moveToTarget(const double &NewMonoPos, qreal &MonoPos);
-
-
 
 #endif // ADD_FUNCTIONS_H

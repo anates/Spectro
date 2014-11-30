@@ -20,7 +20,7 @@ polarizer_control_worker::switchPolarizer(Polarizer pol)
 polarizer_control_master::polarizer_control_master()
 {
     polarizer_control_worker *newWorker = new polarizer_control_worker;
-    newWorker->moveToThread(workerThread);
+    newWorker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &polarizer_control_master::switchPolarizer, newWorker, &polarizer_control_worker::switchPolarizer);
     connect(newWorker, &polarizer_control_worker::PolarizerSwitched, this, &polarizer_control_master::PolarizerSwitchSuccess);

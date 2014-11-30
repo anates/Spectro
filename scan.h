@@ -19,6 +19,8 @@ private:
     bool isLoaded = false;
 public:
     Scan();
+    ScanData getValues(void);
+    ScanData& setValues(void);
     void clear(void);
 };
 
