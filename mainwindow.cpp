@@ -117,7 +117,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpecControl, &Spec_Control::movedStepperTX, this, &MainWindow::sendDataSTP);
     connect(newSpecControl, &Spec_Control::movedPolarizerTX, this, &MainWindow::sendDataPoll);
     connect(newSpecControl, SIGNAL(movedPolarizer(Polarizer,bool)), newSpectrometer, SLOT(setPolarizersSlot(Polarizer,bool)));
-    connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
+    //connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
     connect(newSpecControl, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
     connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
     connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
@@ -137,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent) :
     changeState(EditState);
     //Running subthreads
 //    SCThread->start();
+    qDebug() << "Mainthread is " << thread();
     newSpecControl->start();
     newDPC->start();
     newScanner->start();
