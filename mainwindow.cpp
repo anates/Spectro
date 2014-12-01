@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     MainWindow::setWindowTitle("");
     //MainWindow::newDPC = new DPC;
-    MainWindow::newSpectrometer = new Spectrometer_Control;
+    MainWindow::newSpectrometer = new Spectrometer_Control(&mutex, &EngineMoving);
     MainWindow::calibrated = false;
     ui->CalibratedBox->setCheckable(false);
     MainWindow::loadConfig();
@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->AddCalibration->hide();
     ui->gridTabWidget->setCurrentIndex(0);
     ui->gridTabWidget->setTabEnabled(3, false);
-
+    ui->movingBox->setDisabled(true);
     ui->currentPosition->setReadOnly(true);
     ui->currentSpeed->setReadOnly(true);
     ui->currentWaveNumber->setReadOnly(true);
@@ -102,6 +102,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpectrometer, &Spectrometer_Control::currentData, this, &MainWindow::incomingData);
     connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
     connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::scanIsFinished);
+    connect(newSpectrometer, &Spectrometer_Control::positionChanged, this, &MainWindow::PositionChanged);
+    connect(newSpectrometer, &Spectrometer_Control::stepperMoving, this, &MainWindow::StepperMoving);
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
 
     //Thread work
@@ -1016,11 +1018,6 @@ void MainWindow::writeConfig()
     file.close();
 }
 
-//void MainWindow::on_activateCounter_clicked()
-//{
-//    newDPC->start();
-//}
-
 void MainWindow::on_execButton_2_clicked()
 {
     if((ui->newPosition->text().toInt() != newSpectrometer->getMonoPos()) && !ui->newPosition->text().isEmpty())
@@ -1028,6 +1025,19 @@ void MainWindow::on_execButton_2_clicked()
         newSpectrometer->moveStepper(fabs(newSpectrometer->getMonoPos() - ui->newPosition->text().toInt()), ((ui->newPosition->text().toInt() - newSpectrometer->getMonoPos()) >= 0));
     }
     reload_data();
+}
+
+void MainWindow::StepperMoving(void)
+{
+    qDebug() << "Stepper moving!";
+    ui->movingBox->setChecked(true);
+    reload_data();
+}
+
+void MainWindow::PositionChanged()
+{
+    reload_data();
+    ui->movingBox->setChecked(false);
 }
 
 void MainWindow::on_gridTabWidget_currentChanged(int index)

@@ -8,6 +8,8 @@
 
 #include "../BlackLib/v2_0/BlackLib.h"
 
+
+
 class DPC_Worker:public QObject
 {
     Q_OBJECT

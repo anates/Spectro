@@ -30,9 +30,11 @@ void Stepper_Control_Worker::moveStepper(int steps, bool dir)
 }
 
 //Stepper_Control_Master-functions
-Stepper_Control_Master::Stepper_Control_Master()
+Stepper_Control_Master::Stepper_Control_Master(QMutex *mutex, QWaitCondition *WaitCond)
 {
     Stepper_Control_Worker *newWorker = new Stepper_Control_Worker;
+    WaitMutex = mutex;
+    Stepper_Control_Master::WaitCond = WaitCond;
     newWorker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, newWorker, &QObject::deleteLater);
     connect(this, &Stepper_Control_Master::moveStepper, newWorker, &Stepper_Control_Worker::moveStepper);
@@ -58,6 +60,9 @@ void Stepper_Control_Master::StepMotorMoved(int steps, bool dir)
 {
     qDebug() << "Stepper moved!";
     emit CurrentPosition(steps, dir);
+    WaitMutex->lock();
+    WaitCond->wakeAll();
+    WaitMutex->unlock();
 }
 
 

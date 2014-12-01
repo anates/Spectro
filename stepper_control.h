@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 #include <QVector>
+#include <QMutex>
+#include <QWaitCondition>
 #include <unistd.h>
 #include <QDebug>
 #include <QThread>
@@ -28,6 +30,8 @@ class Stepper_Control_Master: public QObject
 {
     Q_OBJECT
 private:
+    QMutex *WaitMutex;
+    QWaitCondition *WaitCond;
     QThread workerThread;
 public slots:
     //Internal
@@ -40,7 +44,7 @@ signals:
     //External
     void CurrentPosition(int, bool);
 public:
-    Stepper_Control_Master();
+    Stepper_Control_Master(QMutex *mutex, QWaitCondition *WaitCond);
     ~Stepper_Control_Master();
 
 };

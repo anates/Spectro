@@ -3,6 +3,8 @@
 #include <QVector>
 #include <QThread>
 #include <QDebug>
+#include <QMutex>
+#include <QWaitCondition>
 #include "dpc.h"
 #include "scanner.h"
 #include "stepper_control.h"
@@ -12,12 +14,14 @@ class Spectrometer: public QObject
 {
     Q_OBJECT
 private:
+    QMutex *WaitMutex;
+    QWaitCondition *WaitForEngine;
     //int currentMonoPos;
 
     DPC_Master dpcControl;
     polarizer_control_master polarizerControl;
     Scanner_Master scannerControl;
-    Stepper_Control_Master stepperControl;
+    Stepper_Control_Master *stepperControl;
 private slots:
     //Inside wiring
     //Polarizer
@@ -57,7 +61,7 @@ signals:
     //from polarizercontrol
     void switchingSucceed(Polarizer pol);
 public:
-    Spectrometer();
+    Spectrometer(QMutex *mutex, QWaitCondition *WaitCond);
     ~Spectrometer();
 
 };
@@ -69,6 +73,8 @@ class Spectrometer_Control:public QObject
 private:
     int MonoPos = 0;
     QVector<bool> polarizerSetting;
+    QMutex *WaitMutex;
+    QWaitCondition *WaitForEngine;
 public slots:
     //Internal connections
     //to DPC
@@ -92,8 +98,10 @@ signals:
     void scanFinished(void);
     void currentScanPosition(qreal position);
     void currentCounterData(int counts);
+    void positionChanged(void);
+    void stepperMoving(void);
 public:
-    Spectrometer_Control();
+    Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine);
     ~Spectrometer_Control();
 
     void setMonoPos(int pos);

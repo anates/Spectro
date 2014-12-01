@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1013</width>
-    <height>783</height>
+    <height>876</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
@@ -35,9 +35,7 @@
         <item row="1" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QwtPlot" name="qwtPlot">
-            <zorder></zorder>
-           </widget>
+           <widget class="QwtPlot" name="qwtPlot"/>
           </item>
           <item>
            <layout class="QFormLayout" name="formLayout_2">
@@ -358,6 +356,9 @@
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_7">
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="newWaveNumber"/>
+          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_12">
             <property name="text">
@@ -393,16 +394,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QLineEdit" name="newPosition"/>
-          </item>
-          <item row="4" column="2">
-           <widget class="QPushButton" name="execButton_2">
-            <property name="text">
-             <string>Execute</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_13">
             <property name="text">
@@ -410,13 +401,27 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="newWaveNumber"/>
+          <item row="5" column="2">
+           <widget class="QPushButton" name="execButton_2">
+            <property name="text">
+             <string>Execute</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="newPosition"/>
           </item>
           <item row="3" column="2">
            <widget class="QLineEdit" name="newSpeed"/>
           </item>
-          <item row="5" column="2">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Accuracy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <widget class="QLineEdit" name="moveData"/>
@@ -437,14 +442,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Movement speed</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2">
+          <item row="7" column="2">
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="0" column="1">
              <widget class="QPushButton" name="centerMono">
@@ -468,6 +466,20 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="4" column="1">
+           <widget class="QCheckBox" name="movingBox">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Moving?</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -558,7 +570,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="RemoteTab">
        <attribute name="title">
         <string>Remote settings</string>
        </attribute>

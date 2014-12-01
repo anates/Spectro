@@ -11,6 +11,8 @@
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
 #include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 #include <QJsonObject>
 #include <QJsonValue>
 
@@ -51,6 +53,9 @@ public slots:
     void CurrentScanStatus(qreal status);
     void incomingData(QPair<int, int> data);
     void scanIsFinished(void);
+    //Movement Slots
+    void PositionChanged(void);
+    void StepperMoving(void);
     //TX Slots
     //MainTX slots
     void wrongDeviceMain(void);
@@ -184,6 +189,10 @@ private slots:
     void on_CalibConfirm_clicked();
 
 private:
+
+
+    QMutex mutex;
+    QWaitCondition EngineMoving;
 
 
     QwtPlotPicker* plotPicker;

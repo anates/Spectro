@@ -1,12 +1,16 @@
 #include "spectrometer.h"
 
 //Spectrometer functions
-Spectrometer::Spectrometer()
+Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond)
 {
     //qDebug() << "Spectrometer: " << thread() << QThread::currentThread();
+    WaitMutex = mutex;
+    WaitForEngine = WaitCond;
 
-    connect(this, &Spectrometer::moveStepperToTarget, &stepperControl, &Stepper_Control_Master::moveStepMotor);
-    connect(&stepperControl, &Stepper_Control_Master::CurrentPosition, this, &Spectrometer::stepperMoved);
+    stepperControl = new Stepper_Control_Master(WaitMutex, WaitForEngine);
+
+    connect(this, &Spectrometer::moveStepperToTarget, stepperControl, &Stepper_Control_Master::moveStepMotor);
+    connect(stepperControl, &Stepper_Control_Master::CurrentPosition, this, &Spectrometer::stepperMoved);
 
     connect(this, &Spectrometer::switchPolarizer, &polarizerControl, &polarizer_control_master::setPolarizers);
     connect(&polarizerControl, &polarizer_control_master::switchingSuccess, this, &Spectrometer::switchingSuccess);
@@ -18,14 +22,14 @@ Spectrometer::Spectrometer()
     connect(this, &Spectrometer::interruptScan, &scannerControl, &Scanner_Master::interruptScan);
     connect(&scannerControl, &Scanner_Master::currentDataToExt, this, &Spectrometer::currentData);
     connect(&scannerControl, &Scanner_Master::moveStepperToTarget, this, &Spectrometer::updatePosition);
-    connect(&scannerControl, &Scanner_Master::moveStepperToTarget, &stepperControl, &Stepper_Control_Master::moveStepMotor);
+    connect(&scannerControl, &Scanner_Master::moveStepperToTarget, stepperControl, &Stepper_Control_Master::moveStepMotor);
     connect(&scannerControl, &Scanner_Master::scanFinished, this, &Spectrometer::scanFinished);
     connect(&scannerControl, &Scanner_Master::scanCurrentPosition, this, &Spectrometer::currentScanPosition);
 }
 
 Spectrometer::~Spectrometer()
 {
-
+    delete stepperControl;
 }
 
 void Spectrometer::currentScanPosition(qreal position)
@@ -89,12 +93,14 @@ void Spectrometer::moveToTarget(int steps, bool dir)
 
 //Spectrometer_Control-functions
 
-Spectrometer_Control::Spectrometer_Control()
+Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine)
 {
+    Spectrometer_Control::WaitMutex = mutex;
+    Spectrometer_Control::WaitForEngine = WaitForEngine;
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
     Spectrometer_Control::MonoPos = 0;
-    Spectrometer *newSpectrometer = new Spectrometer;
+    Spectrometer *newSpectrometer = new Spectrometer(mutex, WaitForEngine);
     newSpectrometer->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, newSpectrometer, &QObject::deleteLater);
 
@@ -149,12 +155,14 @@ void Spectrometer_Control::updateCurrentPosition(int steps, bool dir)
         MonoPos += steps;
     else
         MonoPos -= steps;
+    emit positionChanged();
     //qDebug() << "New Monopos: " << QString::number(MonoPos);
 }
 
 void Spectrometer_Control::updatePolarizers(Polarizer pol)
 {
     polarizerSetting[pol] = !polarizerSetting[pol];
+    emit positionChanged();
 }
 
 int Spectrometer_Control::getMonoPos(void)
@@ -202,6 +210,7 @@ QVector<bool> Spectrometer_Control::getPolarizers()
 
 void Spectrometer_Control::moveStepper(int steps, bool dir)
 {
+    emit stepperMoving();
     qDebug() << "From Spectrometer_Control: Stepper should move in direction " + QString::number(dir) + " from position " + QString::number(MonoPos);
     int newTarget = MonoPos + ((dir == true)?(steps):(-1 * steps));
     qDebug() << "New target: " + QString::number(newTarget);
@@ -210,35 +219,15 @@ void Spectrometer_Control::moveStepper(int steps, bool dir)
 
 void Spectrometer_Control::scan(int start, int stop, int accuracy)
 {
+    emit stepperMoving();
     if(start != MonoPos)
     {
         int steps = fabs(MonoPos - start);
         bool dir = (start - MonoPos) >= 0;
         emit moveStepperToTarget(steps, dir);
-        //Wait for success
+        WaitMutex->lock();
+        WaitForEngine->wait(WaitMutex);
+        WaitMutex->unlock();
     }
     emit runScan(0, fabs(stop - start), accuracy);
 }
-
-//void Spectrometer::setMonoSpeed(qreal MonoSpeed)
-//{
-//    Spectrometer::MonoSpeed = MonoSpeed;
-//}
-
-//qreal & Spectrometer::getMonoSpeed(void)
-//{
-//    return Spectrometer::MonoSpeed;
-//}
-
-//void Spectrometer::setMonoPosSlot(qreal MonoPos)
-//{
-//    Spectrometer::MonoPos = MonoPos;
-//}
-
-//void Spectrometer::setMonoSpeedSlot(qreal MonoSpeed)
-//{
-//    Spectrometer::MonoSpeed = MonoSpeed;
-//}
-
-
-//Spectrometer-Controller functions
