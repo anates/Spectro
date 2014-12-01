@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 #include <QVector>
+#include <unistd.h>
+#include <QDebug>
 #include <QThread>
 
 #include "../BlackLib/v2_0/BlackLib.h"
@@ -31,14 +33,14 @@ public slots:
     //Internal
     void StepMotorMoved(int steps, bool dir);
     //External
-    void moveStepMotor(int CurrentPos, int newPos);
+    void moveStepMotor(int steps, bool dir);
 signals:
     //Internal
     void moveStepper(int, bool);
     //External
     void CurrentPosition(int, bool);
 public:
-    Stepper_Control_Master(int MonoPos);
+    Stepper_Control_Master();
     ~Stepper_Control_Master();
 
 };

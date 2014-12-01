@@ -5,7 +5,8 @@
 
 class ScanParams
 {
-private:
+//private://For testing public
+public:
     qreal startPos;
     qreal finPos;
     qreal scanSpeed;

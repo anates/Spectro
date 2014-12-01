@@ -7,7 +7,8 @@
 
 class ScanData
 {
-private:
+//private://For testing public
+public:
     QVector<QPair<qreal, qreal> > Data;
     QVector<QPair<qreal, qreal> > Maxima;
     QVector<QPair<qreal, qreal> > FWHM;

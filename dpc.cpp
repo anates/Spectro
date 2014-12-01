@@ -33,8 +33,13 @@ DPC_Worker::DPC_Worker()
     stopAqu = false;
 }
 
+DPC_Worker::~DPC_Worker()
+{
+}
+
 void DPC_Worker::stopAquisition(void)
 {
+    qDebug() << "Aquisition should stop now!";
     stopAqu = true;
 }
 
@@ -43,9 +48,10 @@ void DPC_Worker::aquireCounts(void)
     int counts = 12;
     while(stopAqu == false)
     {
-        msleep(50);//Hier muss noch die Auswertung eingebaut werden, und die genauen Pins muessen nachgesehen werden
+        usleep(50000);//Hier muss noch die Auswertung eingebaut werden, und die genauen Pins muessen nachgesehen werden
         emit currentCounts(counts);
     }
+    qDebug() << "Aquisition stopped!";
 }
 
 int Read_DPC(void)
@@ -89,7 +95,7 @@ int Read_DPC(void)
 DPC_Master::DPC_Master()
 {
     DPC_Worker *newDPC = new DPC_Worker;
-    newDPC->moveToThread(workerThread);
+    newDPC->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, newDPC, &DPC_Worker::deleteLater);
     connect(this, &DPC_Master::startAquisition, newDPC, &DPC_Worker::aquireCounts);
     connect(this, &DPC_Master::stopAquisition, newDPC, &DPC_Worker::stopAquisition);
@@ -101,8 +107,10 @@ DPC_Master::DPC_Master()
 DPC_Master::~DPC_Master()
 {
     emit stopAquisition();
+    qDebug() << "Cleaning up DPC";
     workerThread.quit();
     workerThread.wait();
+    qDebug() << "DPC cleaned!";
 }
 
 void DPC_Master::currentCounts(int counts)

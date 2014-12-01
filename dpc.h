@@ -1,7 +1,9 @@
 #ifndef DPC_H
 #define DPC_H
 #include <QThread>
+#include <QDebug>
 #include <vector>
+#include <unistd.h>
 #include <memory>
 
 #include "../BlackLib/v2_0/BlackLib.h"

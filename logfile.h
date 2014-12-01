@@ -4,7 +4,8 @@
 
 class LogFile
 {
-private:
+//private://For testing public
+public:
     bool logfileSet = false;
     QString name = "";
     qreal laserIntensity = 0;
@@ -13,6 +14,11 @@ private:
     qreal countNumber = 0;
 public:
     LogFile();
+    QString & getName();
+    qreal & getIntensity();
+    qreal & getSlit();
+    qreal & getSensitivity();
+    qreal & getCount();
     void clear(void);
 };
 

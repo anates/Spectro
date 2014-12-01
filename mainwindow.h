@@ -42,11 +42,15 @@ public:
 public slots:
     void calibrate(void);
     void oncurrentCount(int counts);
-    void CurrentScanStatus(qreal status);
+
     void closeProgressBar(void);
-    void scanIsFinished(void);
+
     void addNewValue(qreal wNumber, qreal counts);
     void scanIsInterrupted(void);
+    //Scanning slot
+    void CurrentScanStatus(qreal status);
+    void incomingData(QPair<int, int> data);
+    void scanIsFinished(void);
     //TX Slots
     //MainTX slots
     void wrongDeviceMain(void);
@@ -201,7 +205,7 @@ private:
     ScanList newScanList;
     struct Scan tmpScan;
     int currentScanNumber;
-    Spectrometer *newSpectrometer;
+    Spectrometer_Control *newSpectrometer;
     bool calibrated;
 
     //TX

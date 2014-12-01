@@ -1,7 +1,7 @@
 #ifndef SCANLIST_H
 #define SCANLIST_H
 #include <scan.h>
-
+#include <QObject>
 
 class ScanList: public QObject
 {

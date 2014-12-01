@@ -19,5 +19,5 @@ QVector<QPair<qreal, qreal> > ScanData::getData(void)
 
 QVector<QPair<qreal, qreal> > &ScanData::setData(void)
 {
-    return &Data;
+    return Data;
 }

@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     MainWindow::setWindowTitle("");
     //MainWindow::newDPC = new DPC;
-    MainWindow::newSpectrometer = new Spectrometer;
+    MainWindow::newSpectrometer = new Spectrometer_Control;
     MainWindow::calibrated = false;
     ui->CalibratedBox->setCheckable(false);
     MainWindow::loadConfig();
@@ -83,12 +83,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->CalibLabel2->hide();
     ui->AddCalibration->hide();
     ui->gridTabWidget->setCurrentIndex(0);
+    ui->gridTabWidget->setTabEnabled(3, false);
 
     ui->currentPosition->setReadOnly(true);
     ui->currentSpeed->setReadOnly(true);
     ui->currentWaveNumber->setReadOnly(true);
     ui->photoCounter->setReadOnly(true);
-    //ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
+    ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
     //ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
 
     //Some fancy stuff for style
@@ -97,38 +98,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setStyleSheet(s);
 
     //Creating connections
-    //connect(SCThread, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
-    //connect(SCThread, SIGNAL(terminated()), newSpecControl, SLOT(deleteLater()));
-    //connect(this, SIGNAL(xPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer, bool)));
-    //connect(this, SIGNAL(yPolarizerMoved(Polarizer, bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
-    //connect(this, SIGNAL(zPolarizerMoved(Polarizer,bool)), newSpecControl, SLOT(movePolarizer(Polarizer,bool)));
-    //connect(this, SIGNAL(MoveStepUp(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    //connect(this, SIGNAL(MoveStepDown(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    //connect(this, SIGNAL(MoveToTarget(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    //connect(this, SIGNAL(stopControlling(void)), newSpecControl, SLOT(stopControl(void)));
-    //connect(this, SIGNAL(stopCounting(void)), newDPC, SLOT(cancelThread(void)));
-    //connect(this, SIGNAL(stopScan()), newScanner, SLOT(cancelScan()));
-    //connect(this, SIGNAL(startScan()), newScanner, SLOT(runScan()));
-    //connect(this, SIGNAL(killScanner()), newScanner, SLOT(stopScanner()));
-    //connect(this, SIGNAL(initScanner(int, int, int , int, bool)), newScanner, SLOT(init(int, int, int, int,bool)));
-    //connect(newDPC, SIGNAL(currentCount(int)), SLOT(oncurrentCount(int)));
-    //connect(newDPC, SIGNAL(finished()), newDPC, SLOT(deleteLater()));
-    //connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
-    //connect(newSpecControl, &Spec_Control::movedStepperTX, this, &MainWindow::sendDataSTP);
-    //connect(newSpecControl, &Spec_Control::movedPolarizerTX, this, &MainWindow::sendDataPoll);
-    //connect(newSpecControl, SIGNAL(movedPolarizer(Polarizer,bool)), newSpectrometer, SLOT(setPolarizersSlot(Polarizer,bool)));
-    //connect(newSpecControl, SIGNAL(movedStepper(qreal)), newSpectrometer, SLOT(setMonoPosSlot(qreal)));
-    //connect(newSpecControl, SIGNAL(finished()), newSpecControl, SLOT(deleteLater()));
-    //connect(newScanner, SIGNAL(currentStatus(qreal)), SLOT(CurrentScanStatus(qreal)));
-    //connect(newScanner, SIGNAL(finished()), newScanner, SLOT(deleteLater()));
-    //connect(newScanner, SIGNAL(finished()), this, SLOT(closeProgressBar()));
-    //connect(newScanner, SIGNAL(scanFinished()), this, SLOT(scanIsFinished()));
-    //connect(newScanner, SIGNAL(currentValue(qreal,qreal)), this, SLOT(addNewValue(qreal,qreal)));
-    //connect(newScanner, SIGNAL(moveStepUp(void)), MainWindow::newSpecControl, SLOT(moveUp()));
-    //connect(newScanner, SIGNAL(moveStepDown(void)), MainWindow::newSpecControl, SLOT(moveDown()));
-    //connect(newScanner, SIGNAL(moveToPosition(int, int)), newSpecControl, SLOT(moveStepMotor(int, int)));
-    //connect(newScanner, SIGNAL(scanInterrupted()), this, SLOT(scanIsInterrupted()));
-
+    connect(newSpectrometer, &Spectrometer_Control::currentCounterData, this, &MainWindow::oncurrentCount);
+    connect(newSpectrometer, &Spectrometer_Control::currentData, this, &MainWindow::incomingData);
+    connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
+    connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::scanIsFinished);
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
 
     //Thread work
@@ -137,7 +110,6 @@ MainWindow::MainWindow(QWidget *parent) :
     changeState(EditState);
     //Running subthreads
 //    SCThread->start();
-    qDebug() << "Mainthread is " << thread();
     //newSpecControl->start();
     //newDPC->start();
     //newScanner->start();
@@ -162,7 +134,7 @@ MainWindow::~MainWindow()
     //delete MainWindow::newDPC;
     //delete MainWindow::newSpecControl;
     qDebug() << "SC, DPC and SC cleaned";
-    //delete MainWindow::newSpectrometer;
+    delete MainWindow::newSpectrometer;
     //delete MainWindow::newScanner;
     qDebug() << "Scanner and Spec cleaned";
     delete MainWindow::plotPicker;
@@ -257,11 +229,12 @@ void MainWindow::open()
         in >> newScan.setValues().setData();
         if(magic == 0x80081E5 || magic == 0xB0081E5)
         {
-            in >> newScan.log.countNumber;
-            in >> newScan.log.laserIntensity;
-            in >> newScan.log.name;
-            in >> newScan.log.sensitivity;
-            in >> newScan.log.slitWidth;
+            //in >> newScan.log.countNumber;
+            in >> newScan.getLog().getCount();
+            in >> newScan.getLog().getIntensity();
+            in >> newScan.getLog().getName();
+            in >> newScan.getLog().getSensitivity();
+            in >> newScan.getLog().getSlit();
         }
         if(magic == 0xB0081E5)
             in >> newScan.isCalibrated;
@@ -273,7 +246,7 @@ void MainWindow::open()
         newScan.Params.polSettings.push_back((bool)(monoSetting%2 == 0 && monoSetting != 4));
         newScan.Params.polSettings.push_back((bool)(monoSetting >= 4));
         newScan.readonly = true;
-        if(newScan.values.Data.isEmpty())
+        if(newScan.getValues().getData().isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
             return;
@@ -645,9 +618,8 @@ void MainWindow::changeState(State newState)
     }
 }
 
-void MainWindow::on_scanButton_clicked()
+void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
 {
-    //qDebug() << "Is Scanner running when I pressed the scan button?" << newScanner->isRunning();
     if(ui->setScanSpeed->text().isEmpty() || ui->setStartPosition->text().isEmpty() || ui->setTargetPosition->text().isEmpty() || ui->scanName->text().isEmpty())
     {
         QMessageBox::information(this, tr("Error!"), tr("Not all neccessary information entered, please check your entered data!"));
@@ -709,12 +681,17 @@ void MainWindow::on_scanButton_clicked()
     tmpScan.scanName = ui->scanName->text();
     tmpScan.isCalibrated = false;
     //qDebug() << "Scanner is initialized";
-    emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
+    //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
-    emit startScan();
+    newSpectrometer->runScan(ui->setStartPosition->text().toInt(), ui->setTargetPosition->text().toInt(), ui->setScanSpeed->text().toInt());
     yes = NULL;
     no = NULL;
     //Analyze(MainWindow::newScanList);
+}
+
+void MainWindow::incomingData(QPair<int, int> data)
+{
+    tmpScan.getValues().getData().push_back(data);
 }
 
 void MainWindow::closeProgressBar()
@@ -867,7 +844,7 @@ void MainWindow::reload_data()
         ui->CalibratedBox->setChecked(newScanList.getCurrentScan().isCalibrated);
     }
     ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
-    ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
+    //ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
     ui->newPosition->clear();
     ui->newSpeed->clear();
     ui->currentWaveNumber->setText("Muss berechnet werden");
@@ -876,7 +853,8 @@ void MainWindow::reload_data()
 void MainWindow::on_stepBackMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() - 1);
+    newSpectrometer->moveStepper(1, 0);
+    //emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() - 1);
     reload_data();
     //Muss ausgebaut werden
     //MonoNed(1, newSpectrometer.getMonoPos());
@@ -885,7 +863,8 @@ void MainWindow::on_stepBackMono_clicked()
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + 1);
+    newSpectrometer->moveStepper(1, 1);
+    //emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + 1);
     reload_data();
 }
 
@@ -893,12 +872,14 @@ void MainWindow::on_mvButton_2_clicked()
 {
     if(ui->moveData->text().toDouble() < 0)
     {   //Hier müssen Signale und Slots rein!
-        emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
+        newSpectrometer->moveStepper(ui->moveData->text().toInt(), 0);
+        //emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
         ui->moveData->setText("");
     }
     else
     {
-        emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
+        newSpectrometer->moveStepper(fabs(ui->moveData->text().toInt()), 1);
+        //emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
         ui->moveData->setText("");
     }
     reload_data();
@@ -994,13 +975,13 @@ void MainWindow::loadConfig()
 
 
     newSpectrometer->setMonoPos(monoPos.toDouble());
-    newSpectrometer->setMonoSpeed(monoSpeed.toDouble());
+    //newSpectrometer->setMonoSpeed(monoSpeed.toDouble());
     newSpectrometer->setPolarizers(xPol, (PolarizerConfig % 2 == 1)?true:false );
     newSpectrometer->setPolarizers(yPol, (PolarizerConfig == 2 || PolarizerConfig == 3 || PolarizerConfig == 6)?true:false);
     newSpectrometer->setPolarizers(zPol, (PolarizerConfig >= 4)?true:false);
-    ui->dispXValue->setChecked(newSpectrometer->getPolarizers(xPol));
-    ui->dispYValue->setChecked(newSpectrometer->getPolarizers(yPol));
-    ui->dispZValue->setChecked(newSpectrometer->getPolarizers(zPol));
+    ui->dispXValue->setChecked(newSpectrometer->getPolarizerState(xPol));
+    ui->dispYValue->setChecked(newSpectrometer->getPolarizerState(yPol));
+    ui->dispZValue->setChecked(newSpectrometer->getPolarizerState(zPol));
 }
 
 void MainWindow::oncurrentCount(int counts)
@@ -1028,7 +1009,7 @@ void MainWindow::writeConfig()
         }
     }
     out << newSpectrometer->getMonoPos() << '\n';
-    out << newSpectrometer->getMonoSpeed() << '\n';
+    //out << newSpectrometer->getMonoSpeed() << '\n';
     out << (int)(newSpectrometer->getPolarizers()[0])*1 + (int)(newSpectrometer->getPolarizers()[1])*2 + (int)(newSpectrometer->getPolarizers()[2])*4 << '\n';
     if(calibrated == true)
         out << CalibrationData;
@@ -1044,21 +1025,8 @@ void MainWindow::on_execButton_2_clicked()
 {
     if((ui->newPosition->text().toInt() != newSpectrometer->getMonoPos()) && !ui->newPosition->text().isEmpty())
     {
-//        if(ui->newPosition->text().toDouble() > newSpectrometer->getMonoPos())
-//        {
-//            qDebug() << "Emitting MoveStepUp";
-//            emit MoveStepUp(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble());
-//        }
-//        else
-//        {
-//            //qDebug() << "Emitting MoveStepDown";
-//            emit MoveStepDown(newSpectrometer->getMonoPos(), ui->newPosition->text().toDouble());
-//        }
-        emit MainWindow::MoveToTarget(newSpectrometer->getMonoPos(), ui->newPosition->text().toInt());
+        newSpectrometer->moveStepper(fabs(newSpectrometer->getMonoPos() - ui->newPosition->text().toInt()), ((ui->newPosition->text().toInt() - newSpectrometer->getMonoPos()) >= 0));
     }
-        //moveToTarget(ui->newPosition->text().toDouble(), newSpectrometer->getMonoPos());
-    else if(ui->newSpeed->text().toDouble() != newSpectrometer->getMonoSpeed() && !ui->newSpeed->text().isEmpty())
-        newSpectrometer->setMonoSpeed(ui->newSpeed->text().toDouble());
     reload_data();
 }
 
@@ -1381,7 +1349,7 @@ void MainWindow::on_CalibButton_clicked()
     tmpScan.Params.scanSpeed = ui->setScanSpeed->text().toDouble();
     tmpScan.scanName = ui->scanName->text();
     //qDebug() << "Scanner is initialized";
-    emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
+    //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
     emit startScan();
 }

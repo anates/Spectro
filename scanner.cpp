@@ -15,12 +15,14 @@ void Scanner_Worker::runScan(int steps, int accuracy)
         if(ScanRunning == false)
             break;
         while(number_of_rounds < accuracy && ScanRunning == true)
-            msleep(7);
+            usleep(7000);
         emit currentData(qMakePair(i, counts));
         emit moveStep();
+        emit currentPosition(((qreal)i)/((qreal)steps)*100);
         counts = 0;
         number_of_rounds = 0;
     }
+    emit ScanFinished();
 }
 
 void Scanner_Worker::stopScan()
@@ -32,20 +34,25 @@ void Scanner_Worker::stopScan()
 Scanner_Master::Scanner_Master()
 {
     Scanner_Worker *newWorker = new Scanner_Worker;
-    newWorker->moveToThread(workerThread);
+    newWorker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, newWorker, &QObject::deleteLater);
     connect(this, &Scanner_Master::currentCountsToWorker, newWorker, &Scanner_Worker::currentCounts);
     connect(this, &Scanner_Master::runScanWorker, newWorker, &Scanner_Worker::runScan);
     connect(this, &Scanner_Master::scanInterrupted, newWorker, &Scanner_Worker::stopScan);
+
     connect(newWorker, &Scanner_Worker::currentData, this, &Scanner_Master::currentData);
     connect(newWorker, &Scanner_Worker::moveStep, this, &Scanner_Master::moveStep);
+    connect(newWorker, &Scanner_Worker::currentPosition, this, &Scanner_Master::currentPosition);
+    connect(newWorker, &Scanner_Worker::ScanFinished, this, &Scanner_Master::scanIsFinished);
     workerThread.start();
 }
 
 Scanner_Master::~Scanner_Master()
 {
+    qDebug() << "Cleaning up Scanner";
     workerThread.quit();
     workerThread.wait();
+    qDebug() << "Scanner cleaned!";
 }
 
 void Scanner_Master::currentData(QPair<int, int> data)
@@ -69,13 +76,13 @@ void Scanner_Master::currentCounts(int counts)
     emit currentCountsToWorker(counts);
 }
 
-void Scanner_Master::runScan(int start, int stop, int accuracy, int currentPos)
+void Scanner_Master::runScan(int start, int stop, int accuracy)
 {
     Scanner_Master::startpos = start;
     Scanner_Master::stoppos = stop;
     Scanner_Master::accuracy = accuracy;
-    Scanner_Master::MonoPos = currentPos;
-    Scanner_Master::MonoPosOrig = currentPos;
+    Scanner_Master::MonoPos = 0;
+    Scanner_Master::MonoPosOrig = 0;
     Scanner_Master::direction = ((stop - start) >= 0);
     emit runScanWorker(fabs(stop-start), accuracy);
 }
@@ -86,7 +93,15 @@ void Scanner_Master::interruptScan()
     emit moveStepperToTarget(MonoPos, MonoPosOrig);
 }
 
+void Scanner_Master::currentPosition(qreal position)
+{
+    emit scanCurrentPosition(position);
+}
 
+void Scanner_Master::scanIsFinished()
+{
+    emit scanFinished();
+}
 
 //void Scanner_Master::init(int start_pos, int stop_pos, int _accuracy, int _MonoPosOrig, bool _direction)
 //{

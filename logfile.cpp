@@ -14,3 +14,28 @@ void LogFile::clear(void)
     LogFile::sensitivity = 0;
     LogFile::slitWidth = 0;
 }
+
+QString & LogFile::getName()
+{
+    return name;
+}
+
+qreal & LogFile::getCount()
+{
+    return countNumber;
+}
+
+qreal & LogFile::getIntensity()
+{
+    return laserIntensity;
+}
+
+qreal & LogFile::getSensitivity()
+{
+    return sensitivity;
+}
+
+qreal & LogFile::getSlit()
+{
+    return slitWidth;
+}

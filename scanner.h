@@ -1,7 +1,11 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 #include <QThread>
+#include <QDebug>
 #include <QPair>
+#include <unistd.h>
+
+
 
 class Scanner_Worker:public QObject
 {
@@ -15,6 +19,8 @@ public slots:
     void stopScan(void);
     void currentCounts(int counts);
 signals:
+    void ScanFinished(void);
+    void currentPosition(qreal position);
     void currentData(QPair<int, int>);
     void moveStep(void);
 public:
@@ -38,16 +44,13 @@ private slots:
 
     void currentData(QPair<int, int> data);
     void moveStep(void);
-    void interruptScan(void);
+    void scanIsFinished(void);
+    void currentPosition(qreal position);
 public slots:
     //External
+    void interruptScan(void);
     void currentCounts(int counts);
-    void runScan(int start, int stop, int accuracy, int currentPos);
-//    void cancelScan(void);
-//    void runScan(void);
-//    void stopScanner(void);
-//    void init(int start_pos, int stop_pos, int _accuracy, int _MonoPosOrig, bool _direction);
-//    void scan();
+    void runScan(int start, int stop, int accuracy);
 signals:
     //Internal
     void runScanWorker(int, int);
@@ -57,6 +60,7 @@ signals:
     void moveStepperToTarget(int, int);
     void scanFinished(void);
     void scanInterrupted(void);
+    void scanCurrentPosition(qreal position);
 //    void moveStepUp(void);
 //    void moveStepDown(void);
 //    void currentValue(qreal, qreal);

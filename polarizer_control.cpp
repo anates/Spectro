@@ -10,7 +10,7 @@ polarizer_control_worker::polarizer_control_worker()
     //Spec_Control::POL[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_115, BlackLib::output);
 }
 
-polarizer_control_worker::switchPolarizer(Polarizer pol)
+void polarizer_control_worker::switchPolarizer(Polarizer pol)
 {
     //Unable to do something here because the pin settings are not fixed yet
     emit PolarizerSwitched(pol);
@@ -21,7 +21,7 @@ polarizer_control_master::polarizer_control_master()
 {
     polarizer_control_worker *newWorker = new polarizer_control_worker;
     newWorker->moveToThread(&workerThread);
-    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(&workerThread, &QThread::finished, newWorker, &QObject::deleteLater);
     connect(this, &polarizer_control_master::switchPolarizer, newWorker, &polarizer_control_worker::switchPolarizer);
     connect(newWorker, &polarizer_control_worker::PolarizerSwitched, this, &polarizer_control_master::PolarizerSwitchSuccess);
     workerThread.start();

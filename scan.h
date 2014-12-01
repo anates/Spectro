@@ -8,7 +8,8 @@ enum AveMode{ NoAverage, Point, Intervall };
 
 class Scan
 {
-private:
+//private://For testing public, has to be reverted
+public:
     ScanData values;
     QString scanName;
     ScanParams Params;
@@ -21,6 +22,7 @@ public:
     Scan();
     ScanData getValues(void);
     ScanData& setValues(void);
+    LogFile & getLog(void);
     void clear(void);
 };
 

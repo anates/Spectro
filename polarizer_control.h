@@ -23,7 +23,7 @@ public:
     polarizer_control_worker();
 };
 
-class polarizer_control_master
+class polarizer_control_master:public QObject
 {
     Q_OBJECT
     QThread workerThread;

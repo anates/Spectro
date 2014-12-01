@@ -30,5 +30,10 @@ ScanData Scan::getValues()
 
 ScanData& Scan::setValues(void)
 {
-    return &values;
+    return values;
+}
+
+LogFile& Scan::getLog()
+{
+    return Scan::log;
 }
