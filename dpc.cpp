@@ -1,8 +1,9 @@
 #include "dpc.h"
 
 //DPC_Worker-functions
-DPC_Worker::DPC_Worker()
+DPC_Worker::DPC_Worker(counterData *data)
 {
+    Data = data;
     A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_32, BlackLib::input));
     A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_33, BlackLib::input));
     A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_34, BlackLib::input));
@@ -45,10 +46,15 @@ void DPC_Worker::stopAquisition(void)
 
 void DPC_Worker::aquireCounts(void)
 {
-    int counts = 12;
+    int counts = 42;
     while(stopAqu == false)
     {
         usleep(50000);//Hier muss noch die Auswertung eingebaut werden, und die genauen Pins muessen nachgesehen werden
+
+        Data->mutex.lock();
+        Data->counts += counts;
+        Data->number++;
+        Data->mutex.unlock();
         emit currentCounts(counts);
     }
     qDebug() << "Aquisition stopped!";
@@ -92,9 +98,9 @@ int Read_DPC(void)
 
 //DPC_Master-functions
 
-DPC_Master::DPC_Master()
+DPC_Master::DPC_Master(counterData *data)
 {
-    DPC_Worker *newDPC = new DPC_Worker;
+    DPC_Worker *newDPC = new DPC_Worker(data);
     newDPC->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, newDPC, &DPC_Worker::deleteLater);
     connect(this, &DPC_Master::startAquisition, newDPC, &DPC_Worker::aquireCounts);

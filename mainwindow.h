@@ -191,8 +191,8 @@ private slots:
 private:
 
 
-    QMutex mutex;
-    QWaitCondition EngineMoving;
+    QMutex mutex, cmutex;
+    QWaitCondition EngineMoving, CountCond;
 
 
     QwtPlotPicker* plotPicker;

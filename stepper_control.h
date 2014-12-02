@@ -15,13 +15,15 @@ class Stepper_Control_Worker:public QObject
 {
     Q_OBJECT
 private:
+    QMutex *waitMutex;
+    QWaitCondition *WaitCond;
     std::vector<std::unique_ptr<BlackLib::BlackGPIO> > STP;
 public slots:
     void moveStepper(int steps, bool dir);
 signals:
     void StepperMoved(int, bool);
 public:
-    Stepper_Control_Worker();
+    Stepper_Control_Worker(QMutex *mutex, QWaitCondition *cond);
     ~Stepper_Control_Worker();
 };
 
@@ -30,8 +32,6 @@ class Stepper_Control_Master: public QObject
 {
     Q_OBJECT
 private:
-    QMutex *WaitMutex;
-    QWaitCondition *WaitCond;
     QThread workerThread;
 public slots:
     //Internal

@@ -2,18 +2,28 @@
 #define DPC_H
 #include <QThread>
 #include <QDebug>
+#include <QMutex>
+#include <QWaitCondition>
 #include <vector>
 #include <unistd.h>
 #include <memory>
 
 #include "../BlackLib/v2_0/BlackLib.h"
 
-
+struct counterData
+{
+    QMutex mutex;
+    int counts;
+    int number;
+};
 
 class DPC_Worker:public QObject
 {
     Q_OBJECT
 private:
+    QMutex *CountingMutex;
+    QWaitCondition *CountingCond;
+    counterData *Data;
     std::vector<std::unique_ptr<BlackLib::BlackGPIO> > A, B, C;
     volatile bool toDo;
     volatile bool stopAqu;
@@ -23,7 +33,7 @@ public slots:
 signals:
     void currentCounts(int);
 public:
-    DPC_Worker();
+    DPC_Worker(counterData *data);
     ~DPC_Worker();
 };
 
@@ -43,7 +53,7 @@ signals:
     //External
     void currentCount(int);
 public:
-    DPC_Master();
+    DPC_Master(counterData *data);
     ~DPC_Master();
 
 };

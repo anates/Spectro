@@ -1,9 +1,12 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 #include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
 #include <QDebug>
 #include <QPair>
 #include <unistd.h>
+#include <dpc.h>
 
 
 
@@ -14,6 +17,9 @@ private:
     bool ScanRunning;
     int counts = 0;
     int number_of_rounds = 0;
+    QMutex *MovingMutex;
+    QWaitCondition *MovingCond;
+    counterData *Data;
 public slots:
     void runScan(int steps, int accuracy);
     void stopScan(void);
@@ -24,7 +30,7 @@ signals:
     void currentData(QPair<int, int>);
     void moveStep(void);
 public:
-
+    Scanner_Worker(QMutex *_MovingMutex, QWaitCondition *_MovingCond, counterData *data);
 };
 
 
@@ -66,7 +72,7 @@ signals:
 //    void currentValue(qreal, qreal);
 //    void moveToPosition(int, int);
 public:
-    Scanner_Master();
+    Scanner_Master(QMutex *MovingMutex, QWaitCondition *MovingCond, counterData *data);
     ~Scanner_Master();
     //void resetScanner(void);
 

@@ -14,13 +14,15 @@ class Spectrometer: public QObject
 {
     Q_OBJECT
 private:
-    QMutex *WaitMutex;
-    QWaitCondition *WaitForEngine;
+    QMutex *MovingMutex;
+    QWaitCondition *MovingCond;
+    QMutex *CountingMutex;
+    QWaitCondition *CountingCond;
     //int currentMonoPos;
 
-    DPC_Master dpcControl;
+    DPC_Master *dpcControl;
     polarizer_control_master polarizerControl;
-    Scanner_Master scannerControl;
+    Scanner_Master *scannerControl;
     Stepper_Control_Master *stepperControl;
 private slots:
     //Inside wiring
@@ -58,10 +60,11 @@ signals:
     void ScanPos(qreal position);
     //From stepper
     void currentPosition(int steps, bool dir);
+    void stepperMoving(void);
     //from polarizercontrol
     void switchingSucceed(Polarizer pol);
 public:
-    Spectrometer(QMutex *mutex, QWaitCondition *WaitCond);
+    Spectrometer(QMutex *mutex, QWaitCondition *WaitCond, QMutex *cmutex, QWaitCondition *CCond);
     ~Spectrometer();
 
 };
@@ -73,8 +76,8 @@ class Spectrometer_Control:public QObject
 private:
     int MonoPos = 0;
     QVector<bool> polarizerSetting;
-    QMutex *WaitMutex;
-    QWaitCondition *WaitForEngine;
+    QMutex *MovingMutex, *CountMutex;
+    QWaitCondition *MovingCond, *CountCond;
 public slots:
     //Internal connections
     //to DPC
@@ -82,6 +85,7 @@ public slots:
     void counterData(int counts);
     //to stepper
     void updateCurrentPosition(int steps, bool dir);
+    void stepperIsMoving(void);
     //to polarizer controller
     void updatePolarizers(Polarizer pol);
     //to scanner
@@ -101,7 +105,7 @@ signals:
     void positionChanged(void);
     void stepperMoving(void);
 public:
-    Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine);
+    Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QMutex *cmutex, QWaitCondition *WaitCond);
     ~Spectrometer_Control();
 
     void setMonoPos(int pos);

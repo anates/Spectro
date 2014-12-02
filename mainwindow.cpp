@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     MainWindow::setWindowTitle("");
     //MainWindow::newDPC = new DPC;
-    MainWindow::newSpectrometer = new Spectrometer_Control(&mutex, &EngineMoving);
+    MainWindow::newSpectrometer = new Spectrometer_Control(&mutex, &EngineMoving, &cmutex, &CountCond);
     MainWindow::calibrated = false;
     ui->CalibratedBox->setCheckable(false);
     MainWindow::loadConfig();
@@ -572,6 +572,14 @@ void MainWindow::changeState(State newState)
             ui->CalibReVal->hide();
             ui->CalibMesVal->hide();
             ui->CalibConfirm->hide();
+            if(MainWindow::newScanList.getScanNumbers() > 1)
+            {
+                ui->LastScan->show();
+                ui->NextScan->show();
+                ui->ChooseScanLabel->show();
+                ui->selectScanLabel->show();
+                ui->selectScanBox->show();
+            }
             break;
         }
         case CalibState:
@@ -685,7 +693,7 @@ void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
     //qDebug() << "Scanner is initialized";
     //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
-    newSpectrometer->runScan(ui->setStartPosition->text().toInt(), ui->setTargetPosition->text().toInt(), ui->setScanSpeed->text().toInt());
+    newSpectrometer->scan(ui->setStartPosition->text().toInt(), ui->setTargetPosition->text().toInt(), ui->setScanSpeed->text().toInt());
     yes = NULL;
     no = NULL;
     //Analyze(MainWindow::newScanList);
@@ -693,7 +701,8 @@ void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
 
 void MainWindow::incomingData(QPair<int, int> data)
 {
-    tmpScan.getValues().getData().push_back(data);
+    tmpScan.values.Data.push_back(data);
+    qDebug() << "Incoming data in main: i=" << data.first << ", counts=" << data.second << " and tmpScan.size=" << tmpScan.getValues().getData().size();
 }
 
 void MainWindow::closeProgressBar()
@@ -760,18 +769,20 @@ void MainWindow::scanIsFinished(void)
         calibrateScan(MainWindow::tmpScan.values);
         MainWindow::tmpScan.isCalibrated = true;
     };
+    tmpScan.values.Data.pop_front();
+    tmpScan.values.Data.pop_front();
     newScanList.addScan(MainWindow::tmpScan);
+    newScanList.getNextScan();
     if(currentState != CalibState)
         ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
     else
         ui->selectScanBox->addItem("Calibration");
     closeProgressBar();
-    //qDebug() << "Check if Scanner is still running: " << newScanner->isRunning();
-    //qDebug() << "Another check: " << newScanner->isFinished();
-//    //newScanner->terminate();
     tmpScan.clear();
     if(currentState != CalibState)
         changeState(EditState);
+    reload_data();
+    replot();
 }
 
 void MainWindow::CurrentScanStatus(qreal status)
@@ -874,7 +885,7 @@ void MainWindow::on_mvButton_2_clicked()
 {
     if(ui->moveData->text().toDouble() < 0)
     {   //Hier müssen Signale und Slots rein!
-        newSpectrometer->moveStepper(ui->moveData->text().toInt(), 0);
+        newSpectrometer->moveStepper(fabs(ui->moveData->text().toInt()), 0);
         //emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + ui->moveData->text().toInt());
         ui->moveData->setText("");
     }

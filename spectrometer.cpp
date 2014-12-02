@@ -1,13 +1,20 @@
 #include "spectrometer.h"
 
 //Spectrometer functions
-Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond)
+Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond, QMutex *cmutex, QWaitCondition *CCond)
 {
     //qDebug() << "Spectrometer: " << thread() << QThread::currentThread();
-    WaitMutex = mutex;
-    WaitForEngine = WaitCond;
+    MovingMutex = mutex;
+    MovingCond = WaitCond;
 
-    stepperControl = new Stepper_Control_Master(WaitMutex, WaitForEngine);
+    counterData *Data = new counterData;
+    Data->mutex.lock();
+    Data->mutex.unlock();
+
+
+    stepperControl = new Stepper_Control_Master(MovingMutex, MovingCond);
+    scannerControl = new Scanner_Master(MovingMutex, MovingCond, Data);
+    dpcControl = new DPC_Master(Data);
 
     connect(this, &Spectrometer::moveStepperToTarget, stepperControl, &Stepper_Control_Master::moveStepMotor);
     connect(stepperControl, &Stepper_Control_Master::CurrentPosition, this, &Spectrometer::stepperMoved);
@@ -15,16 +22,17 @@ Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond)
     connect(this, &Spectrometer::switchPolarizer, &polarizerControl, &polarizer_control_master::setPolarizers);
     connect(&polarizerControl, &polarizer_control_master::switchingSuccess, this, &Spectrometer::switchingSuccess);
 
-    connect(&dpcControl, &DPC_Master::currentCount, this, &Spectrometer::currentCounts);
-    connect(&dpcControl, &DPC_Master::currentCount, &scannerControl, &Scanner_Master::currentCounts);
+    connect(dpcControl, &DPC_Master::currentCount, this, &Spectrometer::currentCounts);
+    connect(dpcControl, &DPC_Master::currentCount, scannerControl, &Scanner_Master::currentCounts);
 
-    connect(this, &Spectrometer::scanNow, &scannerControl, &Scanner_Master::runScan);
-    connect(this, &Spectrometer::interruptScan, &scannerControl, &Scanner_Master::interruptScan);
-    connect(&scannerControl, &Scanner_Master::currentDataToExt, this, &Spectrometer::currentData);
-    connect(&scannerControl, &Scanner_Master::moveStepperToTarget, this, &Spectrometer::updatePosition);
-    connect(&scannerControl, &Scanner_Master::moveStepperToTarget, stepperControl, &Stepper_Control_Master::moveStepMotor);
-    connect(&scannerControl, &Scanner_Master::scanFinished, this, &Spectrometer::scanFinished);
-    connect(&scannerControl, &Scanner_Master::scanCurrentPosition, this, &Spectrometer::currentScanPosition);
+    connect(this, &Spectrometer::scanNow, scannerControl, &Scanner_Master::runScan);
+    connect(this, &Spectrometer::interruptScan, scannerControl, &Scanner_Master::interruptScan);
+    connect(scannerControl, &Scanner_Master::currentDataToExt, this, &Spectrometer::currentData);
+    //connect(scannerControl, &Scanner_Master::moveStepperToTarget, this, &Spectrometer::updatePosition);
+    connect(scannerControl, &Scanner_Master::moveStepperToTarget, this, &Spectrometer::moveToTarget);
+    //connect(&scannerControl, &Scanner_Master::moveStepperToTarget, stepperControl, &Stepper_Control_Master::moveStepMotor);
+    connect(scannerControl, &Scanner_Master::scanFinished, this, &Spectrometer::scanFinished);
+    connect(scannerControl, &Scanner_Master::scanCurrentPosition, this, &Spectrometer::currentScanPosition);
 }
 
 Spectrometer::~Spectrometer()
@@ -44,13 +52,14 @@ void Spectrometer::scanFinished()
 
 void Spectrometer::runScan(int start, int stop, int accuracy)
 {
+    qDebug() << "Scanning now!";
     emit scanNow(start, stop, accuracy);
 }
 
 void Spectrometer::stepperMoved(int steps, bool dir)
 {
-    QString debug = " (Spectrometer::stepperMoved): Stepper moved for " + QString::number(steps) + " in direction " + QString::number(dir);
-    qDebug() << debug;
+//    QString debug = " (Spectrometer::stepperMoved): Stepper moved for " + QString::number(steps) + " in direction " + QString::number(dir);
+//    qDebug() << debug;
     emit currentPosition(steps, dir);
 }
 
@@ -71,8 +80,8 @@ void Spectrometer::currentData(QPair<int, int> data)
 
 void Spectrometer::updatePosition(int steps, bool dir)
 {
-    QString debug = " (Spectrometer::updatePosition): Stepper moved for " + QString::number(steps) + " in direction " + QString::number(dir);
-    qDebug() << debug;
+//    QString debug = " (Spectrometer::updatePosition): Stepper moved for " + QString::number(steps) + " in direction " + QString::number(dir);
+//    qDebug() << debug;
     emit currentPosition(steps, dir);
 }
 
@@ -85,22 +94,30 @@ void Spectrometer::moveToTarget(int steps, bool dir)
 {
 //    bool dir = (target - currentMonoPos) >= 0;
 //    int steps = fabs(currentMonoPos - target);
-//    qDebug() << "Movement from Spectrometer from " << QString::number(currentMonoPos) << " to target " << QString::number(target) << " !";
+    //qDebug() << "Movement from Spectrometer for " << steps << " steps in " << dir << " direction from thread " << thread() << "!";
     emit moveStepperToTarget(steps, dir);
+    MovingMutex->lock();
+    //qDebug() << "Locking WaitMutex!";
+    //qDebug() << "Waiting for signal!";
+    MovingCond->wait(MovingMutex);
+    MovingMutex->unlock();
+    //qDebug() << "Unlocked";
 }
 
 
 
 //Spectrometer_Control-functions
 
-Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine)
+Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QMutex *cmutex, QWaitCondition *WaitCond)
 {
-    Spectrometer_Control::WaitMutex = mutex;
-    Spectrometer_Control::WaitForEngine = WaitForEngine;
+    Spectrometer_Control::MovingMutex = mutex;
+    Spectrometer_Control::MovingCond = WaitForEngine;
+    Spectrometer_Control::CountCond = WaitCond;
+    Spectrometer_Control::CountMutex = cmutex;
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
     Spectrometer_Control::MonoPos = 0;
-    Spectrometer *newSpectrometer = new Spectrometer(mutex, WaitForEngine);
+    Spectrometer *newSpectrometer = new Spectrometer(MovingMutex, MovingCond, cmutex, WaitCond);
     newSpectrometer->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, newSpectrometer, &QObject::deleteLater);
 
@@ -121,10 +138,10 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
 
 Spectrometer_Control::~Spectrometer_Control()
 {
-    qDebug() << "Cleaning up Spectrometer!";
+    //qDebug() << "Cleaning up Spectrometer!";
     workerThread.quit();
     workerThread.wait();
-    qDebug() << "Spectrometer cleaned!";
+    //qDebug() << "Spectrometer cleaned!";
 }
 
 
@@ -157,6 +174,11 @@ void Spectrometer_Control::updateCurrentPosition(int steps, bool dir)
         MonoPos -= steps;
     emit positionChanged();
     //qDebug() << "New Monopos: " << QString::number(MonoPos);
+}
+
+void Spectrometer_Control::stepperIsMoving()
+{
+    emit stepperMoving();
 }
 
 void Spectrometer_Control::updatePolarizers(Polarizer pol)
@@ -211,23 +233,25 @@ QVector<bool> Spectrometer_Control::getPolarizers()
 void Spectrometer_Control::moveStepper(int steps, bool dir)
 {
     emit stepperMoving();
-    qDebug() << "From Spectrometer_Control: Stepper should move in direction " + QString::number(dir) + " from position " + QString::number(MonoPos);
+    //qDebug() << "From Spectrometer_Control: Stepper should move in direction " + QString::number(dir) + " from position " + QString::number(MonoPos);
     int newTarget = MonoPos + ((dir == true)?(steps):(-1 * steps));
-    qDebug() << "New target: " + QString::number(newTarget);
+    //qDebug() << "New target: " + QString::number(newTarget);
     emit moveStepperToTarget(steps, dir);
+//    qDebug() << "Finally unlocked!";
 }
 
 void Spectrometer_Control::scan(int start, int stop, int accuracy)
 {
     emit stepperMoving();
+    //qDebug() << "Current start value is: " << QString::number(start) << " and current MonoPos value is: " << QString::number(MonoPos);
     if(start != MonoPos)
     {
+        //qDebug() << "Start is not in MonoPos, moving!";
         int steps = fabs(MonoPos - start);
         bool dir = (start - MonoPos) >= 0;
-        emit moveStepperToTarget(steps, dir);
-        WaitMutex->lock();
-        WaitForEngine->wait(WaitMutex);
-        WaitMutex->unlock();
+//        emit moveStepperToTarget(steps, dir);
+        moveStepper(steps, dir);
+
     }
     emit runScan(0, fabs(stop - start), accuracy);
 }
