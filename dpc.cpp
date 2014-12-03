@@ -54,6 +54,7 @@ void DPC_Worker::aquireCounts(void)
         Data->mutex.lock();
         Data->counts += counts;
         Data->number++;
+        Data->WaitCond.wakeAll();
         Data->mutex.unlock();
         emit currentCounts(counts);
     }

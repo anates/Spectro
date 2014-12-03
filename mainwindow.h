@@ -85,6 +85,7 @@ public slots:
     void sortPoints(void);
     QPair<QPair<int, int>, QPair<int, int> > getNearestPoints(int xVal);
     int calculateValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
+    int calculateInvValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
 signals:
     //Polarizer signals
     void xPolarizerMoved(Polarizer, bool);

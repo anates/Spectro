@@ -36,6 +36,7 @@ void Scanner_Worker::runScan(int steps, int accuracy)
         }
         else
         {
+            Data->WaitCond.wait(&(Data->mutex));
             Data->mutex.unlock();
             i--;
         }

@@ -13,6 +13,7 @@
 struct counterData
 {
     QMutex mutex;
+    QWaitCondition WaitCond;
     int counts;
     int number;
 };

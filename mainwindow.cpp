@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //MainWindow::newDPC = new DPC;
     MainWindow::newSpectrometer = new Spectrometer_Control(&mutex, &EngineMoving, &cmutex, &CountCond);
     MainWindow::calibrated = false;
-    ui->CalibratedBox->setCheckable(false);
+    ui->CalibratedBox->setDisabled(true);
     MainWindow::loadConfig();
 
     //MainWindow::newSpecControl = new Spec_Control(newSpectrometer->getMonoPos());
@@ -85,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->gridTabWidget->setCurrentIndex(0);
     ui->gridTabWidget->setTabEnabled(3, false);
     ui->movingBox->setDisabled(true);
+    ui->newWaveNumber->setDisabled(true);
     ui->currentPosition->setReadOnly(true);
     ui->currentSpeed->setReadOnly(true);
     ui->currentWaveNumber->setReadOnly(true);
@@ -701,7 +702,7 @@ void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
 
 void MainWindow::incomingData(QPair<int, int> data)
 {
-    tmpScan.values.Data.push_back(data);
+    tmpScan.values.Data.push_back(qMakePair(data.first + ui->setStartPosition->text().toInt(), data.second));
     qDebug() << "Incoming data in main: i=" << data.first << ", counts=" << data.second << " and tmpScan.size=" << tmpScan.getValues().getData().size();
 }
 
@@ -748,9 +749,21 @@ int MainWindow::calculateValue(QPair<int, int> targetPoint, QPair<int, int> firs
         QMessageBox::information(this, "Error", "No sufficient informations for calculating correction values");
         return -1000;
     }
-    double m = (double)(firstPoint.second - secondPoint.second)/(double)(firstPoint.first - secondPoint.second);
-    int nextPointX = (fabs(targetPoint.first - firstPoint.first) <= fabs(targetPoint.first - secondPoint.first))?firstPoint.first : secondPoint.first;
-    return m*(targetPoint.first - nextPointX) + (fabs(targetPoint.first - firstPoint.first) <= fabs(targetPoint.first - secondPoint.first))?firstPoint.second : secondPoint.second;
+    double m = (double)(firstPoint.second - secondPoint.second)/(double)(firstPoint.first - secondPoint.first);
+    QPair<int, int> nextPoint = (fabs(targetPoint.first - firstPoint.first) <= fabs(targetPoint.first - secondPoint.first))?firstPoint : secondPoint;
+    return m*(targetPoint.first - nextPoint.first) + nextPoint.second;
+}
+
+int MainWindow::calculateInvValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint)
+{
+    if((firstPoint.first == 0 && secondPoint.first == 0) || (firstPoint.second == 0 && secondPoint.second == 0))
+    {
+        QMessageBox::information(this, "Error", "No sufficient informations for calculating correction values");
+        return -1000;
+    }
+    double m = (double)(firstPoint.second - secondPoint.second)/(double)(firstPoint.first - secondPoint.first);
+    //Ausgehend davon, dass die Steigung linear ist (DANGER???)
+    return ((double)targetPoint.second/*-(double)firstPoint.second*/)/m;
 }
 
 void MainWindow::calibrateScan(ScanData &newScan)
@@ -859,8 +872,14 @@ void MainWindow::reload_data()
     ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
     //ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
     ui->newPosition->clear();
+    ui->newWaveNumber->clear();
     ui->newSpeed->clear();
-    ui->currentWaveNumber->setText("Muss berechnet werden");
+    if(!calibrated)
+        ui->currentWaveNumber->setText("Muss berechnet werden");
+    else
+    {
+        ui->currentWaveNumber->setText(QString::number(calculateValue(qMakePair(ui->currentPosition->text().toInt(), 0), CorrectionValues.first(), CorrectionValues.last())));
+    }
 }
 
 void MainWindow::on_stepBackMono_clicked()
@@ -954,18 +973,22 @@ void MainWindow::loadConfig()
     QString calibData;
     QStringList Data;
     int PolarizerConfig;
-    in >> monoPos;
-    in >> monoSpeed;
-    in >> PolarizerConfig;
-    in >> calibData;
+    monoPos = in.readLine();//in >> monoPos;
+    qDebug() << "MonoPos from Config: " << monoPos;
+    //in >> monoSpeed;
+    PolarizerConfig = in.readLine().toInt();//in >> PolarizerConfig;
+    qDebug() << "PolarizerConfig from Config: " << PolarizerConfig;
+    calibData = in.readLine();
+    qDebug() << "Calibration data: " << calibData;
     if(calibData.isEmpty())
         calibrated = false;
     else
     {
         Data = calibData.split(" ");
+        qDebug() << "Data size is: " << Data.size();
         if(Data.size()%2 == 0)
         {
-            for(int i = 0; i < Data.size()/2; i+=2)
+            for(int i = 0; i < Data.size(); i+=2)
             {
                 CorrectionValues.push_back(qMakePair(Data[i].toInt(), Data[i+1].toInt()));
             }
@@ -973,16 +996,18 @@ void MainWindow::loadConfig()
         else
         {
             Data.pop_back();
-            for(int i = 0; i < Data.size()/2; i+=2)
+            for(int i = 0; i < Data.size(); i+=2)
             {
                 CorrectionValues.push_back(qMakePair(Data[i].toInt(), Data[i+1].toInt()));
             }
         }
+        qDebug() << "Size of the corrected values: " << CorrectionValues.size();
         if(CorrectionValues.size() > 0)
         {
             sortPoints();
             calibrated = true;
             ui->CalibratedBox->setChecked(true);
+            qDebug() << "Yay, new correction values!";
         }
     }
 
@@ -1034,6 +1059,12 @@ void MainWindow::on_execButton_2_clicked()
     if((ui->newPosition->text().toInt() != newSpectrometer->getMonoPos()) && !ui->newPosition->text().isEmpty())
     {
         newSpectrometer->moveStepper(fabs(newSpectrometer->getMonoPos() - ui->newPosition->text().toInt()), ((ui->newPosition->text().toInt() - newSpectrometer->getMonoPos()) >= 0));
+    }
+    if((ui->newWaveNumber->text().toInt() != calculateValue(qMakePair(newSpectrometer->getMonoPos(), 0), CorrectionValues.first(), CorrectionValues.last())) && !ui->newWaveNumber->text().isEmpty())
+    {
+        int newTarget = calculateInvValue(qMakePair(0, ui->newWaveNumber->text().toInt()), CorrectionValues.first(), CorrectionValues.last());
+        qDebug() << "New Target is: " << newTarget;
+        newSpectrometer->moveStepper(fabs(newSpectrometer->getMonoPos() - newTarget), (newTarget - newSpectrometer->getMonoPos()) >= 0);
     }
     reload_data();
 }
@@ -1372,7 +1403,7 @@ void MainWindow::on_CalibButton_clicked()
     //qDebug() << "Scanner is initialized";
     //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
-    emit startScan();
+    newSpectrometer->scan(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed);
 }
 
 void MainWindow::on_CalibFinished_clicked()
@@ -1398,6 +1429,8 @@ void MainWindow::on_CalibConfirm_clicked()
     ui->CalibDataMes2->clear();
     ui->CalibDataRe1->clear();
     ui->CalibDataRe2->clear();
+    MainWindow::clear_window();
+    calibrated = true;
     changeState(EditState);
 }
 
