@@ -9,6 +9,7 @@
 #include "scanner.h"
 #include "stepper_control.h"
 #include "polarizer_control.h"
+#include "txcontroller.h"
 
 class Spectrometer: public QObject
 {
@@ -64,7 +65,7 @@ signals:
     //from polarizercontrol
     void switchingSucceed(Polarizer pol);
 public:
-    Spectrometer(QMutex *mutex, QWaitCondition *WaitCond, QMutex *cmutex, QWaitCondition *CCond);
+    Spectrometer(QMutex *mutex, QWaitCondition *WaitCond);
     ~Spectrometer();
 
 };
@@ -75,9 +76,13 @@ class Spectrometer_Control:public QObject
     QThread workerThread;
 private:
     int MonoPos = 0;
+    QString ipAddr;
+    quint32 port;
     QVector<bool> polarizerSetting;
     QMutex *MovingMutex, *CountMutex;
     QWaitCondition *MovingCond, *CountCond;
+    TXcontroller *remoteControl;
+    Spectrometer *newSpectrometer;
 public slots:
     //Internal connections
     //to DPC
@@ -105,7 +110,7 @@ signals:
     void positionChanged(void);
     void stepperMoving(void);
 public:
-    Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QMutex *cmutex, QWaitCondition *WaitCond);
+    Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QString ipAddr = "", quint32 port = 0);
     ~Spectrometer_Control();
 
     void setMonoPos(int pos);
@@ -116,6 +121,7 @@ public:
     QVector<bool> getPolarizers(void);
     void scan(int start, int stop, int accuracy);
     void moveStepper(int steps, bool dir);
+    void useRemote(QString ipAddr, quint32 port);
 };
 
 #endif // SPECTROMETER_H

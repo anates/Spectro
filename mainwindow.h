@@ -20,6 +20,7 @@
 #include "add_functions.h"
 #include "scanlist.h"
 #include "spectrometer.h"
+#include "txcontroller.h"
 
 class QPushButton;
 class QLabel;
@@ -56,28 +57,6 @@ public slots:
     //Movement Slots
     void PositionChanged(void);
     void StepperMoving(void);
-    //TX Slots
-    //MainTX slots
-    void wrongDeviceMain(void);
-    void gotNewDataMain(QVariant data);
-    void MainKilled(void);
-    void NoServer(void);
-    //PCTX slots
-    void wrongDevicePC(void);
-    void gotNewDataPC(QVariant data);
-    void PCkilled(void);
-    //FLTX slots
-    void wrongDeviceFL(void);
-    void gotNewFileFL(QVariant data);
-    void FLkilled(void);
-    //PolTX slots
-    void wrongDevicePol(void);
-    void gotNewConnectionPol(QVariant address);
-    void Polkilled(void);
-    //STPTX slots
-    void wrongDeviceSTP(void);
-    void gotNewConnectionSTP(QVariant address);
-    void STPkilled(void);
     //Mouse slots
     void mousePoint(const QPointF &point);
     //Analyst slots
@@ -104,22 +83,6 @@ signals:
     void startScan(void);
     void killScanner(void);
     void initScanner(int, int, int, int, bool);
-    //MainTX signals
-    void killMain(void);
-    void connectMain(QString, quint32);
-    //FLTX signals
-    void killFL(void);
-    void connectFL(QString, quint32);
-    //PCTX signals
-    void killPC(void);
-    void connectPC(QString, quint32);
-    //PolTX signals
-    void killPol(void);
-    void sendDataPoll(QVariant);
-    //STPTX signals
-    void killSTP(void);
-    void sendDataSTP(QVariant);
-
 private slots:
     void on_loadGenericButton_clicked();
 
@@ -192,8 +155,8 @@ private slots:
 private:
 
 
-    QMutex mutex, cmutex;
-    QWaitCondition EngineMoving, CountCond;
+    QMutex mutex/*, cmutex*/;
+    QWaitCondition EngineMoving/*, CountCond*/;
 
 
     QwtPlotPicker* plotPicker;
@@ -221,13 +184,7 @@ private:
     //TX
     QString ipAddr;
     quint32 port;
-    TX_thread *Main_TX;//Client
-    Server *PolTX;//Server
-    TX_thread *PCTX;//Client
-    Server *STPTX;//Server
-    TX_thread *FLTX; //Client
 
-    bool MainTXRun, PolTXRun, PCTXRun, STPTXRun, FLRun;
     //QWT tools
     QPen pen;
     QwtPlotCurve Curve;

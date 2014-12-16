@@ -6,7 +6,8 @@
 #include <QDebug>
 #include <QPair>
 #include <unistd.h>
-#include <dpc.h>
+#include "dpc.h"
+//#include <dpc.h>
 
 
 

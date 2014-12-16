@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     stepper_control.cpp \
     dpc.cpp \
     scanner.cpp \
-    polarizer_control.cpp
+    polarizer_control.cpp \
+    txcontroller.cpp
 
 HEADERS  += mainwindow.h \
     add_functions.h \
@@ -49,7 +50,8 @@ HEADERS  += mainwindow.h \
     stepper_control.h \
     dpc.h \
     scanner.h \
-    polarizer_control.h
+    polarizer_control.h \
+    txcontroller.h
 
 FORMS    += mainwindow.ui
 
@@ -60,3 +62,9 @@ LIBS += -L/usr/local/qwt-6.1.1/lib/ -lqwt
 QMAKE_CXXFLAGS += -std=c++11 -std=gnu++0x
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TRANSLATIONS    = RAMANII_de.ts \
+                   RAMANII_en.ts \
+                   RAMANII_no.ts
+
+CODECFORTR      = ISO-8859-5

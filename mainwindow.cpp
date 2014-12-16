@@ -15,34 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::setContextMenuPolicy(Qt::CustomContextMenu);
     MainWindow::setWindowTitle("");
     //MainWindow::newDPC = new DPC;
-    MainWindow::newSpectrometer = new Spectrometer_Control(&mutex, &EngineMoving, &cmutex, &CountCond);
+    MainWindow::newSpectrometer = new Spectrometer_Control(&mutex, &EngineMoving);
     MainWindow::calibrated = false;
     ui->CalibratedBox->setDisabled(true);
     MainWindow::loadConfig();
 
-    //MainWindow::newSpecControl = new Spec_Control(newSpectrometer->getMonoPos());
-    //MainWindow::newScanner = new scanner;
-    //Setup of TX-Clients
-    MainWindow::ipAddr = "127.0.0.1";
-    MainWindow::port = 40000;
-    MainWindow::Main_TX = NULL;//new TX_thread(MainWindow::ipAddr, MainWindow::port);
-    MainWindow::PCTX = NULL;
-    MainWindow::PolTX = NULL;
-    MainWindow::STPTX = NULL;
-    MainWindow::FLTX = NULL;
-
     //Setup of TX data in UI
-    ui->STPTXcon->setDisabled(true);
-    ui->MainTXcon->setDisabled(true);
-    ui->PCTXcon->setDisabled(true);
-    ui->PolTXcon->setDisabled(true);
-    ui->FLTXcon->setDisabled(true);
     ui->ipAddress->setInputMask("000.000.000.000");
-
-    MainWindow::MainTXRun = false;
-    MainWindow::PolTXRun = false;
-    MainWindow::PCTXRun = false;
-    MainWindow::STPTXRun = false;
 
     //Setup of QWT picker
     MainWindow::plotPicker= new QwtPlotPicker(ui->qwtPlot->xBottom, ui->qwtPlot->yLeft, QwtPicker::CrossRubberBand, QwtPicker::AlwaysOn, ui->qwtPlot->canvas());
@@ -83,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->CalibLabel2->hide();
     ui->AddCalibration->hide();
     ui->gridTabWidget->setCurrentIndex(0);
-    ui->gridTabWidget->setTabEnabled(3, false);
+    //ui->gridTabWidget->setTabEnabled(3, false);
     ui->movingBox->setDisabled(true);
     ui->newWaveNumber->setDisabled(true);
     ui->currentPosition->setReadOnly(true);
@@ -108,14 +87,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
 
     //Thread work
-//    newSpecControl->moveToThread(SCThread);
     //set current state:
     changeState(EditState);
-    //Running subthreads
-//    SCThread->start();
-    //newSpecControl->start();
-    //newDPC->start();
-    //newScanner->start();
 
 }
 
@@ -125,20 +98,9 @@ MainWindow::~MainWindow()
     emit stopCounting();
     emit stopControlling();
     emit killScanner();
-    //newSpecControl->wait(5000);
-    //newDPC->wait(500);
-    //newScanner->wait(500);
-    //MainWindow::SCThread->wait(500);
-    //qDebug() << "Is DPC still counting: " << newDPC->isRunning();
-    //qDebug() << "Is ControlThread still running?" << newSpecControl->isRunning();
-    //qDebug() << "Is scanner still running?" << newScanner->isRunning();
     qDebug() << "Cleaning main!";
-    //delete MainWindow::SCThread;
-    //delete MainWindow::newDPC;
-    //delete MainWindow::newSpecControl;
     qDebug() << "SC, DPC and SC cleaned";
     delete MainWindow::newSpectrometer;
-    //delete MainWindow::newScanner;
     qDebug() << "Scanner and Spec cleaned";
     delete MainWindow::plotPicker;
     qDebug() << "plotPicker cleaned";
@@ -1212,179 +1174,8 @@ void MainWindow::on_connect_clicked()
         return;
     }
     qDebug() << "Connecting now!";
-    MainWindow::Main_TX = new TX_thread(MainWindow::ipAddr, MainWindow::port, "DATA");
-    MainWindow::PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2, "DATA");
-    MainWindow::PolTX = new Server(MainWindow::ipAddr, MainWindow::port + 3);
-    MainWindow::STPTX = new Server(MainWindow::ipAddr, MainWindow::port + 1);
-    MainWindow::FLTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 4, "FILE");
-    //Connecting mainTX
-    connect(this, SIGNAL(killMain()), Main_TX, SLOT(killTX()));
-    connect(this, SIGNAL(connectMain(QString,quint32)), Main_TX, SLOT(connect_to_TX(QString,quint32)));
-    connect(Main_TX, SIGNAL(gotNewData(QVariant)), this, SLOT(gotNewDataMain(QVariant)));
-    connect(Main_TX, SIGNAL(noServer()), this, SLOT(NoServer()));
-    //connecting PCTX
-    connect(this, &MainWindow::killPC, PCTX, &TX_thread::killTX);
-    connect(this, &MainWindow::connectPC, PCTX, &TX_thread::connect_to_TX);
-    connect(PCTX, &TX_thread::gotNewData, this, &MainWindow::gotNewDataPC);
-    connect(PCTX, &TX_thread::noServer, this, &MainWindow::NoServer);
-    //Connect FLTX
-    connect(this, &MainWindow::killFL, FLTX, &TX_thread::killTX);
-    connect(this, &MainWindow::connectFL, FLTX, &TX_thread::connect_to_TX);
-    connect(FLTX, &TX_thread::gotNewData, this, &MainWindow::gotNewFileFL);
-    connect(FLTX, &TX_thread::noServer, this, &MainWindow::NoServer);
-    //Connecting PolTX && STPTX
-    connect(this, &MainWindow::sendDataPoll, PolTX, &Server::sendData);
-    connect(this, &MainWindow::sendDataSTP, STPTX, &Server::sendData);
-    connect(PolTX, &Server::gotNewConnection, this, &MainWindow::gotNewConnectionPol);
-    connect(STPTX, &Server::gotNewConnection, this, &MainWindow::gotNewConnectionSTP);
-    Main_TX->start();
-    PCTX->start();
-    FLTX->start();
-    emit connectMain(ui->ipAddress->text(), ui->port->text().toUInt());
-}
-
-void MainWindow::gotNewDataMain(QVariant data)
-{
-    if(data.toString() == "BBB")
-    {
-        ui->MainTXcon->setChecked(true);
-        if(PCTX == NULL)
-        {
-            PCTX = new TX_thread(MainWindow::ipAddr, MainWindow::port + 2, "DATA");
-            //connect PC
-            connect(this, &MainWindow::killPC, PCTX, &TX_thread::killTX);
-            connect(this, &MainWindow::connectPC, PCTX, &TX_thread::connect_to_TX);
-            connect(PCTX, &TX_thread::gotNewData, this, &MainWindow::gotNewDataPC);
-            connect(PCTX, &TX_thread::noServer, this, &MainWindow::NoServer);
-        }
-        emit MainWindow::connectPC(ui->ipAddress->text(), ui->port->text().toUInt() + 2);
-        emit MainWindow::connectFL(ui->ipAddress->text(), ui->port->text().toUInt() + 4);
-    }
-    else
-    {
-        QMessageBox::information(this, "Error", data.toString());
-        return;
-    }
-    MainWindow::MainTXRun = true;
-    ui->MainTXcon->setChecked(true);
-}
-
-void MainWindow::wrongDeviceMain()
-{
-
-}
-
-void MainWindow::MainKilled()
-{
-    MainTXRun = false;
-}
-
-void MainWindow::NoServer()
-{
-    QMessageBox::information(this, "Error", "No server found, please check connection!");
-}
-
-void MainWindow::gotNewDataPC(QVariant data)
-{
-    if(data.toString() == "INIT")
-    {
-        MainWindow::PCTXRun = true;
-        ui->PCTXcon->setChecked(true);
-    }
-    else
-    {
-        quint32 counts = data.toUInt();
-        //Now Data has to be saved!
-    }
-}
-
-void MainWindow::wrongDevicePC()
-{
-
-}
-
-void MainWindow::PCkilled()
-{
-    MainWindow::PCTXRun = false;
-}
-
-void MainWindow::gotNewConnectionPol(QVariant address)
-{
-    if(/*address.toString() == ui->ipAddress->text()*/true)
-    {
-        ui->PolTXcon->setChecked(true);
-        qDebug() << "Pol got connected";
-        PolTXRun = true;
-    }
-    else
-        QMessageBox::information(this, "Error", "PolTX got connected from an alien ip address!");
-}
-
-void MainWindow::wrongDevicePol()
-{
-
-}
-
-void MainWindow::Polkilled()
-{
-    PolTXRun = false;
-}
-
-void MainWindow::gotNewConnectionSTP(QVariant address)
-{
-    if(address.toString() == ui->ipAddress->text())
-    {
-        ui->STPTXcon->setChecked(true);
-        qDebug() << "STP got connected!";
-        STPTXRun = true;
-    }
-    else
-        QMessageBox::information(this, "Error", "STPTX got connected from an alien ip address!");
-}
-
-void MainWindow::wrongDeviceSTP()
-{
-
-}
-
-void MainWindow::STPkilled()
-{
-    STPTXRun = false;
-}
-
-void MainWindow::wrongDeviceFL()
-{
-
-}
-
-void MainWindow::FLkilled()
-{
-    MainWindow::FLRun = false;
-}
-
-void MainWindow::gotNewFileFL(QVariant data)
-{
-    if(data.toString() == "FILE")
-    {
-        MainWindow::FLRun = true;
-        ui->FLTXcon->setChecked(true);
-    }
-    else
-    {
-        QString fileName = "Data.txt";
-        QString new_fileName = fileName;
-        int i = 0;
-        while(access(fileName.toStdString().c_str(), F_OK) == -1)
-        {
-            new_fileName = fileName;
-            i++;
-            new_fileName += i;
-        }
-        QFile file(new_fileName);
-        file.open(QIODevice::WriteOnly);
-        file.write(data.toByteArray());
-        file.close();
-    }
+    newSpectrometer->useRemote(ui->ipAddress->text(), 50000);
+    //Must do something here for giving spectrometer the correct ip
 }
 
 void MainWindow::on_CalibButton_clicked()

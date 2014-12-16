@@ -1,7 +1,7 @@
 #include "spectrometer.h"
 
 //Spectrometer functions
-Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond, QMutex *cmutex, QWaitCondition *CCond)
+Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond)
 {
     //qDebug() << "Spectrometer: " << thread() << QThread::currentThread();
     MovingMutex = mutex;
@@ -108,39 +108,63 @@ void Spectrometer::moveToTarget(int steps, bool dir)
 
 //Spectrometer_Control-functions
 
-Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QMutex *cmutex, QWaitCondition *WaitCond)
+Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QString ipAddr, quint32 port)
 {
     Spectrometer_Control::MovingMutex = mutex;
     Spectrometer_Control::MovingCond = WaitForEngine;
-    Spectrometer_Control::CountCond = WaitCond;
-    Spectrometer_Control::CountMutex = cmutex;
+//    Spectrometer_Control::CountCond = WaitCond;
+//    Spectrometer_Control::CountMutex = cmutex;
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
     Spectrometer_Control::MonoPos = 0;
-    Spectrometer *newSpectrometer = new Spectrometer(MovingMutex, MovingCond, cmutex, WaitCond);
-    newSpectrometer->moveToThread(&workerThread);
-    connect(&workerThread, &QThread::finished, newSpectrometer, &QObject::deleteLater);
+    if(ipAddr.isEmpty())
+    {
+        newSpectrometer = new Spectrometer(MovingMutex, MovingCond);
+        newSpectrometer->moveToThread(&workerThread);
+        connect(&workerThread, &QThread::finished, newSpectrometer, &QObject::deleteLater);
 
-    connect(newSpectrometer, &Spectrometer::Data, this, &Spectrometer_Control::scanData);
-    connect(newSpectrometer, &Spectrometer::DPCCounts, this, &Spectrometer_Control::counterData);
-    connect(newSpectrometer, &Spectrometer::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
-    connect(newSpectrometer, &Spectrometer::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
-    connect(newSpectrometer, &Spectrometer::scanFinish, this, &Spectrometer_Control::scanFinish);
-    connect(newSpectrometer, &Spectrometer::ScanPos, this, &Spectrometer_Control::scanPosition);
+        connect(newSpectrometer, &Spectrometer::Data, this, &Spectrometer_Control::scanData);
+        connect(newSpectrometer, &Spectrometer::DPCCounts, this, &Spectrometer_Control::counterData);
+        connect(newSpectrometer, &Spectrometer::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
+        connect(newSpectrometer, &Spectrometer::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
+        connect(newSpectrometer, &Spectrometer::scanFinish, this, &Spectrometer_Control::scanFinish);
+        connect(newSpectrometer, &Spectrometer::ScanPos, this, &Spectrometer_Control::scanPosition);
 
-    connect(this, &Spectrometer_Control::switchPolarizer, newSpectrometer, &Spectrometer::switchPol);
-    connect(this, &Spectrometer_Control::moveStepperToTarget, newSpectrometer, &Spectrometer::moveToTarget);
-    connect(this, &Spectrometer_Control::runScan, newSpectrometer, &Spectrometer::runScan);
-    //connect(this, &Spectrometer_Control::initMonoPos, newSpectrometer, &Spectrometer::changePosition);
+        connect(this, &Spectrometer_Control::switchPolarizer, newSpectrometer, &Spectrometer::switchPol);
+        connect(this, &Spectrometer_Control::moveStepperToTarget, newSpectrometer, &Spectrometer::moveToTarget);
+        connect(this, &Spectrometer_Control::runScan, newSpectrometer, &Spectrometer::runScan);
+        //connect(this, &Spectrometer_Control::initMonoPos, newSpectrometer, &Spectrometer::changePosition);
 
-    workerThread.start();
+        workerThread.start();
+    }
+    else
+    {
+        Spectrometer_Control::ipAddr = ipAddr;
+        Spectrometer_Control::port = port;
+        remoteControl = new TXcontroller(Spectrometer_Control::ipAddr, Spectrometer_Control::port, Spectrometer_Control::MonoPos);
+        connect(remoteControl, &TXcontroller::Data, this, &Spectrometer_Control::scanData);
+        connect(remoteControl, &TXcontroller::DPCCounts, this, &Spectrometer_Control::counterData);
+        connect(remoteControl, &TXcontroller::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
+        connect(remoteControl, &TXcontroller::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
+        connect(remoteControl, &TXcontroller::scanFinish, this, &Spectrometer_Control::scanFinish);
+        connect(remoteControl, &TXcontroller::ScanPos, this, &Spectrometer_Control::scanPosition);
+
+        connect(this, &Spectrometer_Control::switchPolarizer, remoteControl, &TXcontroller::SwitchPolarizer);
+        connect(this, &Spectrometer_Control::moveStepperToTarget, remoteControl, &TXcontroller::moveToTarget);
+        connect(this, &Spectrometer_Control::runScan, remoteControl, &TXcontroller::runScan);
+    }
 }
 
 Spectrometer_Control::~Spectrometer_Control()
 {
     //qDebug() << "Cleaning up Spectrometer!";
-    workerThread.quit();
-    workerThread.wait();
+    if(ipAddr.isEmpty())
+    {
+        workerThread.quit();
+        workerThread.wait();
+    }
+    else
+        delete remoteControl;
     //qDebug() << "Spectrometer cleaned!";
 }
 
@@ -234,7 +258,7 @@ void Spectrometer_Control::moveStepper(int steps, bool dir)
 {
     emit stepperMoving();
     //qDebug() << "From Spectrometer_Control: Stepper should move in direction " + QString::number(dir) + " from position " + QString::number(MonoPos);
-    int newTarget = MonoPos + ((dir == true)?(steps):(-1 * steps));
+    //int newTarget = MonoPos + ((dir == true)?(steps):(-1 * steps));
     //qDebug() << "New target: " + QString::number(newTarget);
     emit moveStepperToTarget(steps, dir);
 //    qDebug() << "Finally unlocked!";
@@ -254,4 +278,27 @@ void Spectrometer_Control::scan(int start, int stop, int accuracy)
 
     }
     emit runScan(0, fabs(stop - start), accuracy);
+}
+
+void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
+{
+    Spectrometer_Control::ipAddr = ipAddr;
+    Spectrometer_Control::port = port;
+    remoteControl = new TXcontroller(Spectrometer_Control::ipAddr, Spectrometer_Control::port, Spectrometer_Control::MonoPos);
+    //disconnect local data
+    disconnect(newSpectrometer, SLOT(switchPol(Polarizer)));
+    disconnect(newSpectrometer, SLOT(moveToTarget(int,bool)));
+    disconnect(newSpectrometer, SLOT(runScan(int,int,int)));
+
+    //connect remote
+    connect(remoteControl, &TXcontroller::Data, this, &Spectrometer_Control::scanData);
+    connect(remoteControl, &TXcontroller::DPCCounts, this, &Spectrometer_Control::counterData);
+    connect(remoteControl, &TXcontroller::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
+    connect(remoteControl, &TXcontroller::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
+    connect(remoteControl, &TXcontroller::scanFinish, this, &Spectrometer_Control::scanFinish);
+    connect(remoteControl, &TXcontroller::ScanPos, this, &Spectrometer_Control::scanPosition);
+
+    connect(this, &Spectrometer_Control::switchPolarizer, remoteControl, &TXcontroller::SwitchPolarizer);
+    connect(this, &Spectrometer_Control::moveStepperToTarget, remoteControl, &TXcontroller::moveToTarget);
+    connect(this, &Spectrometer_Control::runScan, remoteControl, &TXcontroller::runScan);
 }
