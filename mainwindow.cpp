@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpectrometer, &Spectrometer_Control::currentData, this, &MainWindow::incomingData);
     connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
     connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::scanIsFinished);
+    //connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::positionChanged, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::stepperMoving, this, &MainWindow::StepperMoving);
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
@@ -986,7 +987,8 @@ void MainWindow::loadConfig()
 
 void MainWindow::oncurrentCount(int counts)
 {
-    ui->photoCounter->setText(QString::number(counts));
+    if(counts != ui->photoCounter->text().toInt())
+        ui->photoCounter->setText(QString::number(counts));
 }
 
 void MainWindow::writeConfig()
@@ -1040,8 +1042,9 @@ void MainWindow::StepperMoving(void)
 
 void MainWindow::PositionChanged()
 {
-    reload_data();
     ui->movingBox->setChecked(false);
+    reload_data();
+    qDebug() << "STP finished!";
 }
 
 void MainWindow::on_gridTabWidget_currentChanged(int index)

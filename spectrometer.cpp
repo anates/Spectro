@@ -124,7 +124,7 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
         connect(&workerThread, &QThread::finished, newSpectrometer, &QObject::deleteLater);
 
         connect(newSpectrometer, &Spectrometer::Data, this, &Spectrometer_Control::scanData);
-        connect(newSpectrometer, &Spectrometer::DPCCounts, this, &Spectrometer_Control::counterData);
+        connect(newSpectrometer, &Spectrometer::DPCCounts, this, &Spectrometer_Control::currentCounts);
         connect(newSpectrometer, &Spectrometer::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
         connect(newSpectrometer, &Spectrometer::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
         connect(newSpectrometer, &Spectrometer::scanFinish, this, &Spectrometer_Control::scanFinish);
@@ -143,7 +143,7 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
         Spectrometer_Control::port = port;
         remoteControl = new TXcontroller(Spectrometer_Control::ipAddr, Spectrometer_Control::port, Spectrometer_Control::MonoPos);
         connect(remoteControl, &TXcontroller::Data, this, &Spectrometer_Control::scanData);
-        connect(remoteControl, &TXcontroller::DPCCounts, this, &Spectrometer_Control::counterData);
+        connect(remoteControl, &TXcontroller::DPCCounts, this, &Spectrometer_Control::currentCounts);
         connect(remoteControl, &TXcontroller::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
         connect(remoteControl, &TXcontroller::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
         connect(remoteControl, &TXcontroller::scanFinish, this, &Spectrometer_Control::scanFinish);
@@ -171,6 +171,7 @@ Spectrometer_Control::~Spectrometer_Control()
 
 void Spectrometer_Control::scanFinish()
 {
+    qDebug() << "From spectrometer: Scan finished!";
     emit scanFinished();
 }
 
@@ -184,7 +185,7 @@ void Spectrometer_Control::scanData(QPair<int, int> data)
     emit currentData(data);
 }
 
-void Spectrometer_Control::counterData(int counts)
+void Spectrometer_Control::currentCounts(int counts)
 {
     emit currentCounterData(counts);
 }
@@ -286,13 +287,20 @@ void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
     Spectrometer_Control::port = port;
     remoteControl = new TXcontroller(Spectrometer_Control::ipAddr, Spectrometer_Control::port, Spectrometer_Control::MonoPos);
     //disconnect local data
-    disconnect(newSpectrometer, SLOT(switchPol(Polarizer)));
-    disconnect(newSpectrometer, SLOT(moveToTarget(int,bool)));
-    disconnect(newSpectrometer, SLOT(runScan(int,int,int)));
+    newSpectrometer->disconnect();
+//    disconnect(newSpectrometer, SLOT(switchPol(Polarizer)));
+//    disconnect(newSpectrometer, SLOT(moveToTarget(int,bool)));
+//    disconnect(newSpectrometer, SLOT(runScan(int,int,int)));
+//    qDebug() << "Result of disconnecting currentCounts: " << disconnect(this);
+//    disconnect(this, SLOT(scanData(QPair<int,int>)));
+//    disconnect(this, SLOT(updateCurrentPosition(int,bool)));
+//    disconnect(this, SLOT(scanFinish()));
+//    disconnect(this, SLOT(scanPosition(qreal)));
+//    disconnect(this, SLOT(updatePolarizers(Polarizer)));
 
     //connect remote
     connect(remoteControl, &TXcontroller::Data, this, &Spectrometer_Control::scanData);
-    connect(remoteControl, &TXcontroller::DPCCounts, this, &Spectrometer_Control::counterData);
+    connect(remoteControl, &TXcontroller::DPCCounts, this, &Spectrometer_Control::currentCounts);
     connect(remoteControl, &TXcontroller::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
     connect(remoteControl, &TXcontroller::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
     connect(remoteControl, &TXcontroller::scanFinish, this, &Spectrometer_Control::scanFinish);

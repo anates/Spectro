@@ -46,7 +46,7 @@ void DPC_Worker::stopAquisition(void)
 
 void DPC_Worker::aquireCounts(void)
 {
-    int counts = 42;
+    int counts = 37;
     while(stopAqu == false)
     {
         usleep(50000);//Hier muss noch die Auswertung eingebaut werden, und die genauen Pins muessen nachgesehen werden

@@ -87,7 +87,7 @@ public slots:
     //Internal connections
     //to DPC
     void scanData(QPair<int, int> data);
-    void counterData(int counts);
+    void currentCounts(int counts);
     //to stepper
     void updateCurrentPosition(int steps, bool dir);
     void stepperIsMoving(void);

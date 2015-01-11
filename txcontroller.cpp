@@ -42,15 +42,28 @@ void TXcontroller::runScan(int start, int stop, int accuracy)
 
 void TXcontroller::gotDataMain(QPair<QString, QVariant> data)
 {
+    qDebug() << "Got new Data, choosing now target!";
     if(data.first == "STP")
     {
-        if(data.second.toInt() == 1)
+        if(data.second.toInt() == 0)
+        {
+            qDebug() << "STP should finish";
+            emit scanFinish();
+        }
+        else if(data.second.toInt() == 1)
+        {
+            qDebug() << "STP should move";
             emit stepperMoving();
-        else if(data.second.toInt() > 1)
+        }
+        else if(data.second.toInt() != 1 && data.second.toInt() != 0)
+        {
+            qDebug() << "Got new position data!";
             emit currentPosition(fabs(data.second.toInt()), data.second.toInt() >= 0);
+        };
     }
     else if(data.first == "DPC")
     {
+        qDebug() << "Got new count data\n";
         emit DPCCounts(data.second.toInt());
     }
     else if(data.first == "SCN")
