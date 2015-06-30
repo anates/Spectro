@@ -4,12 +4,12 @@
 #include <QtWidgets/QMainWindow>
 #include <QMap>
 #include <QWidget>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_grid.h>
-#include <qwt_picker.h>
-#include <qwt_plot_picker.h>
-#include <qwt_picker_machine.h>
+#include <qwt/qwt_plot.h>
+#include <qwt/qwt_plot_curve.h>
+#include <qwt/qwt_plot_grid.h>
+#include <qwt/qwt_picker.h>
+#include <qwt/qwt_plot_picker.h>
+#include <qwt/qwt_picker_machine.h>
 #include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
@@ -59,6 +59,8 @@ public slots:
     void StepperMoving(void);
     //Mouse slots
     void mousePoint(const QPointF &point);
+    //TX slots
+    void connectStatus(bool status);
     //Analyst slots
     void calibrateScan(ScanData &newScan);
     void sortPoints(void);
@@ -152,6 +154,10 @@ private slots:
 
     void on_CalibConfirm_clicked();
 
+    void on_AddMovementLog_clicked();
+
+    void on_AddMovementCommentLog_clicked();
+
 private:
 
 
@@ -172,6 +178,13 @@ private:
     QVector<QPair<int, int> > CorrectionValues;
 
     Ui::MainWindow *ui;
+
+    //Movement Logging
+    bool movementLogging = false;
+    QString MovementLogFile;
+    QFile *LogFile = NULL;
+    QTextStream *LogStream = NULL;
+    void logThis(QVariant data);
 
     QMap<double, double> Scandata;
     QVector<bool> polarizerSettings;

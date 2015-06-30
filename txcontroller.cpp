@@ -12,6 +12,8 @@ TXcontroller::TXcontroller(QString ipAddr, quint32 port, int MonoPos)
     connect(this, &TXcontroller::TXdata, MainServer, &Server::sendData);
     connect(this, &TXcontroller::connectMain, mainClient, &TX_master::connectTX);
     connect(this, &TXcontroller::connectFile, fileClient, &TX_master::connectTX);
+    connect(mainClient, &TX_master::ClientStatus, this, &TXcontroller::ClientStatus);
+    connect(fileClient, &TX_master::ClientStatus, this, &TXcontroller::DataClientStatus);
     connect(mainClient, &TX_master::gotNewData, this, &TXcontroller::gotDataMain);
     connect(fileClient, &TX_master::gotNewData, this, &TXcontroller::gotDataFile);
 
@@ -27,12 +29,12 @@ TXcontroller::~TXcontroller()
 
 void TXcontroller::SwitchPolarizer(Polarizer pol)
 {
-    emit TXdata(qMakePair(QString("POL"), QVariant(pol)));
+    //emit TXdata(qMakePair(QString("POL"), QVariant(pol)));???Has to be updated???
 }
 
 void TXcontroller::moveToTarget(int steps, bool dir)
 {
-    emit TXdata(qMakePair(QString("STP"), QVariant(steps * (dir?1:-1))));
+    emit TXdata(qMakePair(QString("STP"), qMakePair(QString("M"), QVariant(steps * (dir?1:-1)))));//???Has to be updated???
 }
 
 void TXcontroller::runScan(int start, int stop, int accuracy)
@@ -40,51 +42,53 @@ void TXcontroller::runScan(int start, int stop, int accuracy)
     //Muss noch entwickelt werden
 }
 
-void TXcontroller::gotDataMain(QPair<QString, QVariant> data)
+void TXcontroller::gotDataMain(QPair<QString, QPair<QString, QVariant> > data)
 {
-    qDebug() << "Got new Data, choosing now target!";
+    qDebug() << "Got the following new data: " + data.first + " " + data.second.first + " " + data.second.second.toString();
     if(data.first == "STP")
     {
-        if(data.second.toInt() == 0)
+        //qDebug() << "STP " + data.second.first + " " + data.second.second.toString();
+        if(data.second.first == "M" && data.second.second.toInt() == 0)
         {
             qDebug() << "STP should finish";
             emit scanFinish();
         }
-        else if(data.second.toInt() == 1)
+        else if(data.second.first == "M" && data.second.second.toInt() == 1)
         {
             qDebug() << "STP should move";
             emit stepperMoving();
         }
-        else if(data.second.toInt() != 1 && data.second.toInt() != 0)
+        else if(data.second.first == "P")
         {
             qDebug() << "Got new position data!";
-            emit currentPosition(fabs(data.second.toInt()), data.second.toInt() >= 0);
+            emit currentPosition(fabs(data.second.second.toInt()), data.second.second.toInt() >= 0);
+            emit scanFinish();//Hacky, könnte verbessert werden???
         };
     }
     else if(data.first == "DPC")
     {
         qDebug() << "Got new count data\n";
-        emit DPCCounts(data.second.toInt());
+        emit DPCCounts(data.second.second.toInt());
     }
     else if(data.first == "SCN")
     {
-        if(data.second.type() == QVariant::Type::Double)
+        if(data.second.first == "P")
         {
-            emit ScanPos(data.second.toDouble());
+            emit ScanPos(data.second.second.toDouble());
         }
-        if(data.second.type() == QVariant::Type::Int)
+        if(data.second.first == "S")
             emit scanFinish();
-        if(data.second.type() == QVariant::Type::StringList)
+        if(data.second.second.type() == QVariant::Type::StringList)
         {
             int tmpPos, tmpVal;
-            tmpPos = data.second.toStringList()[0].toInt();
-            tmpVal = data.second.toStringList()[1].toInt();
+            tmpPos = data.second.second.toStringList()[0].toInt();
+            tmpVal = data.second.second.toStringList()[1].toInt();
             emit Data(qMakePair(tmpPos, tmpVal));
         }
     }
     else if(data.first == "POL")
     {
-        emit switchingSucceed(data.second.value<Polarizer>());
+        //emit switchingSucceed(data.second.second.value<Polarizer>());???Has to be updated???
     }
 }
 
@@ -93,7 +97,17 @@ void TXcontroller::gotNewConnection(QVariant data)
     emit gotConnection();
 }
 
-void TXcontroller::gotDataFile(QPair<QString, QVariant> data)
+void TXcontroller::gotDataFile(QPair<QString, QPair<QString, QVariant> > data)
 {
     //Has to be implemented
+}
+
+void TXcontroller::ClientStatus(bool status)
+{
+    emit this->MainClientStat(status);
+}
+
+void TXcontroller::DataClientStatus(bool status)
+{
+    emit this->DataClientStat(status);
 }

@@ -96,6 +96,8 @@ public slots:
     //to scanner
     void scanFinish(void);
     void scanPosition(qreal position);
+    //from TX
+    void TXStatus(bool status);
 signals:
     //Internal
     void switchPolarizer(Polarizer pol);
@@ -109,6 +111,7 @@ signals:
     void currentCounterData(int counts);
     void positionChanged(void);
     void stepperMoving(void);
+    void TX_status(bool status);
 public:
     Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QString ipAddr = "", quint32 port = 0);
     ~Spectrometer_Control();

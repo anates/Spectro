@@ -64,12 +64,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->gridTabWidget->setCurrentIndex(0);
     //ui->gridTabWidget->setTabEnabled(3, false);
     ui->movingBox->setDisabled(true);
+    //ui->movingBox->setCheckable(false);
+    //ui->movingBox2->setCheckable(false);
     ui->newWaveNumber->setDisabled(true);
     ui->currentPosition->setReadOnly(true);
     ui->currentSpeed->setReadOnly(true);
     ui->currentWaveNumber->setReadOnly(true);
     ui->photoCounter->setReadOnly(true);
     ui->currentPosition->setText(QString::number(newSpectrometer->getMonoPos()));
+    ui->MovementLogFileComment->hide();
+    ui->label_3->hide();
+    ui->AddMovementCommentLog->hide();
     //ui->currentSpeed->setText(QString::number(newSpectrometer->getMonoSpeed()));
 
     //Some fancy stuff for style
@@ -79,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Creating connections
     connect(newSpectrometer, &Spectrometer_Control::currentCounterData, this, &MainWindow::oncurrentCount);
+    connect(newSpectrometer, &Spectrometer_Control::TX_status, this, &MainWindow::connectStatus);
     connect(newSpectrometer, &Spectrometer_Control::currentData, this, &MainWindow::incomingData);
     connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
     connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::scanIsFinished);
@@ -111,7 +117,18 @@ MainWindow::~MainWindow()
         //delete MainWindow::pickerMachine;//Leads to crash, strange
     }
     qDebug() << "pickerMachine cleaned";
+    if(this->LogFile != NULL || this->LogStream != NULL || this->movementLogging != false)
+    {
+        this->LogFile->close();
+        delete this->LogFile;
+        delete this->LogStream;
+    }
     delete ui;
+}
+
+void MainWindow::connectStatus(bool status)
+{
+    ui->MainTXcon->setChecked(status);
 }
 
 void MainWindow::on_loadGenericButton_clicked()
@@ -740,6 +757,7 @@ void MainWindow::calibrateScan(ScanData &newScan)
 
 void MainWindow::scanIsFinished(void)
 {
+    ui->movingBox2->setChecked(false);
     if(calibrated)
     {
         calibrateScan(MainWindow::tmpScan.values);
@@ -865,6 +883,8 @@ void MainWindow::on_stepForwardMono_clicked()
 
 void MainWindow::on_mvButton_2_clicked()
 {
+    if(this->movementLogging)
+        this->logThis(QVariant(ui->moveData->text().toDouble()));
     if(ui->moveData->text().toDouble() < 0)
     {   //Hier müssen Signale und Slots rein!
         newSpectrometer->moveStepper(fabs(ui->moveData->text().toInt()), 0);
@@ -1035,16 +1055,18 @@ void MainWindow::on_execButton_2_clicked()
 
 void MainWindow::StepperMoving(void)
 {
-    qDebug() << "Stepper moving!";
+    //qDebug() << "Stepper moving!";
+    ui->movingBox2->setChecked(true);
     ui->movingBox->setChecked(true);
     reload_data();
 }
 
 void MainWindow::PositionChanged()
 {
+    ui->movingBox2->setChecked(false);
     ui->movingBox->setChecked(false);
     reload_data();
-    qDebug() << "STP finished!";
+    //qDebug() << "STP finished!";
 }
 
 void MainWindow::on_gridTabWidget_currentChanged(int index)
@@ -1233,4 +1255,41 @@ void MainWindow::mousePoint(const QPointF &point)
     QPointF newPoint = point;
     ui->xPos->setText(QString::number(newPoint.rx()));
     ui->yPos->setText(QString::number(newPoint.ry()));
+}
+
+
+void MainWindow::on_AddMovementLog_clicked()
+{
+    //qDebug() << "Logging started!";
+    ui->LoggingBox->setChecked(true);
+    if(ui->MovementLogFileName->text().isEmpty())
+    {
+        //qDebug() << "Filename is missing";
+        this->MovementLogFile = QDate::currentDate().toString();
+    }
+    else
+    {
+        this->MovementLogFile = ui->MovementLogFileName->text();
+    }
+    this->LogFile = new QFile(this->MovementLogFile);
+    this->LogFile->open(QIODevice::ReadWrite);
+    this->LogStream = new QTextStream(this->LogFile);
+    ui->label_2->show();
+    ui->label_3->show();
+    ui->AddMovementCommentLog->show();
+    ui->MovementLogFileComment->show();
+    ui->MovementLogFileName->show();
+    this->movementLogging = true;
+}
+
+void MainWindow::logThis(QVariant data)
+{
+    //qDebug() << "Logging this: " + data.toString();
+    *(this->LogStream) << data.toString() << '\n';
+}
+
+void MainWindow::on_AddMovementCommentLog_clicked()
+{
+    this->logThis(QVariant(ui->MovementLogFileComment->text()));
+    ui->MovementLogFileComment->clear();
 }

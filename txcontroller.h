@@ -21,12 +21,14 @@ signals:
     //to fileClient
     void connectFile(void);
     //to MainServer
-    void TXdata(QPair<QString, QVariant> data);
+    void TXdata(QPair<QString, QPair<QString, QVariant> > data);
     //to extern
     void Data(QPair<int, int> data);
     void DPCCounts(int counts);
     void scanFinish(void);
     void ScanPos(qreal position);
+    void MainClientStat(bool);
+    void DataClientStat(bool);
     //From stepper
     void currentPosition(int steps, bool dir);
     void stepperMoving(void);
@@ -37,9 +39,11 @@ signals:
     void gotNewFile(void);
 public slots:
     //from mainClient
-    void gotDataMain(QPair<QString, QVariant> data);
+    void gotDataMain(QPair<QString, QPair<QString, QVariant> > data);
+    void ClientStatus(bool status);
     //from fileClient
-    void gotDataFile(QPair<QString, QVariant> data);
+    void gotDataFile(QPair<QString, QPair<QString, QVariant> > data);
+    void DataClientStatus(bool status);
     //from MainServer
     void gotNewConnection(QVariant data);
     //From extern
