@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->CalibLabel2->hide();
     ui->AddCalibration->hide();
     ui->gridTabWidget->setCurrentIndex(0);
+    ui->MovingProgressBar->setValue(0);
     //ui->gridTabWidget->setTabEnabled(3, false);
     ui->movingBox->setDisabled(true);
     //ui->movingBox->setCheckable(false);
@@ -88,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpectrometer, &Spectrometer_Control::currentData, this, &MainWindow::incomingData);
     connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
     connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::scanIsFinished);
+    connect(newSpectrometer, &Spectrometer_Control::currentStatus, this, &MainWindow::newStepperStatus);
     //connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::positionChanged, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::stepperMoving, this, &MainWindow::StepperMoving);
@@ -720,6 +722,7 @@ QPair<QPair<int, int>, QPair<int, int> > MainWindow::getNearestPoints(int xVal)
         }
 
     }
+    return qMakePair(qMakePair(0, 0), qMakePair(0, 0));
 }
 
 int MainWindow::calculateValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint = qMakePair(0, 0), QPair<int, int> secondPoint = qMakePair(0, 0))
@@ -1072,6 +1075,12 @@ void MainWindow::PositionChanged()
 void MainWindow::on_gridTabWidget_currentChanged(int index)
 {
     reload_data();
+}
+
+void MainWindow::newStepperStatus(int status)
+{
+    ui->MovingProgressBar->setValue(status);
+    this->reload_data();
 }
 
 void MainWindow::on_newScan_clicked(void)

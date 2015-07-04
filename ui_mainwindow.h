@@ -132,6 +132,7 @@ public:
     QLineEdit *MovementLogFileComment;
     QPushButton *AddMovementCommentLog;
     QCheckBox *LoggingBox;
+    QProgressBar *MovingProgressBar;
     QWidget *logTab;
     QFormLayout *formLayout_4;
     QVBoxLayout *verticalLayout;
@@ -638,6 +639,12 @@ public:
         LoggingBox->setObjectName(QStringLiteral("LoggingBox"));
 
         MovementLogLayout->addWidget(LoggingBox, 3, 1, 1, 1);
+
+        MovingProgressBar = new QProgressBar(scanTab);
+        MovingProgressBar->setObjectName(QStringLiteral("MovingProgressBar"));
+        MovingProgressBar->setValue(24);
+
+        MovementLogLayout->addWidget(MovingProgressBar, 4, 1, 1, 1);
 
 
         formLayout->setLayout(2, QFormLayout::FieldRole, MovementLogLayout);

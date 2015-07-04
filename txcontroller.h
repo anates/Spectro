@@ -32,6 +32,7 @@ signals:
     //From stepper
     void currentPosition(int steps, bool dir);
     void stepperMoving(void);
+    void currentStepperStatus(int status);
     //from polarizercontrol
     void switchingSucceed(Polarizer pol);
     //To extern from TX

@@ -9,7 +9,8 @@ TXcontroller::TXcontroller(QString ipAddr, quint32 port, int MonoPos)
     mainClient = new TX_master(ipAddr, port, "MAIN");
     fileClient = new TX_master(ipAddr, port + 2, "FILE");
 
-    connect(this, &TXcontroller::TXdata, MainServer, &Server::sendData);
+    //connect(this, &TXcontroller::TXdata, MainServer, &Server::sendData);
+    connect(this, &TXcontroller::TXdata, MainServer, &Server::textData);
     connect(this, &TXcontroller::connectMain, mainClient, &TX_master::connectTX);
     connect(this, &TXcontroller::connectFile, fileClient, &TX_master::connectTX);
     connect(mainClient, &TX_master::ClientStatus, this, &TXcontroller::ClientStatus);
@@ -63,7 +64,12 @@ void TXcontroller::gotDataMain(QPair<QString, QPair<QString, QVariant> > data)
             qDebug() << "Got new position data!";
             emit currentPosition(fabs(data.second.second.toInt()), data.second.second.toInt() >= 0);
             emit scanFinish();//Hacky, könnte verbessert werden???
-        };
+        }
+        else if(data.second.first == "S")
+        {
+            qDebug() << "Current Movement Status: ";
+            emit this->currentStepperStatus(data.second.second.toInt());
+        }
     }
     else if(data.first == "DPC")
     {

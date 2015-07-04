@@ -57,6 +57,7 @@ public slots:
     //Movement Slots
     void PositionChanged(void);
     void StepperMoving(void);
+    void newStepperStatus(int status);
     //Mouse slots
     void mousePoint(const QPointF &point);
     //TX slots
@@ -86,6 +87,7 @@ signals:
     void killScanner(void);
     void initScanner(int, int, int, int, bool);
 private slots:
+
     void on_loadGenericButton_clicked();
 
     void open();

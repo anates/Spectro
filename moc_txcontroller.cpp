@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_TXcontroller_t {
-    QByteArrayData data[37];
-    char stringdata[416];
+    QByteArrayData data[38];
+    char stringdata[437];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -49,23 +49,24 @@ QT_MOC_LITERAL(16, 185, 15), // "currentPosition"
 QT_MOC_LITERAL(17, 201, 5), // "steps"
 QT_MOC_LITERAL(18, 207, 3), // "dir"
 QT_MOC_LITERAL(19, 211, 13), // "stepperMoving"
-QT_MOC_LITERAL(20, 225, 16), // "switchingSucceed"
-QT_MOC_LITERAL(21, 242, 9), // "Polarizer"
-QT_MOC_LITERAL(22, 252, 3), // "pol"
-QT_MOC_LITERAL(23, 256, 13), // "gotConnection"
-QT_MOC_LITERAL(24, 270, 10), // "gotNewFile"
-QT_MOC_LITERAL(25, 281, 11), // "gotDataMain"
-QT_MOC_LITERAL(26, 293, 12), // "ClientStatus"
-QT_MOC_LITERAL(27, 306, 6), // "status"
-QT_MOC_LITERAL(28, 313, 11), // "gotDataFile"
-QT_MOC_LITERAL(29, 325, 16), // "DataClientStatus"
-QT_MOC_LITERAL(30, 342, 16), // "gotNewConnection"
-QT_MOC_LITERAL(31, 359, 15), // "SwitchPolarizer"
-QT_MOC_LITERAL(32, 375, 12), // "moveToTarget"
-QT_MOC_LITERAL(33, 388, 7), // "runScan"
-QT_MOC_LITERAL(34, 396, 5), // "start"
-QT_MOC_LITERAL(35, 402, 4), // "stop"
-QT_MOC_LITERAL(36, 407, 8) // "accuracy"
+QT_MOC_LITERAL(20, 225, 20), // "currentStepperStatus"
+QT_MOC_LITERAL(21, 246, 6), // "status"
+QT_MOC_LITERAL(22, 253, 16), // "switchingSucceed"
+QT_MOC_LITERAL(23, 270, 9), // "Polarizer"
+QT_MOC_LITERAL(24, 280, 3), // "pol"
+QT_MOC_LITERAL(25, 284, 13), // "gotConnection"
+QT_MOC_LITERAL(26, 298, 10), // "gotNewFile"
+QT_MOC_LITERAL(27, 309, 11), // "gotDataMain"
+QT_MOC_LITERAL(28, 321, 12), // "ClientStatus"
+QT_MOC_LITERAL(29, 334, 11), // "gotDataFile"
+QT_MOC_LITERAL(30, 346, 16), // "DataClientStatus"
+QT_MOC_LITERAL(31, 363, 16), // "gotNewConnection"
+QT_MOC_LITERAL(32, 380, 15), // "SwitchPolarizer"
+QT_MOC_LITERAL(33, 396, 12), // "moveToTarget"
+QT_MOC_LITERAL(34, 409, 7), // "runScan"
+QT_MOC_LITERAL(35, 417, 5), // "start"
+QT_MOC_LITERAL(36, 423, 4), // "stop"
+QT_MOC_LITERAL(37, 428, 8) // "accuracy"
 
     },
     "TXcontroller\0connectMain\0\0connectFile\0"
@@ -74,12 +75,13 @@ QT_MOC_LITERAL(36, 407, 8) // "accuracy"
     "counts\0scanFinish\0ScanPos\0position\0"
     "MainClientStat\0DataClientStat\0"
     "currentPosition\0steps\0dir\0stepperMoving\0"
+    "currentStepperStatus\0status\0"
     "switchingSucceed\0Polarizer\0pol\0"
     "gotConnection\0gotNewFile\0gotDataMain\0"
-    "ClientStatus\0status\0gotDataFile\0"
-    "DataClientStatus\0gotNewConnection\0"
-    "SwitchPolarizer\0moveToTarget\0runScan\0"
-    "start\0stop\0accuracy"
+    "ClientStatus\0gotDataFile\0DataClientStatus\0"
+    "gotNewConnection\0SwitchPolarizer\0"
+    "moveToTarget\0runScan\0start\0stop\0"
+    "accuracy"
 };
 #undef QT_MOC_LITERAL
 
@@ -89,38 +91,39 @@ static const uint qt_meta_data_TXcontroller[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      22,   14, // methods
+      23,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-      14,       // signalCount
+      15,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,  124,    2, 0x06 /* Public */,
-       3,    0,  125,    2, 0x06 /* Public */,
-       4,    1,  126,    2, 0x06 /* Public */,
-       7,    1,  129,    2, 0x06 /* Public */,
-       9,    1,  132,    2, 0x06 /* Public */,
-      11,    0,  135,    2, 0x06 /* Public */,
-      12,    1,  136,    2, 0x06 /* Public */,
-      14,    1,  139,    2, 0x06 /* Public */,
-      15,    1,  142,    2, 0x06 /* Public */,
-      16,    2,  145,    2, 0x06 /* Public */,
-      19,    0,  150,    2, 0x06 /* Public */,
-      20,    1,  151,    2, 0x06 /* Public */,
-      23,    0,  154,    2, 0x06 /* Public */,
-      24,    0,  155,    2, 0x06 /* Public */,
+       1,    0,  129,    2, 0x06 /* Public */,
+       3,    0,  130,    2, 0x06 /* Public */,
+       4,    1,  131,    2, 0x06 /* Public */,
+       7,    1,  134,    2, 0x06 /* Public */,
+       9,    1,  137,    2, 0x06 /* Public */,
+      11,    0,  140,    2, 0x06 /* Public */,
+      12,    1,  141,    2, 0x06 /* Public */,
+      14,    1,  144,    2, 0x06 /* Public */,
+      15,    1,  147,    2, 0x06 /* Public */,
+      16,    2,  150,    2, 0x06 /* Public */,
+      19,    0,  155,    2, 0x06 /* Public */,
+      20,    1,  156,    2, 0x06 /* Public */,
+      22,    1,  159,    2, 0x06 /* Public */,
+      25,    0,  162,    2, 0x06 /* Public */,
+      26,    0,  163,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      25,    1,  156,    2, 0x0a /* Public */,
-      26,    1,  159,    2, 0x0a /* Public */,
-      28,    1,  162,    2, 0x0a /* Public */,
-      29,    1,  165,    2, 0x0a /* Public */,
-      30,    1,  168,    2, 0x0a /* Public */,
-      31,    1,  171,    2, 0x0a /* Public */,
-      32,    2,  174,    2, 0x0a /* Public */,
-      33,    3,  179,    2, 0x0a /* Public */,
+      27,    1,  164,    2, 0x0a /* Public */,
+      28,    1,  167,    2, 0x0a /* Public */,
+      29,    1,  170,    2, 0x0a /* Public */,
+      30,    1,  173,    2, 0x0a /* Public */,
+      31,    1,  176,    2, 0x0a /* Public */,
+      32,    1,  179,    2, 0x0a /* Public */,
+      33,    2,  182,    2, 0x0a /* Public */,
+      34,    3,  187,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -134,19 +137,20 @@ static const uint qt_meta_data_TXcontroller[] = {
     QMetaType::Void, QMetaType::Bool,    2,
     QMetaType::Void, QMetaType::Int, QMetaType::Bool,   17,   18,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 21,   22,
+    QMetaType::Void, QMetaType::Int,   21,
+    QMetaType::Void, 0x80000000 | 23,   24,
     QMetaType::Void,
     QMetaType::Void,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 5,    6,
-    QMetaType::Void, QMetaType::Bool,   27,
+    QMetaType::Void, QMetaType::Bool,   21,
     QMetaType::Void, 0x80000000 | 5,    6,
-    QMetaType::Void, QMetaType::Bool,   27,
+    QMetaType::Void, QMetaType::Bool,   21,
     QMetaType::Void, QMetaType::QVariant,    6,
-    QMetaType::Void, 0x80000000 | 21,   22,
+    QMetaType::Void, 0x80000000 | 23,   24,
     QMetaType::Void, QMetaType::Int, QMetaType::Bool,   17,   18,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int,   34,   35,   36,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int,   35,   36,   37,
 
        0        // eod
 };
@@ -167,30 +171,31 @@ void TXcontroller::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 8: _t->DataClientStat((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 9: _t->currentPosition((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 10: _t->stepperMoving(); break;
-        case 11: _t->switchingSucceed((*reinterpret_cast< Polarizer(*)>(_a[1]))); break;
-        case 12: _t->gotConnection(); break;
-        case 13: _t->gotNewFile(); break;
-        case 14: _t->gotDataMain((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
-        case 15: _t->ClientStatus((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 16: _t->gotDataFile((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
-        case 17: _t->DataClientStatus((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 18: _t->gotNewConnection((*reinterpret_cast< QVariant(*)>(_a[1]))); break;
-        case 19: _t->SwitchPolarizer((*reinterpret_cast< Polarizer(*)>(_a[1]))); break;
-        case 20: _t->moveToTarget((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
-        case 21: _t->runScan((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 11: _t->currentStepperStatus((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 12: _t->switchingSucceed((*reinterpret_cast< Polarizer(*)>(_a[1]))); break;
+        case 13: _t->gotConnection(); break;
+        case 14: _t->gotNewFile(); break;
+        case 15: _t->gotDataMain((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
+        case 16: _t->ClientStatus((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 17: _t->gotDataFile((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
+        case 18: _t->DataClientStatus((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 19: _t->gotNewConnection((*reinterpret_cast< QVariant(*)>(_a[1]))); break;
+        case 20: _t->SwitchPolarizer((*reinterpret_cast< Polarizer(*)>(_a[1]))); break;
+        case 21: _t->moveToTarget((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
+        case 22: _t->runScan((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 11:
+        case 12:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
                 *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< Polarizer >(); break;
             }
             break;
-        case 19:
+        case 20:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -268,21 +273,27 @@ void TXcontroller::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
             }
         }
         {
-            typedef void (TXcontroller::*_t)(Polarizer );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::switchingSucceed)) {
+            typedef void (TXcontroller::*_t)(int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::currentStepperStatus)) {
                 *result = 11;
             }
         }
         {
-            typedef void (TXcontroller::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::gotConnection)) {
+            typedef void (TXcontroller::*_t)(Polarizer );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::switchingSucceed)) {
                 *result = 12;
             }
         }
         {
             typedef void (TXcontroller::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::gotNewFile)) {
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::gotConnection)) {
                 *result = 13;
+            }
+        }
+        {
+            typedef void (TXcontroller::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TXcontroller::gotNewFile)) {
+                *result = 14;
             }
         }
     }
@@ -313,13 +324,13 @@ int TXcontroller::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 22)
+        if (_id < 23)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 22;
+        _id -= 23;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 22)
+        if (_id < 23)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 22;
+        _id -= 23;
     }
     return _id;
 }
@@ -398,21 +409,28 @@ void TXcontroller::stepperMoving()
 }
 
 // SIGNAL 11
-void TXcontroller::switchingSucceed(Polarizer _t1)
+void TXcontroller::currentStepperStatus(int _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 11, _a);
 }
 
 // SIGNAL 12
-void TXcontroller::gotConnection()
+void TXcontroller::switchingSucceed(Polarizer _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 12, Q_NULLPTR);
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 12, _a);
 }
 
 // SIGNAL 13
-void TXcontroller::gotNewFile()
+void TXcontroller::gotConnection()
 {
     QMetaObject::activate(this, &staticMetaObject, 13, Q_NULLPTR);
+}
+
+// SIGNAL 14
+void TXcontroller::gotNewFile()
+{
+    QMetaObject::activate(this, &staticMetaObject, 14, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE

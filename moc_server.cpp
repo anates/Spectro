@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Server_t {
-    QByteArrayData data[12];
-    char stringdata[158];
+    QByteArrayData data[16];
+    char stringdata[209];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,20 +34,25 @@ QT_MOC_LITERAL(1, 7, 16), // "gotNewConnection"
 QT_MOC_LITERAL(2, 24, 0), // ""
 QT_MOC_LITERAL(3, 25, 13), // "sessionOpened"
 QT_MOC_LITERAL(4, 39, 11), // "sendFortune"
-QT_MOC_LITERAL(5, 51, 8), // "sendData"
-QT_MOC_LITERAL(6, 60, 39), // "QPair<QString,QPair<QString,Q..."
-QT_MOC_LITERAL(7, 100, 4), // "data"
-QT_MOC_LITERAL(8, 105, 8), // "sendFile"
-QT_MOC_LITERAL(9, 114, 8), // "fileName"
-QT_MOC_LITERAL(10, 123, 16), // "disconnectServer"
-QT_MOC_LITERAL(11, 140, 17) // "openNewConnection"
+QT_MOC_LITERAL(5, 51, 11), // "textFortune"
+QT_MOC_LITERAL(6, 63, 12), // "spamFortunes"
+QT_MOC_LITERAL(7, 76, 8), // "sendData"
+QT_MOC_LITERAL(8, 85, 39), // "QPair<QString,QPair<QString,Q..."
+QT_MOC_LITERAL(9, 125, 4), // "data"
+QT_MOC_LITERAL(10, 130, 8), // "sendFile"
+QT_MOC_LITERAL(11, 139, 8), // "fileName"
+QT_MOC_LITERAL(12, 148, 16), // "disconnectServer"
+QT_MOC_LITERAL(13, 165, 17), // "openNewConnection"
+QT_MOC_LITERAL(14, 183, 16), // "QPairToByteArray"
+QT_MOC_LITERAL(15, 200, 8) // "textData"
 
     },
     "Server\0gotNewConnection\0\0sessionOpened\0"
-    "sendFortune\0sendData\0"
-    "QPair<QString,QPair<QString,QVariant> >\0"
+    "sendFortune\0textFortune\0spamFortunes\0"
+    "sendData\0QPair<QString,QPair<QString,QVariant> >\0"
     "data\0sendFile\0fileName\0disconnectServer\0"
-    "openNewConnection"
+    "openNewConnection\0QPairToByteArray\0"
+    "textData"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,7 +62,7 @@ static const uint qt_meta_data_Server[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,15 +70,19 @@ static const uint qt_meta_data_Server[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   49,    2, 0x06 /* Public */,
+       1,    1,   69,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    0,   52,    2, 0x0a /* Public */,
-       4,    0,   53,    2, 0x0a /* Public */,
-       5,    1,   54,    2, 0x0a /* Public */,
-       8,    1,   57,    2, 0x0a /* Public */,
-      10,    0,   60,    2, 0x0a /* Public */,
-      11,    0,   61,    2, 0x0a /* Public */,
+       3,    0,   72,    2, 0x0a /* Public */,
+       4,    0,   73,    2, 0x0a /* Public */,
+       5,    0,   74,    2, 0x0a /* Public */,
+       6,    0,   75,    2, 0x0a /* Public */,
+       7,    1,   76,    2, 0x0a /* Public */,
+      10,    1,   79,    2, 0x0a /* Public */,
+      12,    0,   82,    2, 0x0a /* Public */,
+      13,    0,   83,    2, 0x0a /* Public */,
+      14,    1,   84,    2, 0x0a /* Public */,
+      15,    1,   87,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QVariant,    2,
@@ -81,10 +90,14 @@ static const uint qt_meta_data_Server[] = {
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 6,    7,
-    QMetaType::Void, QMetaType::QVariant,    9,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 8,    9,
+    QMetaType::Void, QMetaType::QVariant,   11,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::QByteArray, 0x80000000 | 8,    9,
+    QMetaType::Void, 0x80000000 | 8,    9,
 
        0        // eod
 };
@@ -97,10 +110,15 @@ void Server::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 0: _t->gotNewConnection((*reinterpret_cast< QVariant(*)>(_a[1]))); break;
         case 1: _t->sessionOpened(); break;
         case 2: _t->sendFortune(); break;
-        case 3: _t->sendData((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
-        case 4: _t->sendFile((*reinterpret_cast< QVariant(*)>(_a[1]))); break;
-        case 5: _t->disconnectServer(); break;
-        case 6: _t->openNewConnection(); break;
+        case 3: _t->textFortune(); break;
+        case 4: _t->spamFortunes(); break;
+        case 5: _t->sendData((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
+        case 6: _t->sendFile((*reinterpret_cast< QVariant(*)>(_a[1]))); break;
+        case 7: _t->disconnectServer(); break;
+        case 8: _t->openNewConnection(); break;
+        case 9: { QByteArray _r = _t->QPairToByteArray((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QByteArray*>(_a[0]) = _r; }  break;
+        case 10: _t->textData((*reinterpret_cast< QPair<QString,QPair<QString,QVariant> >(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -140,13 +158,13 @@ int Server::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 11)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 7;
+        _id -= 11;
     }
     return _id;
 }

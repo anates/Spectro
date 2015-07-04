@@ -150,6 +150,7 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
         connect(remoteControl, &TXcontroller::ScanPos, this, &Spectrometer_Control::scanPosition);
         connect(remoteControl, &TXcontroller::MainClientStat, this, &Spectrometer_Control::TXStatus);
         connect(remoteControl, &TXcontroller::stepperMoving, this, &Spectrometer_Control::stepperIsMoving);
+        connect(remoteControl, &TXcontroller::currentStepperStatus, this, &Spectrometer_Control::currentStepperStatus);
 
         connect(this, &Spectrometer_Control::switchPolarizer, remoteControl, &TXcontroller::SwitchPolarizer);
         connect(this, &Spectrometer_Control::moveStepperToTarget, remoteControl, &TXcontroller::moveToTarget);
@@ -173,6 +174,11 @@ Spectrometer_Control::~Spectrometer_Control()
 void Spectrometer_Control::TXStatus(bool status)
 {
     emit this->TX_status(status);
+}
+
+void Spectrometer_Control::currentStepperStatus(int status)
+{
+    emit this->currentStatus(status);
 }
 
 void Spectrometer_Control::scanFinish()
@@ -313,6 +319,7 @@ void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
     connect(remoteControl, &TXcontroller::ScanPos, this, &Spectrometer_Control::scanPosition);
     connect(remoteControl, &TXcontroller::MainClientStat, this, &Spectrometer_Control::TXStatus);
     connect(remoteControl, &TXcontroller::stepperMoving, this, &Spectrometer_Control::stepperIsMoving);
+    connect(remoteControl, &TXcontroller::currentStepperStatus, this, &Spectrometer_Control::currentStepperStatus);
 
     connect(this, &Spectrometer_Control::switchPolarizer, remoteControl, &TXcontroller::SwitchPolarizer);
     connect(this, &Spectrometer_Control::moveStepperToTarget, remoteControl, &TXcontroller::moveToTarget);

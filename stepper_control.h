@@ -22,6 +22,7 @@ public slots:
     void moveStepper(int steps, bool dir);
 signals:
     void StepperMoved(int, bool);
+    void currentStatus(int);
 public:
     Stepper_Control_Worker(QMutex *mutex, QWaitCondition *cond);
     ~Stepper_Control_Worker();
@@ -36,6 +37,7 @@ private:
 public slots:
     //Internal
     void StepMotorMoved(int steps, bool dir);
+    void Status(int status);
     //External
     void moveStepMotor(int steps, bool dir);
 signals:
@@ -43,6 +45,7 @@ signals:
     void moveStepper(int, bool);
     //External
     void CurrentPosition(int, bool);
+    void CurrentStatus(int);
 public:
     Stepper_Control_Master(QMutex *mutex, QWaitCondition *WaitCond);
     ~Stepper_Control_Master();

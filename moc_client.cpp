@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Client_t {
-    QByteArrayData data[17];
-    char stringdata[233];
+    QByteArrayData data[22];
+    char stringdata[286];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,20 +41,26 @@ QT_MOC_LITERAL(8, 112, 28), // "QAbstractSocket::SocketError"
 QT_MOC_LITERAL(9, 141, 11), // "socketError"
 QT_MOC_LITERAL(10, 153, 13), // "sessionOpened"
 QT_MOC_LITERAL(11, 167, 7), // "getInfo"
-QT_MOC_LITERAL(12, 175, 8), // "readData"
-QT_MOC_LITERAL(13, 184, 15), // "connectToServer"
-QT_MOC_LITERAL(14, 200, 6), // "ipAddr"
-QT_MOC_LITERAL(15, 207, 4), // "port"
-QT_MOC_LITERAL(16, 212, 20) // "disconnectFromServer"
+QT_MOC_LITERAL(12, 175, 16), // "NewDataAvailable"
+QT_MOC_LITERAL(13, 192, 8), // "readData"
+QT_MOC_LITERAL(14, 201, 15), // "connectToServer"
+QT_MOC_LITERAL(15, 217, 6), // "ipAddr"
+QT_MOC_LITERAL(16, 224, 4), // "port"
+QT_MOC_LITERAL(17, 229, 20), // "disconnectFromServer"
+QT_MOC_LITERAL(18, 250, 11), // "ReadAllData"
+QT_MOC_LITERAL(19, 262, 6), // "topair"
+QT_MOC_LITERAL(20, 269, 11), // "QByteArray&"
+QT_MOC_LITERAL(21, 281, 4) // "data"
 
     },
     "Client\0gotData\0\0QPair<QString,QPair<QString,QVariant> >\0"
     "noConnection\0connectionResult\0"
     "isDisconnect\0displayError\0"
     "QAbstractSocket::SocketError\0socketError\0"
-    "sessionOpened\0getInfo\0readData\0"
-    "connectToServer\0ipAddr\0port\0"
-    "disconnectFromServer"
+    "sessionOpened\0getInfo\0NewDataAvailable\0"
+    "readData\0connectToServer\0ipAddr\0port\0"
+    "disconnectFromServer\0ReadAllData\0"
+    "topair\0QByteArray&\0data"
 };
 #undef QT_MOC_LITERAL
 
@@ -64,7 +70,7 @@ static const uint qt_meta_data_Client[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -72,18 +78,21 @@ static const uint qt_meta_data_Client[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   64,    2, 0x06 /* Public */,
-       4,    0,   67,    2, 0x06 /* Public */,
-       5,    1,   68,    2, 0x06 /* Public */,
-       6,    1,   71,    2, 0x06 /* Public */,
+       1,    1,   79,    2, 0x06 /* Public */,
+       4,    0,   82,    2, 0x06 /* Public */,
+       5,    1,   83,    2, 0x06 /* Public */,
+       6,    1,   86,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       7,    1,   74,    2, 0x0a /* Public */,
-      10,    0,   77,    2, 0x0a /* Public */,
-      11,    0,   78,    2, 0x0a /* Public */,
-      12,    0,   79,    2, 0x0a /* Public */,
-      13,    2,   80,    2, 0x0a /* Public */,
-      16,    0,   85,    2, 0x0a /* Public */,
+       7,    1,   89,    2, 0x0a /* Public */,
+      10,    0,   92,    2, 0x0a /* Public */,
+      11,    0,   93,    2, 0x0a /* Public */,
+      12,    0,   94,    2, 0x0a /* Public */,
+      13,    0,   95,    2, 0x0a /* Public */,
+      14,    2,   96,    2, 0x0a /* Public */,
+      17,    0,  101,    2, 0x0a /* Public */,
+      18,    0,  102,    2, 0x0a /* Public */,
+      19,    1,  103,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
@@ -96,8 +105,11 @@ static const uint qt_meta_data_Client[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::UInt,   14,   15,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString, QMetaType::UInt,   15,   16,
+    QMetaType::Void,
+    QMetaType::Void,
+    0x80000000 | 3, 0x80000000 | 20,   21,
 
        0        // eod
 };
@@ -114,9 +126,13 @@ void Client::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 4: _t->displayError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
         case 5: _t->sessionOpened(); break;
         case 6: _t->getInfo(); break;
-        case 7: _t->readData(); break;
-        case 8: _t->connectToServer((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< quint32(*)>(_a[2]))); break;
-        case 9: _t->disconnectFromServer(); break;
+        case 7: _t->NewDataAvailable(); break;
+        case 8: _t->readData(); break;
+        case 9: _t->connectToServer((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< quint32(*)>(_a[2]))); break;
+        case 10: _t->disconnectFromServer(); break;
+        case 11: _t->ReadAllData(); break;
+        case 12: { QPair<QString,QPair<QString,QVariant> > _r = _t->topair((*reinterpret_cast< QByteArray(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< QPair<QString,QPair<QString,QVariant> >*>(_a[0]) = _r; }  break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -185,13 +201,13 @@ int Client::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 10)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 13;
     }
     return _id;
 }

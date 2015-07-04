@@ -62,6 +62,7 @@ signals:
     //From stepper
     void currentPosition(int steps, bool dir);
     void stepperMoving(void);
+    void currentStepperStatus(int status);
     //from polarizercontrol
     void switchingSucceed(Polarizer pol);
 public:
@@ -91,6 +92,7 @@ public slots:
     //to stepper
     void updateCurrentPosition(int steps, bool dir);
     void stepperIsMoving(void);
+    void currentStepperStatus(int status);
     //to polarizer controller
     void updatePolarizers(Polarizer pol);
     //to scanner
@@ -109,6 +111,7 @@ signals:
     void scanFinished(void);
     void currentScanPosition(qreal position);
     void currentCounterData(int counts);
+    void currentStatus(int);
     void positionChanged(void);
     void stepperMoving(void);
     void TX_status(bool status);

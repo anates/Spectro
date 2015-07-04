@@ -23,11 +23,18 @@ void Stepper_Control_Worker::moveStepper(int steps, bool dir)
     usleep(50000);
     Stepper_Control_Worker::STP[0]->setValue(BlackLib::low);
     usleep(50000);
+    int stepsize = steps/100;
+    int num_of_steps = 0;
     for(int i = 0; i < steps; i++)
     {
         Stepper_Control_Worker::STP[0]->setValue(BlackLib::high);
         usleep(50000);
         Stepper_Control_Worker::STP[0]->setValue(BlackLib::low);
+        if(i%stepsize == 0)
+        {
+            emit this->currentStatus(num_of_steps);
+            num_of_steps++;
+        }
     }
     WaitCond->wakeAll();
     waitMutex->unlock();
@@ -42,6 +49,7 @@ Stepper_Control_Master::Stepper_Control_Master(QMutex *mutex, QWaitCondition *Wa
     connect(&workerThread, &QThread::finished, newWorker, &QObject::deleteLater);
     connect(this, &Stepper_Control_Master::moveStepper, newWorker, &Stepper_Control_Worker::moveStepper);
     connect(newWorker, &Stepper_Control_Worker::StepperMoved, this, &Stepper_Control_Master::StepMotorMoved);
+    connect(newWorker, &Stepper_Control_Worker::currentStatus, this, &Stepper_Control_Master::Status);
     workerThread.start();
 }
 
@@ -65,4 +73,7 @@ void Stepper_Control_Master::StepMotorMoved(int steps, bool dir)
     emit CurrentPosition(steps, dir);
 }
 
-
+void Stepper_Control_Master::Status(int status)
+{
+    emit this->CurrentStatus(status);
+}
