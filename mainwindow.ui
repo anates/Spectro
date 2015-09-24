@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
@@ -356,9 +356,123 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="manualScan">
+       <attribute name="title">
+        <string>Manual Scan</string>
+       </attribute>
+       <widget class="QWidget" name="verticalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>2</x>
+          <y>9</y>
+          <width>981</width>
+          <height>781</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Current Wavenumber</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_currWaveNum"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_18">
+             <property name="text">
+              <string>Current Wavelength</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_currWaveLength"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="label_20">
+             <property name="text">
+              <string>Startwavelength</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_StartWL"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_21">
+             <property name="text">
+              <string>Stopwavelength</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_StopWL"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_19">
+             <property name="text">
+              <string>Number of steps</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_Steps"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QPushButton" name="manual_StartMeasurement">
+             <property name="text">
+              <string>Start measurement</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QProgressBar" name="manual_ProgressBar">
+             <property name="value">
+              <number>24</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QLabel" name="label_22">
+             <property name="text">
+              <string>Current Value in mV</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_currentValue"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="manual_confirmValue">
+             <property name="text">
+              <string>Confirm</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
       <widget class="QWidget" name="scanTab">
        <attribute name="title">
-        <string>Scan settings</string>
+        <string>Movement settings</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
         <property name="fieldGrowthPolicy">
@@ -420,14 +534,14 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="currentSpeed">
+           <widget class="QLineEdit" name="currentWavelength">
             <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QLineEdit" name="newSpeed"/>
+           <widget class="QLineEdit" name="newWavelength"/>
           </item>
           <item row="2" column="2">
            <widget class="QLineEdit" name="newWaveNumber"/>
@@ -435,7 +549,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Accuracy</string>
+             <string>Wavelength</string>
             </property>
            </widget>
           </item>

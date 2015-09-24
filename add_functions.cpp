@@ -170,3 +170,5 @@ void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<double, doubl
         outdata[indata[i].first] = indata[i].second;
     }
 }
+
+

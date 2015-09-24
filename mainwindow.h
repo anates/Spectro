@@ -160,6 +160,10 @@ private slots:
 
     void on_AddMovementCommentLog_clicked();
 
+    void on_manual_StartMeasurement_clicked();
+
+    void on_manual_confirmValue_clicked();
+
 private:
 
 
@@ -184,6 +188,7 @@ private:
     //Movement Logging
     bool movementLogging = false;
     QString MovementLogFile;
+    int currentPosition_local;
     QFile *LogFile = NULL;
     QTextStream *LogStream = NULL;
     void logThis(QVariant data);
@@ -195,7 +200,9 @@ private:
     int currentScanNumber;
     Spectrometer_Control *newSpectrometer;
     bool calibrated;
-
+    //Manual movement
+    bool placed_correctly;
+    int current_step;
     //TX
     QString ipAddr;
     quint32 port;

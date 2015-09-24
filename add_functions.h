@@ -40,4 +40,34 @@ void write_log_file(const Scan &Data, QString fileName);
 void splitToDoubles(QPair<double, double> &valuePair, QString input);
 void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<double, double> &outdata);
 
+inline double convertWNtoWL(double input)
+{
+    return 10000000/input;
+}
+
+inline double convertWLtoWN(double input)
+{
+    return 10000000/input;
+}
+
+inline double convertPosToWN(double input)
+{
+    return input*0.0048;
+}
+
+inline double convertWNtoPos(double input)
+{
+    return input/0.0048;
+}
+
+inline double convertPosToWL(double input)
+{
+    return convertWNtoWL(convertPosToWN(input));
+}
+
+inline double convertWLtoPos(double input)
+{
+    return convertWNtoPos(convertWLtoWN(input));
+}
+
 #endif // ADD_FUNCTIONS_H

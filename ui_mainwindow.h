@@ -100,6 +100,28 @@ public:
     QLabel *yPosLabel;
     QCheckBox *CalibratedBox;
     QCheckBox *movingBox;
+    QWidget *manualScan;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout_2;
+    QHBoxLayout *horizontalLayout_6;
+    QLabel *label_4;
+    QLineEdit *manual_currWaveNum;
+    QLabel *label_18;
+    QLineEdit *manual_currWaveLength;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_20;
+    QLineEdit *manual_StartWL;
+    QLabel *label_21;
+    QLineEdit *manual_StopWL;
+    QLabel *label_19;
+    QLineEdit *manual_Steps;
+    QHBoxLayout *horizontalLayout_8;
+    QPushButton *manual_StartMeasurement;
+    QProgressBar *manual_ProgressBar;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_22;
+    QLineEdit *manual_currentValue;
+    QPushButton *manual_confirmValue;
     QWidget *scanTab;
     QFormLayout *formLayout;
     QGridLayout *gridLayout_7;
@@ -112,8 +134,8 @@ public:
     QPushButton *stepForwardMono;
     QLabel *label;
     QCheckBox *movingBox2;
-    QLineEdit *currentSpeed;
-    QLineEdit *newSpeed;
+    QLineEdit *currentWavelength;
+    QLineEdit *newWavelength;
     QLineEdit *newWaveNumber;
     QLabel *label_9;
     QLineEdit *currentWaveNumber;
@@ -479,6 +501,117 @@ public:
         gridLayout->addLayout(horizontalLayout_2, 1, 0, 1, 1);
 
         gridTabWidget->addTab(plotTab, QString());
+        manualScan = new QWidget();
+        manualScan->setObjectName(QStringLiteral("manualScan"));
+        verticalLayoutWidget = new QWidget(manualScan);
+        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
+        verticalLayoutWidget->setGeometry(QRect(2, 9, 981, 781));
+        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        label_4 = new QLabel(verticalLayoutWidget);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        horizontalLayout_6->addWidget(label_4);
+
+        manual_currWaveNum = new QLineEdit(verticalLayoutWidget);
+        manual_currWaveNum->setObjectName(QStringLiteral("manual_currWaveNum"));
+
+        horizontalLayout_6->addWidget(manual_currWaveNum);
+
+        label_18 = new QLabel(verticalLayoutWidget);
+        label_18->setObjectName(QStringLiteral("label_18"));
+
+        horizontalLayout_6->addWidget(label_18);
+
+        manual_currWaveLength = new QLineEdit(verticalLayoutWidget);
+        manual_currWaveLength->setObjectName(QStringLiteral("manual_currWaveLength"));
+
+        horizontalLayout_6->addWidget(manual_currWaveLength);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_6);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setSpacing(6);
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_20 = new QLabel(verticalLayoutWidget);
+        label_20->setObjectName(QStringLiteral("label_20"));
+
+        horizontalLayout_7->addWidget(label_20);
+
+        manual_StartWL = new QLineEdit(verticalLayoutWidget);
+        manual_StartWL->setObjectName(QStringLiteral("manual_StartWL"));
+
+        horizontalLayout_7->addWidget(manual_StartWL);
+
+        label_21 = new QLabel(verticalLayoutWidget);
+        label_21->setObjectName(QStringLiteral("label_21"));
+
+        horizontalLayout_7->addWidget(label_21);
+
+        manual_StopWL = new QLineEdit(verticalLayoutWidget);
+        manual_StopWL->setObjectName(QStringLiteral("manual_StopWL"));
+
+        horizontalLayout_7->addWidget(manual_StopWL);
+
+        label_19 = new QLabel(verticalLayoutWidget);
+        label_19->setObjectName(QStringLiteral("label_19"));
+
+        horizontalLayout_7->addWidget(label_19);
+
+        manual_Steps = new QLineEdit(verticalLayoutWidget);
+        manual_Steps->setObjectName(QStringLiteral("manual_Steps"));
+
+        horizontalLayout_7->addWidget(manual_Steps);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_7);
+
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setSpacing(6);
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        manual_StartMeasurement = new QPushButton(verticalLayoutWidget);
+        manual_StartMeasurement->setObjectName(QStringLiteral("manual_StartMeasurement"));
+
+        horizontalLayout_8->addWidget(manual_StartMeasurement);
+
+        manual_ProgressBar = new QProgressBar(verticalLayoutWidget);
+        manual_ProgressBar->setObjectName(QStringLiteral("manual_ProgressBar"));
+        manual_ProgressBar->setValue(24);
+
+        horizontalLayout_8->addWidget(manual_ProgressBar);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_8);
+
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setSpacing(6);
+        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        label_22 = new QLabel(verticalLayoutWidget);
+        label_22->setObjectName(QStringLiteral("label_22"));
+
+        horizontalLayout_9->addWidget(label_22);
+
+        manual_currentValue = new QLineEdit(verticalLayoutWidget);
+        manual_currentValue->setObjectName(QStringLiteral("manual_currentValue"));
+
+        horizontalLayout_9->addWidget(manual_currentValue);
+
+        manual_confirmValue = new QPushButton(verticalLayoutWidget);
+        manual_confirmValue->setObjectName(QStringLiteral("manual_confirmValue"));
+
+        horizontalLayout_9->addWidget(manual_confirmValue);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_9);
+
+        gridTabWidget->addTab(manualScan, QString());
         scanTab = new QWidget();
         scanTab->setObjectName(QStringLiteral("scanTab"));
         formLayout = new QFormLayout(scanTab);
@@ -536,16 +669,16 @@ public:
 
         gridLayout_7->addWidget(movingBox2, 4, 1, 1, 1);
 
-        currentSpeed = new QLineEdit(scanTab);
-        currentSpeed->setObjectName(QStringLiteral("currentSpeed"));
-        currentSpeed->setReadOnly(true);
+        currentWavelength = new QLineEdit(scanTab);
+        currentWavelength->setObjectName(QStringLiteral("currentWavelength"));
+        currentWavelength->setReadOnly(true);
 
-        gridLayout_7->addWidget(currentSpeed, 3, 1, 1, 1);
+        gridLayout_7->addWidget(currentWavelength, 3, 1, 1, 1);
 
-        newSpeed = new QLineEdit(scanTab);
-        newSpeed->setObjectName(QStringLiteral("newSpeed"));
+        newWavelength = new QLineEdit(scanTab);
+        newWavelength->setObjectName(QStringLiteral("newWavelength"));
 
-        gridLayout_7->addWidget(newSpeed, 3, 2, 1, 1);
+        gridLayout_7->addWidget(newWavelength, 3, 2, 1, 1);
 
         newWaveNumber = new QLineEdit(scanTab);
         newWaveNumber->setObjectName(QStringLiteral("newWaveNumber"));
@@ -794,7 +927,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(1);
+        gridTabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -839,13 +972,22 @@ public:
         CalibratedBox->setText(QApplication::translate("MainWindow", "Calibrated?", 0));
         movingBox->setText(QApplication::translate("MainWindow", "Moving?", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(plotTab), QApplication::translate("MainWindow", "Plot", 0));
+        label_4->setText(QApplication::translate("MainWindow", "Current Wavenumber", 0));
+        label_18->setText(QApplication::translate("MainWindow", "Current Wavelength", 0));
+        label_20->setText(QApplication::translate("MainWindow", "Startwavelength", 0));
+        label_21->setText(QApplication::translate("MainWindow", "Stopwavelength", 0));
+        label_19->setText(QApplication::translate("MainWindow", "Number of steps", 0));
+        manual_StartMeasurement->setText(QApplication::translate("MainWindow", "Start measurement", 0));
+        label_22->setText(QApplication::translate("MainWindow", "Current Value in mV", 0));
+        manual_confirmValue->setText(QApplication::translate("MainWindow", "Confirm", 0));
+        gridTabWidget->setTabText(gridTabWidget->indexOf(manualScan), QApplication::translate("MainWindow", "Manual Scan", 0));
         mvButton_2->setText(QApplication::translate("MainWindow", "Move", 0));
         centerMono->setText(QApplication::translate("MainWindow", "Center", 0));
         stepBackMono->setText(QApplication::translate("MainWindow", "Back", 0));
         stepForwardMono->setText(QApplication::translate("MainWindow", "Forward", 0));
         label->setText(QApplication::translate("MainWindow", "Moving?", 0));
         movingBox2->setText(QString());
-        label_9->setText(QApplication::translate("MainWindow", "Accuracy", 0));
+        label_9->setText(QApplication::translate("MainWindow", "Wavelength", 0));
         label_13->setText(QApplication::translate("MainWindow", "Position", 0));
         execButton_2->setText(QApplication::translate("MainWindow", "Execute", 0));
         label_11->setText(QApplication::translate("MainWindow", "Wave number [cm-1]", 0));
@@ -856,7 +998,7 @@ public:
         label_3->setText(QApplication::translate("MainWindow", "Comment", 0));
         AddMovementCommentLog->setText(QApplication::translate("MainWindow", "Add Comment", 0));
         LoggingBox->setText(QApplication::translate("MainWindow", "Logging", 0));
-        gridTabWidget->setTabText(gridTabWidget->indexOf(scanTab), QApplication::translate("MainWindow", "Scan settings", 0));
+        gridTabWidget->setTabText(gridTabWidget->indexOf(scanTab), QApplication::translate("MainWindow", "Movement settings", 0));
 #ifndef QT_NO_ACCESSIBILITY
         logTab->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
