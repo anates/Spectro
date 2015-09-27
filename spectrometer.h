@@ -77,6 +77,7 @@ class Spectrometer_Control:public QObject
     QThread workerThread;
 private:
     int MonoPos = 0;
+    bool moving;
     QString ipAddr;
     quint32 port;
     QVector<bool> polarizerSetting;
@@ -92,6 +93,7 @@ public slots:
     //to stepper
     void updateCurrentPosition(int steps, bool dir);
     void stepperIsMoving(void);
+    void stepperStopped(void);
     void currentStepperStatus(int status);
     //to polarizer controller
     void updatePolarizers(Polarizer pol);
@@ -109,6 +111,7 @@ signals:
     //External
     void currentData(QPair<int, int> data);
     void scanFinished(void);
+    void stepperIsStopped(void);
     void currentScanPosition(qreal position);
     void currentCounterData(int counts);
     void currentStatus(int);
@@ -121,6 +124,7 @@ public:
 
     void setMonoPos(int pos);
     int getMonoPos(void);
+    bool isMoving(void);
     void setPolarizers(Polarizer pol, bool state);
     void setPolarizers(QVector<bool> polarizers);
     bool getPolarizerState(Polarizer pol);

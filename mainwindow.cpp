@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::placed_correctly = false;
     ui->CalibratedBox->setDisabled(true);
     MainWindow::loadConfig();
-
+    this->manualScan = false;
+    ui->manual_confirmValue->setEnabled(false);
     //Setup of TX data in UI
     ui->ipAddress->setInputMask("000.000.000.000");
 
@@ -95,9 +96,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpectrometer, &Spectrometer_Control::currentStatus, this, &MainWindow::newStepperStatus);
     //connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::positionChanged, this, &MainWindow::PositionChanged);
+    connect(newSpectrometer, &Spectrometer_Control::stepperIsStopped, this, &MainWindow::stepperStopped);
     connect(newSpectrometer, &Spectrometer_Control::stepperMoving, this, &MainWindow::StepperMoving);
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
-
+    ui->manual_confirmValue->setEnabled(false);
     //Thread work
     //set current state:
     changeState(EditState);
@@ -763,7 +765,18 @@ void MainWindow::calibrateScan(ScanData &newScan)
 
 void MainWindow::scanIsFinished(void)
 {
-    ui->movingBox2->setChecked(false);
+
+//    if(this->manualScan == false)
+//    {
+
+//    }
+//    else
+//    {
+//        if(this->current_step == 0)
+//            this->createLogFile();
+//        else
+//            this->startManualMeasurement();
+//    }
     if(calibrated)
     {
         calibrateScan(MainWindow::tmpScan.values);
@@ -1082,10 +1095,11 @@ void MainWindow::on_execButton_2_clicked()
         //newSpectrometer->moveStepper(fabs(convertWNtoPos(ui->newWaveNumber->text().toDouble()) - newSpectrometer->getMonoPos()), convertWNtoPos(ui->newWaveNumber->text().toDouble()) >= newSpectrometer->getMonoPos());
         double targetWN = ui->newWaveNumber->text().toDouble();
         qDebug() << "New WN-value is: " << targetWN;
-        this->currentPosition_local = convertWNtoPos(targetWN);
-        qDebug() << "Current new position is: " << this->currentPosition_local;
-        newSpectrometer->moveStepper(fabs(convertWNtoPos(targetWN) - this->currentPosition_local), convertWNtoPos(targetWN) >= this->currentPosition_local);
-        this->currentPosition_local = convertWNtoPos(targetWN);
+        double new_position = convertWNtoPos(targetWN);
+        qDebug() << "Current new position is: " << new_position;
+        qDebug() << "Position difference is: " << new_position - this->currentPosition_local;
+        newSpectrometer->moveStepper(fabs(new_position - this->currentPosition_local), new_position >= this->currentPosition_local);
+        this->currentPosition_local = new_position;
         reload_data();
 
         return;
@@ -1112,19 +1126,21 @@ void MainWindow::StepperMoving(void)
     //qDebug() << "Stepper moving!";
     ui->movingBox2->setChecked(true);
     ui->movingBox->setChecked(true);
+    ui->manual_confirmValue->setEnabled(false);
     reload_data();
 }
 
 void MainWindow::PositionChanged()
 {
-    ui->movingBox2->setChecked(false);
-    ui->movingBox->setChecked(false);
+    this->stepperStopped();
     reload_data();
     //qDebug() << "STP finished!";
 }
 
 void MainWindow::on_gridTabWidget_currentChanged(int index)
 {
+    int i = index;
+    i++;
     reload_data();
 }
 
@@ -1356,8 +1372,8 @@ void MainWindow::on_AddMovementCommentLog_clicked()
 
 void MainWindow::on_manual_StartMeasurement_clicked()
 {
-    this->reload_data();
     ui->manual_ProgressBar->setValue(0);
+
     if(ui->manual_StartWL->text().isEmpty() || ui->manual_StopWL->text().isEmpty() || ui->manual_Steps->text().isEmpty())
     {
         QMessageBox::information(this, tr("Error"), QString("Not all neccessary information entered, please try again!"));
@@ -1376,116 +1392,111 @@ void MainWindow::on_manual_StartMeasurement_clicked()
         ui->manual_Steps->setText(QString(""));
         return;
     }
+    ui->manual_StartWL->setReadOnly(true);
+    ui->manual_StopWL->setReadOnly(true);
+    ui->manual_Steps->setReadOnly(true);
     //double currentPosition = newSpectrometer->getMonoPos();
     double currentPosition = this->currentPosition_local;
     double startWL = ui->manual_StartWL->text().toDouble();
-    double stopWL = ui->manual_StopWL->text().toDouble();
-    int steps = ui->manual_Steps->text().toInt();
-    int stepsToMove = 0;
-    double currentWN = convertPosToWN(currentPosition);
-    double currentWL = convertWNtoWL(currentWN);
-    double WLdifference = startWL - currentWL;
-    stepsToMove = convertWLtoPos(WLdifference);
-    if(currentWL < startWL)
+    double newPosition = convertWLtoPos(startWL);
+    this->manualScan = true;
+    newSpectrometer->moveStepper(fabs(currentPosition - newPosition), (currentPosition < newPosition));
+    this->createLogFile();
+    this->currentPosition_local = newPosition;
+    ui->manual_confirmValue->setEnabled(true);
+}
+
+void MainWindow::createLogFile()
+{
+    this->placed_correctly = true;
+    QMessageBox::information(this, tr("Information"), QString("Spectrometer is adjusted, please continue with the other button!"));
+    QMessageBox msgBox;
+    //msgBox.setText("Information.");
+    msgBox.setInformativeText("Do you want add a config file?");
+    QPushButton *yes = msgBox.addButton(tr("&Yes"), QMessageBox::ActionRole);
+    QPushButton *no = msgBox.addButton(tr("&No"), QMessageBox::ActionRole);
+    msgBox.exec();
+    ui->manual_StartMeasurement->setEnabled(false);
+    if(msgBox.clickedButton() == yes)
     {
-        newSpectrometer->moveStepper(stepsToMove, false);
-        this->currentPosition_local -= stepsToMove;
-        //Here we have to wait for stepper is finished, but that is still unreliable. Therefore return to main, and tell user the problem
-        QMessageBox::information(this, tr("Information"), QString("Please wait until the spectrometer stopped moving, and try again afterwards"));
-        return;
-    }
-    else if(currentWL > startWL)
-    {
-        newSpectrometer->moveStepper(stepsToMove, true);
-        this->currentPosition_local += stepsToMove;
-        QMessageBox::information(this, tr("Information"), QString("Please wait until the spectrometer stopped moving, and try again afterwards"));
-        return;
-    }
-    else if(currentWL == startWL)
-    {
-        this->placed_correctly = true;
-        QMessageBox::information(this, tr("Information"), QString("Spectrometer is adjusted, please continue with the other button!"));
-        QMessageBox msgBox;
-        //msgBox.setText("Information.");
-        msgBox.setInformativeText("Do you want add a config file?");
-        QPushButton *yes = msgBox.addButton(tr("&Yes"), QMessageBox::ActionRole);
-        QPushButton *no = msgBox.addButton(tr("&No"), QMessageBox::ActionRole);
-        msgBox.exec();
-        if(msgBox.clickedButton() == yes)
+        QDialog logData;
+        QFormLayout logDataLayout(&logData);
+        QLabel *labelName = new QLabel;
+        QLabel *labelPower = new QLabel;
+        QLabel *labelSlit = new QLabel;
+        QLabel *labelSens = new QLabel;
+        QLabel *labelCount = new QLabel;
+        QLineEdit *lineName = new QLineEdit;
+        QLineEdit *linePower = new QLineEdit;
+        QLineEdit *lineSlit = new QLineEdit;
+        QLineEdit *lineSens = new QLineEdit;
+        QLineEdit *lineCount = new QLineEdit;
+        labelName->setText("Logfile Name:");
+        labelPower->setText("Power [mW]");
+        labelSlit->setText("Slitwidth [mm]:");
+        labelSens->setText("Sensitivity [counts/sec]:");
+        labelCount->setText("Counts:");
+        logDataLayout.addRow(labelName, lineName);
+        logDataLayout.addRow(labelPower, linePower);
+        logDataLayout.addRow(labelSlit, lineSlit);
+        logDataLayout.addRow(labelSens, lineSens);
+        logDataLayout.addRow(labelCount, lineCount);
+        QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &logData);
+        logDataLayout.addRow(&buttonBox);
+        QObject::connect(&buttonBox, SIGNAL(accepted()), &logData, SLOT(accept()));
+        QObject::connect(&buttonBox, SIGNAL(rejected()), &logData, SLOT(reject()));
+        if(logData.exec() == QDialog::Accepted)
         {
-            QDialog logData;
-            QFormLayout logDataLayout(&logData);
-            QLabel *labelName = new QLabel;
-            QLabel *labelPower = new QLabel;
-            QLabel *labelSlit = new QLabel;
-            QLabel *labelSens = new QLabel;
-            QLabel *labelCount = new QLabel;
-            QLineEdit *lineName = new QLineEdit;
-            QLineEdit *linePower = new QLineEdit;
-            QLineEdit *lineSlit = new QLineEdit;
-            QLineEdit *lineSens = new QLineEdit;
-            QLineEdit *lineCount = new QLineEdit;
-            labelName->setText("Logfile Name:");
-            labelPower->setText("Power [mW]");
-            labelSlit->setText("Slitwidth [mm]:");
-            labelSens->setText("Sensitivity [counts/sec]:");
-            labelCount->setText("Counts:");
-            logDataLayout.addRow(labelName, lineName);
-            logDataLayout.addRow(labelPower, linePower);
-            logDataLayout.addRow(labelSlit, lineSlit);
-            logDataLayout.addRow(labelSens, lineSens);
-            logDataLayout.addRow(labelCount, lineCount);
-            QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &logData);
-            logDataLayout.addRow(&buttonBox);
-            QObject::connect(&buttonBox, SIGNAL(accepted()), &logData, SLOT(accept()));
-            QObject::connect(&buttonBox, SIGNAL(rejected()), &logData, SLOT(reject()));
-            if(logData.exec() == QDialog::Accepted)
-            {
-                tmpScan.log.name = lineName->text();
-                tmpScan.log.laserIntensity = linePower->text().toDouble();
-                tmpScan.log.sensitivity = lineSens->text().toDouble();
-                tmpScan.log.countNumber = lineCount->text().toDouble();
-                tmpScan.log.slitWidth = lineSlit->text().toDouble();
-                tmpScan.log.logfileSet = true;
-            }
-            else
-            {
-                tmpScan.log.logfileSet = false;
-            }
+            tmpScan.log.name = lineName->text();
+            tmpScan.log.laserIntensity = linePower->text().toDouble();
+            tmpScan.log.sensitivity = lineSens->text().toDouble();
+            tmpScan.log.countNumber = lineCount->text().toDouble();
+            tmpScan.log.slitWidth = lineSlit->text().toDouble();
+            tmpScan.log.logfileSet = true;
         }
-        tmpScan.Params.finPos = ui->manual_StopWL->text().toDouble();
-        tmpScan.Params.startPos = ui->manual_StartWL->text().toDouble();
-        tmpScan.scanName = QString("Manual Scan");
-        tmpScan.isCalibrated = this->calibrated;
-        yes = NULL;
-        no = NULL;
-        ui->manual_StartWL->setReadOnly(true);
-        ui->manual_StopWL->setReadOnly(true);
-        ui->manual_Steps->setReadOnly(true);
-        this->current_step = 0;
-        return;
+        else
+        {
+            tmpScan.log.logfileSet = false;
+        }
     }
+    tmpScan.Params.finPos = ui->manual_StopWL->text().toDouble();
+    tmpScan.Params.startPos = ui->manual_StartWL->text().toDouble();
+    tmpScan.scanName = QString("Manual Scan");
+    tmpScan.isCalibrated = this->calibrated;
+    yes = NULL;
+    no = NULL;
+    ui->manual_StartWL->setReadOnly(true);
+    ui->manual_StopWL->setReadOnly(true);
+    ui->manual_Steps->setReadOnly(true);
+    this->current_step = 0;
 }
 
 void MainWindow::on_manual_confirmValue_clicked()
 {
+    qDebug() << "########################";
+    qDebug() << "Clicking now on button!";
+    qDebug() << "########################";
     this->reload_data();
     if(this->placed_correctly == false)
     {
         QMessageBox::information(this, tr("Error"), QString("Please use the ""Start measurement""-button before using this button."));
         return;
     }
-
     double current_Value = ui->manual_currentValue->text().toDouble();
-    tmpScan.values.Data.push_back(qMakePair(convertWNtoPos(ui->manual_currWaveNum->text().toDouble()), current_Value));
+    ui->manual_currentValue->setText("");
+    tmpScan.values.Data.push_back(qMakePair(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), current_Value));
     double stepSize = 0;
     double WL_difference = ui->manual_StopWL->text().toDouble() - ui->manual_StartWL->text().toDouble();
-    stepSize = WL_difference/ui->manual_Steps->text().toDouble();
+    double WL_stepSize = WL_difference/ui->manual_Steps->text().toDouble();
     ui->manual_ProgressBar->setValue((int)((double)(this->current_step)/ui->manual_Steps->text().toDouble()*100));
     if(current_step == ui->manual_Steps->text().toInt())
     {
         QMessageBox::information(this, tr("Information"), QString("Scan finished, returning!"));
         ui->manual_StartWL->setReadOnly(false);
+        ui->manual_StartMeasurement->setEnabled(true);
+        this->placed_correctly = false;
+        this->current_step = 0;
+        this->manualScan = false;
         ui->manual_StartWL->setText(QString(""));
         ui->manual_StopWL->setText(QString(""));
         ui->manual_StopWL->setReadOnly(false);
@@ -1496,15 +1507,28 @@ void MainWindow::on_manual_confirmValue_clicked()
         ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
         this->reload_data();
         this->replot();
+        ui->manual_confirmValue->setEnabled(false);
         return;
     }
     else
     {
-        double next_step_size = ui->manual_StartWL->text().toDouble() + this->current_step*stepSize;
+        double next_step_size = convertWLtoPos(convertPosToWL(this->currentPosition_local) + WL_stepSize) - this->currentPosition_local;
+        qDebug() << "Current step is: " << this->current_step;
+        qDebug() << "Current step size is: " << next_step_size;
         this->current_step += 1;
-        newSpectrometer->moveStepper(convertWLtoPos(next_step_size), false);
-        this->currentPosition_local -= convertWLtoPos(next_step_size);
-        QMessageBox::information(this, tr("Information"), QString("Please note the value in mV when the spectrometer is stopped, and then press this button again. Thanks!"));
+        newSpectrometer->moveStepper(next_step_size, true);
+        this->currentPosition_local += next_step_size;
         return;
     }
+}
+
+void MainWindow::stepperStopped()
+{
+    ui->movingBox2->setChecked(false);
+    ui->movingBox->setChecked(false);
+    ui->manual_confirmValue->setEnabled(true);
+    qDebug() << "########################";
+    qDebug() << "From main: Moving stopped!";
+    qDebug() << "########################";
+    return;
 }

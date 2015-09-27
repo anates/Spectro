@@ -927,7 +927,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(2);
+        gridTabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

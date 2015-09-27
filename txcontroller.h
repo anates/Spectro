@@ -13,12 +13,12 @@ private:
     quint32 port;
     int MonoPos = 0;
     QVector<bool> polarizerSetting;
-    TX_master *mainClient, *fileClient;
+    TX_master *mainClient, *MovementClient;
     Server *MainServer;
 signals:
     //to mainClient
     void connectMain(void);
-    //to fileClient
+    //to MovementClient
     void connectFile(void);
     //to MainServer
     void TXdata(QPair<QString, QPair<QString, QVariant> > data);
@@ -26,12 +26,14 @@ signals:
     void Data(QPair<int, int> data);
     void DPCCounts(int counts);
     void scanFinish(void);
+
     void ScanPos(qreal position);
     void MainClientStat(bool);
     void DataClientStat(bool);
     //From stepper
     void currentPosition(int steps, bool dir);
     void stepperMoving(void);
+    void movementFinish(void);
     void currentStepperStatus(int status);
     //from polarizercontrol
     void switchingSucceed(Polarizer pol);
@@ -42,7 +44,7 @@ public slots:
     //from mainClient
     void gotDataMain(QPair<QString, QPair<QString, QVariant> > data);
     void ClientStatus(bool status);
-    //from fileClient
+    //from MovementClient
     void gotDataFile(QPair<QString, QPair<QString, QVariant> > data);
     void DataClientStatus(bool status);
     //from MainServer

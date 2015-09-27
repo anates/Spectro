@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[85];
-    char stringdata[1406];
+    QByteArrayData data[86];
+    char stringdata[1421];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -92,28 +92,29 @@ QT_MOC_LITERAL(59, 807, 36), // "on_selectScanBox_currentIndex..."
 QT_MOC_LITERAL(60, 844, 5), // "index"
 QT_MOC_LITERAL(61, 850, 19), // "on_saveScan_clicked"
 QT_MOC_LITERAL(62, 870, 11), // "reload_data"
-QT_MOC_LITERAL(63, 882, 23), // "on_stepBackMono_clicked"
-QT_MOC_LITERAL(64, 906, 26), // "on_stepForwardMono_clicked"
-QT_MOC_LITERAL(65, 933, 21), // "on_mvButton_2_clicked"
-QT_MOC_LITERAL(66, 955, 20), // "on_logButton_clicked"
-QT_MOC_LITERAL(67, 976, 13), // "createLogData"
-QT_MOC_LITERAL(68, 990, 10), // "loadConfig"
-QT_MOC_LITERAL(69, 1001, 11), // "writeConfig"
-QT_MOC_LITERAL(70, 1013, 23), // "on_execButton_2_clicked"
-QT_MOC_LITERAL(71, 1037, 31), // "on_gridTabWidget_currentChanged"
-QT_MOC_LITERAL(72, 1069, 18), // "on_newScan_clicked"
-QT_MOC_LITERAL(73, 1088, 19), // "on_stopScan_clicked"
-QT_MOC_LITERAL(74, 1108, 29), // "on_saveSettingsButton_clicked"
-QT_MOC_LITERAL(75, 1138, 29), // "on_loadSettingsButton_clicked"
-QT_MOC_LITERAL(76, 1168, 21), // "on_centerMono_clicked"
-QT_MOC_LITERAL(77, 1190, 18), // "on_connect_clicked"
-QT_MOC_LITERAL(78, 1209, 22), // "on_CalibButton_clicked"
-QT_MOC_LITERAL(79, 1232, 24), // "on_CalibFinished_clicked"
-QT_MOC_LITERAL(80, 1257, 23), // "on_CalibConfirm_clicked"
-QT_MOC_LITERAL(81, 1281, 25), // "on_AddMovementLog_clicked"
-QT_MOC_LITERAL(82, 1307, 32), // "on_AddMovementCommentLog_clicked"
-QT_MOC_LITERAL(83, 1340, 34), // "on_manual_StartMeasurement_cl..."
-QT_MOC_LITERAL(84, 1375, 30) // "on_manual_confirmValue_clicked"
+QT_MOC_LITERAL(63, 882, 14), // "stepperStopped"
+QT_MOC_LITERAL(64, 897, 23), // "on_stepBackMono_clicked"
+QT_MOC_LITERAL(65, 921, 26), // "on_stepForwardMono_clicked"
+QT_MOC_LITERAL(66, 948, 21), // "on_mvButton_2_clicked"
+QT_MOC_LITERAL(67, 970, 20), // "on_logButton_clicked"
+QT_MOC_LITERAL(68, 991, 13), // "createLogData"
+QT_MOC_LITERAL(69, 1005, 10), // "loadConfig"
+QT_MOC_LITERAL(70, 1016, 11), // "writeConfig"
+QT_MOC_LITERAL(71, 1028, 23), // "on_execButton_2_clicked"
+QT_MOC_LITERAL(72, 1052, 31), // "on_gridTabWidget_currentChanged"
+QT_MOC_LITERAL(73, 1084, 18), // "on_newScan_clicked"
+QT_MOC_LITERAL(74, 1103, 19), // "on_stopScan_clicked"
+QT_MOC_LITERAL(75, 1123, 29), // "on_saveSettingsButton_clicked"
+QT_MOC_LITERAL(76, 1153, 29), // "on_loadSettingsButton_clicked"
+QT_MOC_LITERAL(77, 1183, 21), // "on_centerMono_clicked"
+QT_MOC_LITERAL(78, 1205, 18), // "on_connect_clicked"
+QT_MOC_LITERAL(79, 1224, 22), // "on_CalibButton_clicked"
+QT_MOC_LITERAL(80, 1247, 24), // "on_CalibFinished_clicked"
+QT_MOC_LITERAL(81, 1272, 23), // "on_CalibConfirm_clicked"
+QT_MOC_LITERAL(82, 1296, 25), // "on_AddMovementLog_clicked"
+QT_MOC_LITERAL(83, 1322, 32), // "on_AddMovementCommentLog_clicked"
+QT_MOC_LITERAL(84, 1355, 34), // "on_manual_StartMeasurement_cl..."
+QT_MOC_LITERAL(85, 1390, 30) // "on_manual_confirmValue_clicked"
 
     },
     "MainWindow\0xPolarizerMoved\0\0Polarizer\0"
@@ -141,7 +142,7 @@ QT_MOC_LITERAL(84, 1375, 30) // "on_manual_confirmValue_clicked"
     "on_LastScan_clicked\0on_NextScan_clicked\0"
     "on_selectScanBox_currentIndexChanged\0"
     "index\0on_saveScan_clicked\0reload_data\0"
-    "on_stepBackMono_clicked\0"
+    "stepperStopped\0on_stepBackMono_clicked\0"
     "on_stepForwardMono_clicked\0"
     "on_mvButton_2_clicked\0on_logButton_clicked\0"
     "createLogData\0loadConfig\0writeConfig\0"
@@ -166,7 +167,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      67,   14, // methods
+      68,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -174,75 +175,76 @@ static const uint qt_meta_data_MainWindow[] = {
       12,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,  349,    2, 0x06 /* Public */,
-       4,    2,  354,    2, 0x06 /* Public */,
-       5,    2,  359,    2, 0x06 /* Public */,
-       6,    2,  364,    2, 0x06 /* Public */,
-       7,    2,  369,    2, 0x06 /* Public */,
-       8,    2,  374,    2, 0x06 /* Public */,
-       9,    0,  379,    2, 0x06 /* Public */,
-      10,    0,  380,    2, 0x06 /* Public */,
-      11,    0,  381,    2, 0x06 /* Public */,
-      12,    0,  382,    2, 0x06 /* Public */,
-      13,    0,  383,    2, 0x06 /* Public */,
-      14,    5,  384,    2, 0x06 /* Public */,
+       1,    2,  354,    2, 0x06 /* Public */,
+       4,    2,  359,    2, 0x06 /* Public */,
+       5,    2,  364,    2, 0x06 /* Public */,
+       6,    2,  369,    2, 0x06 /* Public */,
+       7,    2,  374,    2, 0x06 /* Public */,
+       8,    2,  379,    2, 0x06 /* Public */,
+       9,    0,  384,    2, 0x06 /* Public */,
+      10,    0,  385,    2, 0x06 /* Public */,
+      11,    0,  386,    2, 0x06 /* Public */,
+      12,    0,  387,    2, 0x06 /* Public */,
+      13,    0,  388,    2, 0x06 /* Public */,
+      14,    5,  389,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      15,    0,  395,    2, 0x0a /* Public */,
-      16,    1,  396,    2, 0x0a /* Public */,
-      18,    0,  399,    2, 0x0a /* Public */,
-      19,    2,  400,    2, 0x0a /* Public */,
-      21,    0,  405,    2, 0x0a /* Public */,
-      22,    1,  406,    2, 0x0a /* Public */,
-      24,    1,  409,    2, 0x0a /* Public */,
-      27,    0,  412,    2, 0x0a /* Public */,
-      28,    0,  413,    2, 0x0a /* Public */,
-      29,    0,  414,    2, 0x0a /* Public */,
-      30,    1,  415,    2, 0x0a /* Public */,
-      31,    1,  418,    2, 0x0a /* Public */,
-      33,    1,  421,    2, 0x0a /* Public */,
-      34,    1,  424,    2, 0x0a /* Public */,
-      37,    0,  427,    2, 0x0a /* Public */,
-      38,    1,  428,    2, 0x0a /* Public */,
-      41,    3,  431,    2, 0x0a /* Public */,
-      45,    3,  438,    2, 0x0a /* Public */,
-      46,    0,  445,    2, 0x08 /* Private */,
-      47,    0,  446,    2, 0x08 /* Private */,
-      48,    0,  447,    2, 0x08 /* Private */,
-      49,    0,  448,    2, 0x08 /* Private */,
-      50,    0,  449,    2, 0x08 /* Private */,
-      51,    0,  450,    2, 0x08 /* Private */,
-      52,    1,  451,    2, 0x08 /* Private */,
-      54,    1,  454,    2, 0x08 /* Private */,
-      55,    1,  457,    2, 0x08 /* Private */,
-      56,    0,  460,    2, 0x08 /* Private */,
-      57,    0,  461,    2, 0x08 /* Private */,
-      58,    0,  462,    2, 0x08 /* Private */,
-      59,    1,  463,    2, 0x08 /* Private */,
-      61,    0,  466,    2, 0x08 /* Private */,
-      62,    0,  467,    2, 0x08 /* Private */,
-      63,    0,  468,    2, 0x08 /* Private */,
-      64,    0,  469,    2, 0x08 /* Private */,
-      65,    0,  470,    2, 0x08 /* Private */,
-      66,    0,  471,    2, 0x08 /* Private */,
-      67,    0,  472,    2, 0x08 /* Private */,
-      68,    0,  473,    2, 0x08 /* Private */,
-      69,    0,  474,    2, 0x08 /* Private */,
-      70,    0,  475,    2, 0x08 /* Private */,
-      71,    1,  476,    2, 0x08 /* Private */,
-      72,    0,  479,    2, 0x08 /* Private */,
-      73,    0,  480,    2, 0x08 /* Private */,
-      74,    0,  481,    2, 0x08 /* Private */,
-      75,    0,  482,    2, 0x08 /* Private */,
-      76,    0,  483,    2, 0x08 /* Private */,
-      77,    0,  484,    2, 0x08 /* Private */,
-      78,    0,  485,    2, 0x08 /* Private */,
-      79,    0,  486,    2, 0x08 /* Private */,
-      80,    0,  487,    2, 0x08 /* Private */,
-      81,    0,  488,    2, 0x08 /* Private */,
-      82,    0,  489,    2, 0x08 /* Private */,
-      83,    0,  490,    2, 0x08 /* Private */,
-      84,    0,  491,    2, 0x08 /* Private */,
+      15,    0,  400,    2, 0x0a /* Public */,
+      16,    1,  401,    2, 0x0a /* Public */,
+      18,    0,  404,    2, 0x0a /* Public */,
+      19,    2,  405,    2, 0x0a /* Public */,
+      21,    0,  410,    2, 0x0a /* Public */,
+      22,    1,  411,    2, 0x0a /* Public */,
+      24,    1,  414,    2, 0x0a /* Public */,
+      27,    0,  417,    2, 0x0a /* Public */,
+      28,    0,  418,    2, 0x0a /* Public */,
+      29,    0,  419,    2, 0x0a /* Public */,
+      30,    1,  420,    2, 0x0a /* Public */,
+      31,    1,  423,    2, 0x0a /* Public */,
+      33,    1,  426,    2, 0x0a /* Public */,
+      34,    1,  429,    2, 0x0a /* Public */,
+      37,    0,  432,    2, 0x0a /* Public */,
+      38,    1,  433,    2, 0x0a /* Public */,
+      41,    3,  436,    2, 0x0a /* Public */,
+      45,    3,  443,    2, 0x0a /* Public */,
+      46,    0,  450,    2, 0x08 /* Private */,
+      47,    0,  451,    2, 0x08 /* Private */,
+      48,    0,  452,    2, 0x08 /* Private */,
+      49,    0,  453,    2, 0x08 /* Private */,
+      50,    0,  454,    2, 0x08 /* Private */,
+      51,    0,  455,    2, 0x08 /* Private */,
+      52,    1,  456,    2, 0x08 /* Private */,
+      54,    1,  459,    2, 0x08 /* Private */,
+      55,    1,  462,    2, 0x08 /* Private */,
+      56,    0,  465,    2, 0x08 /* Private */,
+      57,    0,  466,    2, 0x08 /* Private */,
+      58,    0,  467,    2, 0x08 /* Private */,
+      59,    1,  468,    2, 0x08 /* Private */,
+      61,    0,  471,    2, 0x08 /* Private */,
+      62,    0,  472,    2, 0x08 /* Private */,
+      63,    0,  473,    2, 0x08 /* Private */,
+      64,    0,  474,    2, 0x08 /* Private */,
+      65,    0,  475,    2, 0x08 /* Private */,
+      66,    0,  476,    2, 0x08 /* Private */,
+      67,    0,  477,    2, 0x08 /* Private */,
+      68,    0,  478,    2, 0x08 /* Private */,
+      69,    0,  479,    2, 0x08 /* Private */,
+      70,    0,  480,    2, 0x08 /* Private */,
+      71,    0,  481,    2, 0x08 /* Private */,
+      72,    1,  482,    2, 0x08 /* Private */,
+      73,    0,  485,    2, 0x08 /* Private */,
+      74,    0,  486,    2, 0x08 /* Private */,
+      75,    0,  487,    2, 0x08 /* Private */,
+      76,    0,  488,    2, 0x08 /* Private */,
+      77,    0,  489,    2, 0x08 /* Private */,
+      78,    0,  490,    2, 0x08 /* Private */,
+      79,    0,  491,    2, 0x08 /* Private */,
+      80,    0,  492,    2, 0x08 /* Private */,
+      81,    0,  493,    2, 0x08 /* Private */,
+      82,    0,  494,    2, 0x08 /* Private */,
+      83,    0,  495,    2, 0x08 /* Private */,
+      84,    0,  496,    2, 0x08 /* Private */,
+      85,    0,  497,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3, QMetaType::Bool,    2,    2,
@@ -290,6 +292,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   60,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -371,28 +374,29 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 42: _t->on_selectScanBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 43: _t->on_saveScan_clicked(); break;
         case 44: _t->reload_data(); break;
-        case 45: _t->on_stepBackMono_clicked(); break;
-        case 46: _t->on_stepForwardMono_clicked(); break;
-        case 47: _t->on_mvButton_2_clicked(); break;
-        case 48: _t->on_logButton_clicked(); break;
-        case 49: _t->createLogData(); break;
-        case 50: _t->loadConfig(); break;
-        case 51: _t->writeConfig(); break;
-        case 52: _t->on_execButton_2_clicked(); break;
-        case 53: _t->on_gridTabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 54: _t->on_newScan_clicked(); break;
-        case 55: _t->on_stopScan_clicked(); break;
-        case 56: _t->on_saveSettingsButton_clicked(); break;
-        case 57: _t->on_loadSettingsButton_clicked(); break;
-        case 58: _t->on_centerMono_clicked(); break;
-        case 59: _t->on_connect_clicked(); break;
-        case 60: _t->on_CalibButton_clicked(); break;
-        case 61: _t->on_CalibFinished_clicked(); break;
-        case 62: _t->on_CalibConfirm_clicked(); break;
-        case 63: _t->on_AddMovementLog_clicked(); break;
-        case 64: _t->on_AddMovementCommentLog_clicked(); break;
-        case 65: _t->on_manual_StartMeasurement_clicked(); break;
-        case 66: _t->on_manual_confirmValue_clicked(); break;
+        case 45: _t->stepperStopped(); break;
+        case 46: _t->on_stepBackMono_clicked(); break;
+        case 47: _t->on_stepForwardMono_clicked(); break;
+        case 48: _t->on_mvButton_2_clicked(); break;
+        case 49: _t->on_logButton_clicked(); break;
+        case 50: _t->createLogData(); break;
+        case 51: _t->loadConfig(); break;
+        case 52: _t->writeConfig(); break;
+        case 53: _t->on_execButton_2_clicked(); break;
+        case 54: _t->on_gridTabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 55: _t->on_newScan_clicked(); break;
+        case 56: _t->on_stopScan_clicked(); break;
+        case 57: _t->on_saveSettingsButton_clicked(); break;
+        case 58: _t->on_loadSettingsButton_clicked(); break;
+        case 59: _t->on_centerMono_clicked(); break;
+        case 60: _t->on_connect_clicked(); break;
+        case 61: _t->on_CalibButton_clicked(); break;
+        case 62: _t->on_CalibFinished_clicked(); break;
+        case 63: _t->on_CalibConfirm_clicked(); break;
+        case 64: _t->on_AddMovementLog_clicked(); break;
+        case 65: _t->on_AddMovementCommentLog_clicked(); break;
+        case 66: _t->on_manual_StartMeasurement_clicked(); break;
+        case 67: _t->on_manual_confirmValue_clicked(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -523,13 +527,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 67)
+        if (_id < 68)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 67;
+        _id -= 68;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 67)
+        if (_id < 68)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 67;
+        _id -= 68;
     }
     return _id;
 }

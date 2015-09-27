@@ -7,16 +7,16 @@ TXcontroller::TXcontroller(QString ipAddr, quint32 port, int MonoPos)
     this->targetIP = ipAddr;
     MainServer = new Server(ipAddr, port + 1, "MAIN");
     mainClient = new TX_master(ipAddr, port, "MAIN");
-    fileClient = new TX_master(ipAddr, port + 2, "FILE");
+    MovementClient = new TX_master(ipAddr, port + 2, "FILE");
 
     //connect(this, &TXcontroller::TXdata, MainServer, &Server::sendData);
     connect(this, &TXcontroller::TXdata, MainServer, &Server::textData);
     connect(this, &TXcontroller::connectMain, mainClient, &TX_master::connectTX);
-    connect(this, &TXcontroller::connectFile, fileClient, &TX_master::connectTX);
+    connect(this, &TXcontroller::connectFile, MovementClient, &TX_master::connectTX);
     connect(mainClient, &TX_master::ClientStatus, this, &TXcontroller::ClientStatus);
-    connect(fileClient, &TX_master::ClientStatus, this, &TXcontroller::DataClientStatus);
+    connect(MovementClient, &TX_master::ClientStatus, this, &TXcontroller::DataClientStatus);
     connect(mainClient, &TX_master::gotNewData, this, &TXcontroller::gotDataMain);
-    connect(fileClient, &TX_master::gotNewData, this, &TXcontroller::gotDataFile);
+    connect(MovementClient, &TX_master::gotNewData, this, &TXcontroller::gotDataFile);
 
     emit connectMain();
     emit connectFile();
@@ -35,6 +35,9 @@ void TXcontroller::SwitchPolarizer(Polarizer pol)
 
 void TXcontroller::moveToTarget(int steps, bool dir)
 {
+    //qDebug() << "Steps are: " << steps;
+    QPair<QString, QPair<QString, QVariant> > data = qMakePair(QString("STP"), qMakePair(QString("M"), QVariant(steps * (dir?1:-1))));
+    //qDebug() << data.first << ' ' << data.second.first << ' ' << data.second.second;
     emit TXdata(qMakePair(QString("STP"), qMakePair(QString("M"), QVariant(steps * (dir?1:-1)))));//???Has to be updated???
 }
 
@@ -45,35 +48,35 @@ void TXcontroller::runScan(int start, int stop, int accuracy)
 
 void TXcontroller::gotDataMain(QPair<QString, QPair<QString, QVariant> > data)
 {
-    qDebug() << "Got the following new data: " + data.first + " " + data.second.first + " " + data.second.second.toString();
+    //qDebug() << "Got the following new data: " + data.first + " " + data.second.first + " " + data.second.second.toString();
     if(data.first == "STP")
     {
         //qDebug() << "STP " + data.second.first + " " + data.second.second.toString();
         if(data.second.first == "M" && data.second.second.toInt() == 0)
         {
-            qDebug() << "STP should finish";
-            emit scanFinish();
+            //qDebug() << "STP should finish";
+            //emit scanFinish();
         }
         else if(data.second.first == "M" && data.second.second.toInt() == 1)
         {
-            qDebug() << "STP should move";
-            emit stepperMoving();
+            //qDebug() << "STP should move";
+            //emit stepperMoving();
         }
         else if(data.second.first == "P")
         {
-            qDebug() << "Got new position data!";
+            //qDebug() << "Got new position data!";
             emit currentPosition(fabs(data.second.second.toInt()), data.second.second.toInt() >= 0);
             emit scanFinish();//Hacky, könnte verbessert werden???
         }
         else if(data.second.first == "S")
         {
-            qDebug() << "Current Movement Status: ";
+            //qDebug() << "Current Movement Status: ";
             emit this->currentStepperStatus(data.second.second.toInt());
         }
     }
     else if(data.first == "DPC")
     {
-        qDebug() << "Got new count data\n";
+        //qDebug() << "Got new count data\n";
         emit DPCCounts(data.second.second.toInt());
     }
     else if(data.first == "SCN")
@@ -105,7 +108,21 @@ void TXcontroller::gotNewConnection(QVariant data)
 
 void TXcontroller::gotDataFile(QPair<QString, QPair<QString, QVariant> > data)
 {
-    //Has to be implemented
+    //qDebug() << "Stepper's current movement status is: " << data.second.second.toBool();
+    if(data.second.second.toInt() == 1)
+    {
+        //qDebug() << "STP should move";
+        emit stepperMoving();
+        emit this->currentStepperStatus(1);
+    }
+    else if(data.second.second.toInt() == 0)
+    {
+        //qDebug() << "STP should finish";
+        emit scanFinish();
+        emit this->movementFinish();
+        emit this->currentStepperStatus(0);
+    }
+
 }
 
 void TXcontroller::ClientStatus(bool status)

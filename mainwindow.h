@@ -118,6 +118,8 @@ private slots:
 
     void reload_data();
 
+    void stepperStopped();
+
     void on_stepBackMono_clicked();
 
     void on_stepForwardMono_clicked();
@@ -178,6 +180,8 @@ private:
     State currentState;
     void replot();
     void createActions();
+    void createLogFile();
+    void startManualMeasurement();
     void createMenus();
     void changeState(State newState);
     void clear_window(void);
@@ -192,6 +196,7 @@ private:
     QFile *LogFile = NULL;
     QTextStream *LogStream = NULL;
     void logThis(QVariant data);
+    bool manualScan;
 
     QMap<double, double> Scandata;
     QVector<bool> polarizerSettings;
