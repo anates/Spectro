@@ -108,6 +108,7 @@ signals:
     void moveStepperToTarget(int steps, bool dir);
     void runScan(int start, int stop, int accuracy);
     void initMonoPos(int MonoPos);
+    void shutSpectrometerDown(void);
     //External
     void currentData(QPair<int, int> data);
     void scanFinished(void);

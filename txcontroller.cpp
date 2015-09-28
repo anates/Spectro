@@ -8,24 +8,30 @@ TXcontroller::TXcontroller(QString ipAddr, quint32 port, int MonoPos)
     MainServer = new Server(ipAddr, port + 1, "MAIN");
     mainClient = new TX_master(ipAddr, port, "MAIN");
     MovementClient = new TX_master(ipAddr, port + 2, "FILE");
+    DataClient = new TX_master(ipAddr, port + 4, "DATA");
 
     //connect(this, &TXcontroller::TXdata, MainServer, &Server::sendData);
     connect(this, &TXcontroller::TXdata, MainServer, &Server::textData);
     connect(this, &TXcontroller::connectMain, mainClient, &TX_master::connectTX);
     connect(this, &TXcontroller::connectFile, MovementClient, &TX_master::connectTX);
     connect(mainClient, &TX_master::ClientStatus, this, &TXcontroller::ClientStatus);
-    connect(MovementClient, &TX_master::ClientStatus, this, &TXcontroller::DataClientStatus);
+    connect(MovementClient, &TX_master::ClientStatus, this, &TXcontroller::MovClientStatus);
     connect(mainClient, &TX_master::gotNewData, this, &TXcontroller::gotDataMain);
     connect(MovementClient, &TX_master::gotNewData, this, &TXcontroller::gotDataFile);
+    connect(DataClient, &TX_master::ClientStatus, this, &TXcontroller::DataClientStatus);
+    connect(DataClient, &TX_master::gotNewData, this, &TXcontroller::gotDataData);
 
     emit connectMain();
     emit connectFile();
+    emit connectData();
 
 }
 
 TXcontroller::~TXcontroller()
 {
-
+    delete mainClient;
+    delete MovementClient;
+    delete DataClient;
 }
 
 void TXcontroller::SwitchPolarizer(Polarizer pol)
@@ -39,6 +45,11 @@ void TXcontroller::moveToTarget(int steps, bool dir)
     QPair<QString, QPair<QString, QVariant> > data = qMakePair(QString("STP"), qMakePair(QString("M"), QVariant(steps * (dir?1:-1))));
     //qDebug() << data.first << ' ' << data.second.first << ' ' << data.second.second;
     emit TXdata(qMakePair(QString("STP"), qMakePair(QString("M"), QVariant(steps * (dir?1:-1)))));//???Has to be updated???
+}
+
+void TXcontroller::shutDown()
+{
+    emit TXdata(qMakePair(QString("EXIT"), qMakePair(QString("A"), QString("OM"))));
 }
 
 void TXcontroller::runScan(int start, int stop, int accuracy)
@@ -123,6 +134,22 @@ void TXcontroller::gotDataFile(QPair<QString, QPair<QString, QVariant> > data)
         emit this->currentStepperStatus(0);
     }
 
+}
+
+void TXcontroller::gotDataData(QPair<QString, QPair<QString, QVariant> > data)
+{
+    if(data.first != "DPC")
+    {
+        qDebug() << "Strange input in DataClient!";
+        return;
+    }
+    qDebug() << "Current voltage value is: " << data.second.second.toInt();
+    emit this->DPCCounts(data.second.second.toInt());
+}
+
+void TXcontroller::MovClientStatus(bool status)
+{
+    emit this->MovClientStat(status);
 }
 
 void TXcontroller::ClientStatus(bool status)

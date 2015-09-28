@@ -112,6 +112,7 @@ MainWindow::~MainWindow()
     emit stopCounting();
     emit stopControlling();
     emit killScanner();
+
     qDebug() << "Cleaning main!";
     qDebug() << "SC, DPC and SC cleaned";
     delete MainWindow::newSpectrometer;
@@ -894,6 +895,11 @@ void MainWindow::reload_data()
 void MainWindow::on_stepBackMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
+    if(this->currentPosition_local == 0)
+    {
+        qDebug() << "Moving down not possible!";
+        return;
+    }
     newSpectrometer->moveStepper(1, 0);
     this->currentPosition_local--;
     //emit MoveStepDown(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() - 1);
@@ -905,6 +911,11 @@ void MainWindow::on_stepBackMono_clicked()
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
+    if(this->currentPosition_local == 99999999)
+    {
+        qDebug() << "Moving up not possible!";
+        return;
+    }
     newSpectrometer->moveStepper(1, 1);
     this->currentPosition_local++;
     //emit MoveStepUp(newSpectrometer->getMonoPos(), newSpectrometer->getMonoPos() + 1);
@@ -1076,6 +1087,7 @@ void MainWindow::writeConfig()
 void MainWindow::on_execButton_2_clicked()
 {
     //Max-/Min-Limit should be implemented!
+    //Log should be implemented!!
     if(/*(ui->newPosition->text().toInt() != /*newSpectrometer->getMonoPos() this->currentPosition_local) && !ui->newPosition->text().isEmpty()*/ui->newPosition->text().isEmpty() == false)
     {
         //newSpectrometer->moveStepper(fabs(newSpectrometer->getMonoPos() - ui->newPosition->text().toInt()), ((ui->newPosition->text().toInt() - newSpectrometer->getMonoPos()) >= 0));

@@ -169,7 +169,10 @@ Spectrometer_Control::~Spectrometer_Control()
         workerThread.wait();
     }
     else
+    {
+        emit this->shutSpectrometerDown();
         delete remoteControl;
+    };
     //qDebug() << "Spectrometer cleaned!";
 }
 
@@ -344,4 +347,5 @@ void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
     connect(this, &Spectrometer_Control::switchPolarizer, remoteControl, &TXcontroller::SwitchPolarizer);
     connect(this, &Spectrometer_Control::moveStepperToTarget, remoteControl, &TXcontroller::moveToTarget);
     connect(this, &Spectrometer_Control::runScan, remoteControl, &TXcontroller::runScan);
+    connect(this, &Spectrometer_Control::shutSpectrometerDown, remoteControl, &TXcontroller::shutDown);
 }
