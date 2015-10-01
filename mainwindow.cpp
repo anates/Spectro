@@ -1514,9 +1514,10 @@ void MainWindow::on_manual_confirmValue_clicked()
         ui->manual_StopWL->setReadOnly(false);
         ui->manual_Steps->setReadOnly(false);
         ui->manual_Steps->setText(QString(""));
-        newScanList.addScan(MainWindow::tmpScan);
+        newScanList.addScan(this->tmpScan);
         newScanList.getNextScan();
         ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
+        this->tmpScan.clear();
         this->reload_data();
         this->replot();
         ui->manual_confirmValue->setEnabled(false);
