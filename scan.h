@@ -18,6 +18,7 @@ public:
     LogFile log;
     bool readonly = false;
     bool isLoaded = false;
+    double Central_WL;
 public:
     Scan();
     ScanData getValues(void);

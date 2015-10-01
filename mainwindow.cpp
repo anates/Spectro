@@ -173,7 +173,7 @@ void MainWindow::replot()
     MainWindow::reload_data();
 }
 
-void MainWindow::open()
+void MainWindow::open()//Missing update to v.4
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Scan file"), "", tr("Scan file (*.sca);;All Files(*)")); //Eventuell auf mehrere Files erweitern, damit man mehrere Scans gleichzeitig laden kann
     if(fileName.isEmpty())
@@ -217,7 +217,12 @@ void MainWindow::open()
         in >> finScan;
         in >> scanSpeed;
         //in >> newScan.values.Data;
-        in >> newScan.setValues().setData();
+        QVector<QPair<qreal, qreal> > Data_tmp;
+        in >> Data_tmp;//newScan.setValues().setData();
+        QVector<std::tuple<qreal, qreal, qreal> > Data;
+        for(int i = 0; i < Data_tmp.size(); i++)
+            Data.push_back(std::make_tuple(Data_tmp[i].first, 0, Data_tmp[i].second));
+        newScan.setValues().setData() = Data;
         if(magic == 0x80081E5 || magic == 0xB0081E5)
         {
             //in >> newScan.log.countNumber;
@@ -262,7 +267,7 @@ void MainWindow::open()
     }
 }
 
-void MainWindow::openGeneric()
+void MainWindow::openGeneric()//Missing magic numbers?
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Scan file"), "", tr("All Files(*)")); //Eventuell auf mehrere Files erweitern, damit man mehrere Scans gleichzeitig laden kann
     if(fileName.isEmpty())
@@ -342,6 +347,9 @@ void MainWindow::save()
         QDataStream out(&file);
         out << (quint32)0xB0081E5;
         out << (qint32)123;
+        QVector<QPair<double, double> > DataVector;
+        for(int i = 0; i < MainWindow::newScanList.getCurrentScan().values.Data.size(); i++)
+            DataVector.push_back(qMakePair(std::get<0>(MainWindow::newScanList.getCurrentScan().values.Data[i]), std::get<2>(MainWindow::newScanList.getCurrentScan().values.Data[i])));
         out.setVersion(QDataStream::Qt_4_5);//Hier muss noch Portabilität eingebaut werden, siehe auch http://qt-project.org/doc/qt-4.8/qdatastream.html
         if(MainWindow::newScanList.getScanNumbers()!=0)
         {
@@ -351,7 +359,7 @@ void MainWindow::save()
             out << MainWindow::newScanList.getCurrentScan().Params.startPos;
             out << MainWindow::newScanList.getCurrentScan().Params.finPos;
             out << MainWindow::newScanList.getCurrentScan().Params.scanSpeed;
-            out << MainWindow::newScanList.getCurrentScan().values.Data;
+            out << DataVector;
             out << MainWindow::newScanList.getCurrentScan().log.countNumber;
             out << MainWindow::newScanList.getCurrentScan().log.laserIntensity;
             out << MainWindow::newScanList.getCurrentScan().log.name;
@@ -694,7 +702,7 @@ void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
 
 void MainWindow::incomingData(QPair<int, int> data)
 {
-    tmpScan.values.Data.push_back(qMakePair(data.first + ui->setStartPosition->text().toInt(), data.second));
+    tmpScan.values.Data.push_back(std::make_tuple(data.first + ui->setStartPosition->text().toInt(), 0, data.second));
     qDebug() << "Incoming data in main: i=" << data.first << ", counts=" << data.second << " and tmpScan.size=" << tmpScan.getValues().getData().size();
 }
 
@@ -735,8 +743,9 @@ QPair<QPair<int, int>, QPair<int, int> > MainWindow::getNearestPoints(int xVal)
     return qMakePair(qMakePair(0, 0), qMakePair(0, 0));
 }
 
-int MainWindow::calculateValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint = qMakePair(0, 0), QPair<int, int> secondPoint = qMakePair(0, 0))
+int MainWindow::calculateValue(std::tuple<int, int, int> targetTuple, QPair<int, int> firstPoint = qMakePair(0, 0), QPair<int, int> secondPoint = qMakePair(0, 0))
 {
+    QPair<int, int> targetPoint = qMakePair(std::get<0>(targetTuple), std::get<2>(targetTuple));
     if((firstPoint.first == 0 && secondPoint.first == 0) || (firstPoint.second == 0 && secondPoint.second == 0))
     {
         QMessageBox::information(this, "Error", "No sufficient informations for calculating correction values");
@@ -763,8 +772,8 @@ void MainWindow::calibrateScan(ScanData &newScan)
 {
     for(int i = 0; i < newScan.Data.size(); i++)
     {
-        QPair<QPair<int, int>, QPair<int, int> > nextPoints = getNearestPoints(newScan.Data[i].first);
-        newScan.Data[i].first = calculateValue(newScan.Data[i], nextPoints.first, nextPoints.second);
+        QPair<QPair<int, int>, QPair<int, int> > nextPoints = getNearestPoints(std::get<0>(newScan.Data[i]));
+        std::get<0>(newScan.Data[i]) = calculateValue(newScan.Data[i], nextPoints.first, nextPoints.second);
     }
 }
 
@@ -810,7 +819,7 @@ void MainWindow::CurrentScanStatus(qreal status)
 
 void MainWindow::addNewValue(qreal wNumber, qreal counts)
 {
-    tmpScan.values.Data.push_back(qMakePair(wNumber, counts));
+    tmpScan.values.Data.push_back(std::make_tuple(wNumber, 0, counts));
 }
 
 void MainWindow::on_LastScan_clicked()
@@ -1392,7 +1401,7 @@ void MainWindow::on_manual_StartMeasurement_clicked()
 {
     ui->manual_ProgressBar->setValue(0);
 
-    if(ui->manual_StartWL->text().isEmpty() || ui->manual_StopWL->text().isEmpty() || ui->manual_Steps->text().isEmpty())
+    if(ui->manual_StartWL->text().isEmpty() || ui->manual_StopWL->text().isEmpty() || ui->manual_Steps->text().isEmpty() || ui->manual_centralWL->text().isEmpty())
     {
         QMessageBox::information(this, tr("Error"), QString("Not all neccessary information entered, please try again!"));
         return;
@@ -1413,6 +1422,7 @@ void MainWindow::on_manual_StartMeasurement_clicked()
     ui->manual_StartWL->setReadOnly(true);
     ui->manual_StopWL->setReadOnly(true);
     ui->manual_Steps->setReadOnly(true);
+    ui->manual_centralWL->setReadOnly(true);
     //double currentPosition = newSpectrometer->getMonoPos();
     double currentPosition = this->currentPosition_local;
     double startWL = ui->manual_StartWL->text().toDouble();
@@ -1484,6 +1494,7 @@ void MainWindow::createLogFile()
     else
         tmpScan.scanName = ui->manualScanName->text();
     tmpScan.isCalibrated = this->calibrated;
+    tmpScan.Central_WL = ui->manual_centralWL->text().toDouble();
     delete yes;
     delete no;
     yes = NULL;
@@ -1507,7 +1518,7 @@ void MainWindow::on_manual_confirmValue_clicked()
     }
     double current_Value = ui->manual_currentValue->text().toDouble();
     ui->manual_currentValue->setText("");
-    tmpScan.values.Data.push_back(qMakePair(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), current_Value));
+    tmpScan.values.Data.push_back(std::make_tuple(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), convertWLtoWN(convertPosToWL(this->currentPosition_local) - ui->manual_centralWL->text().toDouble()), current_Value));
     double WL_difference = ui->manual_StopWL->text().toDouble() - ui->manual_StartWL->text().toDouble();
     double WL_stepSize = WL_difference/ui->manual_Steps->text().toDouble();
     ui->manual_ProgressBar->setValue((int)((double)(this->current_step)/ui->manual_Steps->text().toDouble()*100));
@@ -1522,7 +1533,9 @@ void MainWindow::on_manual_confirmValue_clicked()
         ui->manual_StartWL->setText(QString(""));
         ui->manual_StopWL->setText(QString(""));
         ui->manual_StopWL->setReadOnly(false);
+        ui->manual_centralWL->setReadOnly(false);
         ui->manual_Steps->setReadOnly(false);
+        ui->manual_centralWL->setText("");
         ui->manual_Steps->setText(QString(""));
         newScanList.addScan(this->tmpScan);
         newScanList.getNextScan();

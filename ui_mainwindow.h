@@ -109,6 +109,8 @@ public:
     QLabel *label_18;
     QLineEdit *manual_currWaveLength;
     QHBoxLayout *horizontalLayout_7;
+    QLabel *label_24;
+    QLineEdit *manual_centralWL;
     QLabel *label_20;
     QLineEdit *manual_StartWL;
     QLabel *label_21;
@@ -543,6 +545,16 @@ public:
         horizontalLayout_7 = new QHBoxLayout();
         horizontalLayout_7->setSpacing(6);
         horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_24 = new QLabel(verticalLayoutWidget);
+        label_24->setObjectName(QStringLiteral("label_24"));
+
+        horizontalLayout_7->addWidget(label_24);
+
+        manual_centralWL = new QLineEdit(verticalLayoutWidget);
+        manual_centralWL->setObjectName(QStringLiteral("manual_centralWL"));
+
+        horizontalLayout_7->addWidget(manual_centralWL);
+
         label_20 = new QLabel(verticalLayoutWidget);
         label_20->setObjectName(QStringLiteral("label_20"));
 
@@ -993,6 +1005,7 @@ public:
         gridTabWidget->setTabText(gridTabWidget->indexOf(plotTab), QApplication::translate("MainWindow", "Plot", 0));
         label_4->setText(QApplication::translate("MainWindow", "Current Wavenumber", 0));
         label_18->setText(QApplication::translate("MainWindow", "Current Wavelength", 0));
+        label_24->setText(QApplication::translate("MainWindow", "Central Wavelength", 0));
         label_20->setText(QApplication::translate("MainWindow", "Startwavelength", 0));
         label_21->setText(QApplication::translate("MainWindow", "Stopwavelength", 0));
         label_19->setText(QApplication::translate("MainWindow", "Number of steps", 0));

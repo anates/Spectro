@@ -66,7 +66,7 @@ public slots:
     void calibrateScan(ScanData &newScan);
     void sortPoints(void);
     QPair<QPair<int, int>, QPair<int, int> > getNearestPoints(int xVal);
-    int calculateValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
+    int calculateValue(std::tuple<int, int, int> targetTuple, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
     int calculateInvValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
 signals:
     //Polarizer signals

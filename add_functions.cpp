@@ -40,8 +40,9 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
     }while(iss_temp);
     if(linecheck.size() != 3)
     {
-        if(version == "8008135" || version == "80081E5" || version == "B0081E5")
+        if(version == "8008135" || version == "80081E5" || version == "B0081E5" || version == "130081E5")
         {
+            qDebug() << "First data check!";
             Data.scanName = in.readLine();
             Data.Params.startPos = in.readLine().toDouble();
             Data.Params.finPos = in.readLine().toDouble();
@@ -51,8 +52,9 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
             Data.Params.polSettings[1] = (polSettingsInt == 3 || polSettingsInt > 5);
             Data.Params.polSettings[2] = (polSettingsInt >= 4);
         }
-        if(version == "80081E5" || version == "B0081E5")
+        if(version == "80081E5" || version == "B0081E5" || version == "130081E5")
         {
+            qDebug() << "Second data check!";
             Data.log.countNumber = in.readLine().toDouble();
             Data.log.laserIntensity = in.readLine().toDouble();
             Data.log.name = in.readLine();
@@ -60,9 +62,15 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
             Data.log.slitWidth = in.readLine().toDouble();
             Data.log.logfileSet = true;
         }
-        if(version == "B0081E5")
+        if(version == "B0081E5" || version == "130081E5")
         {
+            qDebug() << "Third data check!";
             Data.isCalibrated = (bool)in.readLine().toInt();
+        }
+        if(version == "130081E5")
+        {
+            qDebug() << "Fourth data check!";
+            Data.Central_WL = in.readLine().toDouble();
         }
     }
     else
@@ -79,16 +87,24 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
             iss >> tmpstring;
             tmpline.push_back(tmpstring);
         }while(iss);
-        if(tmpline.size() == 3)
-            Data.values.Data.push_back(qMakePair(convertToNumber<qreal>(tmpline[0]), convertToNumber<qreal>(tmpline[1])));
+        if(version == "130081E5")
+        {
+            if(tmpline.size() == 4)
+                Data.values.Data.push_back(std::make_tuple(convertToNumber<qreal>(tmpline[0]), convertToNumber<qreal>(tmpline[1]), convertToNumber<qreal>(tmpline[2])));
+        }
+        else
+        {
+            if(tmpline.size() == 3)
+                Data.values.Data.push_back(std::make_tuple(convertToNumber<qreal>(tmpline[0]), 0, convertToNumber<qreal>(tmpline[1])));
+        }
     }
     if(Data.Params.startPos == -1)
     {
-        Data.Params.startPos = Data.values.Data.first().first;
+        Data.Params.startPos = std::get<0>(Data.values.Data.first());
     }
     if(Data.Params.finPos == -1)
     {
-        Data.Params.finPos = Data.values.Data.last().first;
+        Data.Params.finPos = std::get<0>(Data.values.Data.last());
     }
     file.close();
 }
@@ -121,7 +137,7 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
         return;
     }
     QTextStream out(&file);
-    out << "B0081E5\n";//Update auf v0.3
+    out << "130081E5\n";//Update auf v0.4, added Wavenumber
     out << Data.scanName << '\n';
     out << Data.Params.startPos << '\n';
     out << Data.Params.finPos << '\n';
@@ -136,10 +152,11 @@ void write_unformatted_file(const Scan &Data/*const QMap<double, double> &Data*/
     out << Data.log.sensitivity << '\n';
     out << Data.log.slitWidth << '\n';
     out << (int)Data.isCalibrated << '\n';
-    out << Data.values.Data[0].first << '\t' << Data.values.Data[0].second << '\n';
+    out << Data.Central_WL << '\n';
+    out << std::get<0>(Data.values.Data[0]) << '\t' << std::get<2>(Data.values.Data[0]) << '\n';
     for(int i = 0; i < Data.values.Data.size(); i++)
     {
-        out << Data.values.Data[i].first << '\t' << Data.values.Data[i].second << '\n';
+        out << std::get<0>(Data.values.Data[i]) << '\t' << std::get<1>(Data.values.Data[i]) << '\t' << std::get<2>(Data.values.Data[i]) << '\n';
     }
 
     file.close();
@@ -163,11 +180,11 @@ void splitToDoubles(QPair<double, double> &valuePair, QString input)
     valuePair = qMakePair(x, y);
 }
 
-void vectorToMap(const QVector<QPair<qreal, qreal> > &indata, QMap<double, double> &outdata)//Assumes that all values are already ordered
+void vectorToMap(const QVector<std::tuple<qreal, qreal, qreal> > &indata, QMap<double, double> &outdata)//Assumes that all values are already ordered
 {
     for(int i = 0; i < indata.size(); i++)
     {
-        outdata[indata[i].first] = indata[i].second;
+        outdata[std::get<0>(indata[i])] = std::get<2>(indata[i]);
     }
 }
 

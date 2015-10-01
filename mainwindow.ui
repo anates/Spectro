@@ -397,6 +397,16 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
+            <widget class="QLabel" name="label_24">
+             <property name="text">
+              <string>Central Wavelength</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manual_centralWL"/>
+           </item>
+           <item>
             <widget class="QLabel" name="label_20">
              <property name="text">
               <string>Startwavelength</string>

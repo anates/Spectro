@@ -2,20 +2,20 @@
 #define SCANDATA_H
 #include <QVector>
 #include <QPair>
-
+#include <tuple>
 
 
 class ScanData
 {
 //private://For testing public
 public:
-    QVector<QPair<qreal, qreal> > Data;
+    QVector<std::tuple<qreal, qreal, qreal> > Data;
     QVector<QPair<qreal, qreal> > Maxima;
     QVector<QPair<qreal, qreal> > FWHM;
 public:
     ScanData();
-    QVector<QPair<qreal, qreal> > getData(void);
-    QVector<QPair<qreal, qreal> > &setData(void);
+    QVector<std::tuple<qreal, qreal, qreal> > getData(void);
+    QVector<std::tuple<qreal, qreal, qreal> > &setData(void);
     void clear(void);
 };
 

@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[86];
-    char stringdata[1421];
+    QByteArrayData data[88];
+    char stringdata[1457];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -71,50 +71,52 @@ QT_MOC_LITERAL(38, 460, 16), // "getNearestPoints"
 QT_MOC_LITERAL(39, 477, 37), // "QPair<QPair<int,int>,QPair<in..."
 QT_MOC_LITERAL(40, 515, 4), // "xVal"
 QT_MOC_LITERAL(41, 520, 14), // "calculateValue"
-QT_MOC_LITERAL(42, 535, 11), // "targetPoint"
-QT_MOC_LITERAL(43, 547, 10), // "firstPoint"
-QT_MOC_LITERAL(44, 558, 11), // "secondPoint"
-QT_MOC_LITERAL(45, 570, 17), // "calculateInvValue"
-QT_MOC_LITERAL(46, 588, 28), // "on_loadGenericButton_clicked"
-QT_MOC_LITERAL(47, 617, 4), // "open"
-QT_MOC_LITERAL(48, 622, 11), // "openGeneric"
-QT_MOC_LITERAL(49, 634, 4), // "save"
-QT_MOC_LITERAL(50, 639, 11), // "saveGeneric"
-QT_MOC_LITERAL(51, 651, 19), // "saveGenericAllPlots"
-QT_MOC_LITERAL(52, 671, 21), // "on_dispXValue_toggled"
-QT_MOC_LITERAL(53, 693, 7), // "checked"
-QT_MOC_LITERAL(54, 701, 21), // "on_dispYValue_toggled"
-QT_MOC_LITERAL(55, 723, 21), // "on_dispZValue_toggled"
-QT_MOC_LITERAL(56, 745, 21), // "on_scanButton_clicked"
-QT_MOC_LITERAL(57, 767, 19), // "on_LastScan_clicked"
-QT_MOC_LITERAL(58, 787, 19), // "on_NextScan_clicked"
-QT_MOC_LITERAL(59, 807, 36), // "on_selectScanBox_currentIndex..."
-QT_MOC_LITERAL(60, 844, 5), // "index"
-QT_MOC_LITERAL(61, 850, 19), // "on_saveScan_clicked"
-QT_MOC_LITERAL(62, 870, 11), // "reload_data"
-QT_MOC_LITERAL(63, 882, 14), // "stepperStopped"
-QT_MOC_LITERAL(64, 897, 23), // "on_stepBackMono_clicked"
-QT_MOC_LITERAL(65, 921, 26), // "on_stepForwardMono_clicked"
-QT_MOC_LITERAL(66, 948, 21), // "on_mvButton_2_clicked"
-QT_MOC_LITERAL(67, 970, 20), // "on_logButton_clicked"
-QT_MOC_LITERAL(68, 991, 13), // "createLogData"
-QT_MOC_LITERAL(69, 1005, 10), // "loadConfig"
-QT_MOC_LITERAL(70, 1016, 11), // "writeConfig"
-QT_MOC_LITERAL(71, 1028, 23), // "on_execButton_2_clicked"
-QT_MOC_LITERAL(72, 1052, 31), // "on_gridTabWidget_currentChanged"
-QT_MOC_LITERAL(73, 1084, 18), // "on_newScan_clicked"
-QT_MOC_LITERAL(74, 1103, 19), // "on_stopScan_clicked"
-QT_MOC_LITERAL(75, 1123, 29), // "on_saveSettingsButton_clicked"
-QT_MOC_LITERAL(76, 1153, 29), // "on_loadSettingsButton_clicked"
-QT_MOC_LITERAL(77, 1183, 21), // "on_centerMono_clicked"
-QT_MOC_LITERAL(78, 1205, 18), // "on_connect_clicked"
-QT_MOC_LITERAL(79, 1224, 22), // "on_CalibButton_clicked"
-QT_MOC_LITERAL(80, 1247, 24), // "on_CalibFinished_clicked"
-QT_MOC_LITERAL(81, 1272, 23), // "on_CalibConfirm_clicked"
-QT_MOC_LITERAL(82, 1296, 25), // "on_AddMovementLog_clicked"
-QT_MOC_LITERAL(83, 1322, 32), // "on_AddMovementCommentLog_clicked"
-QT_MOC_LITERAL(84, 1355, 34), // "on_manual_StartMeasurement_cl..."
-QT_MOC_LITERAL(85, 1390, 30) // "on_manual_confirmValue_clicked"
+QT_MOC_LITERAL(42, 535, 23), // "std::tuple<int,int,int>"
+QT_MOC_LITERAL(43, 559, 11), // "targetTuple"
+QT_MOC_LITERAL(44, 571, 10), // "firstPoint"
+QT_MOC_LITERAL(45, 582, 11), // "secondPoint"
+QT_MOC_LITERAL(46, 594, 17), // "calculateInvValue"
+QT_MOC_LITERAL(47, 612, 11), // "targetPoint"
+QT_MOC_LITERAL(48, 624, 28), // "on_loadGenericButton_clicked"
+QT_MOC_LITERAL(49, 653, 4), // "open"
+QT_MOC_LITERAL(50, 658, 11), // "openGeneric"
+QT_MOC_LITERAL(51, 670, 4), // "save"
+QT_MOC_LITERAL(52, 675, 11), // "saveGeneric"
+QT_MOC_LITERAL(53, 687, 19), // "saveGenericAllPlots"
+QT_MOC_LITERAL(54, 707, 21), // "on_dispXValue_toggled"
+QT_MOC_LITERAL(55, 729, 7), // "checked"
+QT_MOC_LITERAL(56, 737, 21), // "on_dispYValue_toggled"
+QT_MOC_LITERAL(57, 759, 21), // "on_dispZValue_toggled"
+QT_MOC_LITERAL(58, 781, 21), // "on_scanButton_clicked"
+QT_MOC_LITERAL(59, 803, 19), // "on_LastScan_clicked"
+QT_MOC_LITERAL(60, 823, 19), // "on_NextScan_clicked"
+QT_MOC_LITERAL(61, 843, 36), // "on_selectScanBox_currentIndex..."
+QT_MOC_LITERAL(62, 880, 5), // "index"
+QT_MOC_LITERAL(63, 886, 19), // "on_saveScan_clicked"
+QT_MOC_LITERAL(64, 906, 11), // "reload_data"
+QT_MOC_LITERAL(65, 918, 14), // "stepperStopped"
+QT_MOC_LITERAL(66, 933, 23), // "on_stepBackMono_clicked"
+QT_MOC_LITERAL(67, 957, 26), // "on_stepForwardMono_clicked"
+QT_MOC_LITERAL(68, 984, 21), // "on_mvButton_2_clicked"
+QT_MOC_LITERAL(69, 1006, 20), // "on_logButton_clicked"
+QT_MOC_LITERAL(70, 1027, 13), // "createLogData"
+QT_MOC_LITERAL(71, 1041, 10), // "loadConfig"
+QT_MOC_LITERAL(72, 1052, 11), // "writeConfig"
+QT_MOC_LITERAL(73, 1064, 23), // "on_execButton_2_clicked"
+QT_MOC_LITERAL(74, 1088, 31), // "on_gridTabWidget_currentChanged"
+QT_MOC_LITERAL(75, 1120, 18), // "on_newScan_clicked"
+QT_MOC_LITERAL(76, 1139, 19), // "on_stopScan_clicked"
+QT_MOC_LITERAL(77, 1159, 29), // "on_saveSettingsButton_clicked"
+QT_MOC_LITERAL(78, 1189, 29), // "on_loadSettingsButton_clicked"
+QT_MOC_LITERAL(79, 1219, 21), // "on_centerMono_clicked"
+QT_MOC_LITERAL(80, 1241, 18), // "on_connect_clicked"
+QT_MOC_LITERAL(81, 1260, 22), // "on_CalibButton_clicked"
+QT_MOC_LITERAL(82, 1283, 24), // "on_CalibFinished_clicked"
+QT_MOC_LITERAL(83, 1308, 23), // "on_CalibConfirm_clicked"
+QT_MOC_LITERAL(84, 1332, 25), // "on_AddMovementLog_clicked"
+QT_MOC_LITERAL(85, 1358, 32), // "on_AddMovementCommentLog_clicked"
+QT_MOC_LITERAL(86, 1391, 34), // "on_manual_StartMeasurement_cl..."
+QT_MOC_LITERAL(87, 1426, 30) // "on_manual_confirmValue_clicked"
 
     },
     "MainWindow\0xPolarizerMoved\0\0Polarizer\0"
@@ -132,8 +134,9 @@ QT_MOC_LITERAL(85, 1390, 30) // "on_manual_confirmValue_clicked"
     "calibrateScan\0ScanData&\0newScan\0"
     "sortPoints\0getNearestPoints\0"
     "QPair<QPair<int,int>,QPair<int,int> >\0"
-    "xVal\0calculateValue\0targetPoint\0"
-    "firstPoint\0secondPoint\0calculateInvValue\0"
+    "xVal\0calculateValue\0std::tuple<int,int,int>\0"
+    "targetTuple\0firstPoint\0secondPoint\0"
+    "calculateInvValue\0targetPoint\0"
     "on_loadGenericButton_clicked\0open\0"
     "openGeneric\0save\0saveGeneric\0"
     "saveGenericAllPlots\0on_dispXValue_toggled\0"
@@ -206,45 +209,45 @@ static const uint qt_meta_data_MainWindow[] = {
       37,    0,  432,    2, 0x0a /* Public */,
       38,    1,  433,    2, 0x0a /* Public */,
       41,    3,  436,    2, 0x0a /* Public */,
-      45,    3,  443,    2, 0x0a /* Public */,
-      46,    0,  450,    2, 0x08 /* Private */,
-      47,    0,  451,    2, 0x08 /* Private */,
-      48,    0,  452,    2, 0x08 /* Private */,
-      49,    0,  453,    2, 0x08 /* Private */,
-      50,    0,  454,    2, 0x08 /* Private */,
-      51,    0,  455,    2, 0x08 /* Private */,
-      52,    1,  456,    2, 0x08 /* Private */,
-      54,    1,  459,    2, 0x08 /* Private */,
-      55,    1,  462,    2, 0x08 /* Private */,
-      56,    0,  465,    2, 0x08 /* Private */,
-      57,    0,  466,    2, 0x08 /* Private */,
-      58,    0,  467,    2, 0x08 /* Private */,
-      59,    1,  468,    2, 0x08 /* Private */,
-      61,    0,  471,    2, 0x08 /* Private */,
-      62,    0,  472,    2, 0x08 /* Private */,
-      63,    0,  473,    2, 0x08 /* Private */,
-      64,    0,  474,    2, 0x08 /* Private */,
-      65,    0,  475,    2, 0x08 /* Private */,
-      66,    0,  476,    2, 0x08 /* Private */,
-      67,    0,  477,    2, 0x08 /* Private */,
-      68,    0,  478,    2, 0x08 /* Private */,
-      69,    0,  479,    2, 0x08 /* Private */,
-      70,    0,  480,    2, 0x08 /* Private */,
-      71,    0,  481,    2, 0x08 /* Private */,
-      72,    1,  482,    2, 0x08 /* Private */,
-      73,    0,  485,    2, 0x08 /* Private */,
-      74,    0,  486,    2, 0x08 /* Private */,
-      75,    0,  487,    2, 0x08 /* Private */,
-      76,    0,  488,    2, 0x08 /* Private */,
-      77,    0,  489,    2, 0x08 /* Private */,
-      78,    0,  490,    2, 0x08 /* Private */,
-      79,    0,  491,    2, 0x08 /* Private */,
-      80,    0,  492,    2, 0x08 /* Private */,
-      81,    0,  493,    2, 0x08 /* Private */,
-      82,    0,  494,    2, 0x08 /* Private */,
-      83,    0,  495,    2, 0x08 /* Private */,
-      84,    0,  496,    2, 0x08 /* Private */,
-      85,    0,  497,    2, 0x08 /* Private */,
+      46,    3,  443,    2, 0x0a /* Public */,
+      48,    0,  450,    2, 0x08 /* Private */,
+      49,    0,  451,    2, 0x08 /* Private */,
+      50,    0,  452,    2, 0x08 /* Private */,
+      51,    0,  453,    2, 0x08 /* Private */,
+      52,    0,  454,    2, 0x08 /* Private */,
+      53,    0,  455,    2, 0x08 /* Private */,
+      54,    1,  456,    2, 0x08 /* Private */,
+      56,    1,  459,    2, 0x08 /* Private */,
+      57,    1,  462,    2, 0x08 /* Private */,
+      58,    0,  465,    2, 0x08 /* Private */,
+      59,    0,  466,    2, 0x08 /* Private */,
+      60,    0,  467,    2, 0x08 /* Private */,
+      61,    1,  468,    2, 0x08 /* Private */,
+      63,    0,  471,    2, 0x08 /* Private */,
+      64,    0,  472,    2, 0x08 /* Private */,
+      65,    0,  473,    2, 0x08 /* Private */,
+      66,    0,  474,    2, 0x08 /* Private */,
+      67,    0,  475,    2, 0x08 /* Private */,
+      68,    0,  476,    2, 0x08 /* Private */,
+      69,    0,  477,    2, 0x08 /* Private */,
+      70,    0,  478,    2, 0x08 /* Private */,
+      71,    0,  479,    2, 0x08 /* Private */,
+      72,    0,  480,    2, 0x08 /* Private */,
+      73,    0,  481,    2, 0x08 /* Private */,
+      74,    1,  482,    2, 0x08 /* Private */,
+      75,    0,  485,    2, 0x08 /* Private */,
+      76,    0,  486,    2, 0x08 /* Private */,
+      77,    0,  487,    2, 0x08 /* Private */,
+      78,    0,  488,    2, 0x08 /* Private */,
+      79,    0,  489,    2, 0x08 /* Private */,
+      80,    0,  490,    2, 0x08 /* Private */,
+      81,    0,  491,    2, 0x08 /* Private */,
+      82,    0,  492,    2, 0x08 /* Private */,
+      83,    0,  493,    2, 0x08 /* Private */,
+      84,    0,  494,    2, 0x08 /* Private */,
+      85,    0,  495,    2, 0x08 /* Private */,
+      86,    0,  496,    2, 0x08 /* Private */,
+      87,    0,  497,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3, QMetaType::Bool,    2,    2,
@@ -277,25 +280,21 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, 0x80000000 | 35,   36,
     QMetaType::Void,
     0x80000000 | 39, QMetaType::Int,   40,
-    QMetaType::Int, 0x80000000 | 25, 0x80000000 | 25, 0x80000000 | 25,   42,   43,   44,
-    QMetaType::Int, 0x80000000 | 25, 0x80000000 | 25, 0x80000000 | 25,   42,   43,   44,
+    QMetaType::Int, 0x80000000 | 42, 0x80000000 | 25, 0x80000000 | 25,   43,   44,   45,
+    QMetaType::Int, 0x80000000 | 25, 0x80000000 | 25, 0x80000000 | 25,   47,   44,   45,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   53,
-    QMetaType::Void, QMetaType::Bool,   53,
-    QMetaType::Void, QMetaType::Bool,   53,
+    QMetaType::Void, QMetaType::Bool,   55,
+    QMetaType::Void, QMetaType::Bool,   55,
+    QMetaType::Void, QMetaType::Bool,   55,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   60,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   62,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -303,7 +302,11 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   60,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   62,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -355,7 +358,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 26: _t->sortPoints(); break;
         case 27: { QPair<QPair<int,int>,QPair<int,int> > _r = _t->getNearestPoints((*reinterpret_cast< int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QPair<QPair<int,int>,QPair<int,int> >*>(_a[0]) = _r; }  break;
-        case 28: { int _r = _t->calculateValue((*reinterpret_cast< QPair<int,int>(*)>(_a[1])),(*reinterpret_cast< QPair<int,int>(*)>(_a[2])),(*reinterpret_cast< QPair<int,int>(*)>(_a[3])));
+        case 28: { int _r = _t->calculateValue((*reinterpret_cast< std::tuple<int,int,int>(*)>(_a[1])),(*reinterpret_cast< QPair<int,int>(*)>(_a[2])),(*reinterpret_cast< QPair<int,int>(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 29: { int _r = _t->calculateInvValue((*reinterpret_cast< QPair<int,int>(*)>(_a[1])),(*reinterpret_cast< QPair<int,int>(*)>(_a[2])),(*reinterpret_cast< QPair<int,int>(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;

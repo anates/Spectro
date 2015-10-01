@@ -12,12 +12,13 @@ void ScanData::clear(void)
     ScanData::Maxima.clear();
 }
 
-QVector<QPair<qreal, qreal> > ScanData::getData(void)
+QVector<std::tuple<qreal, qreal, qreal> > ScanData::getData(void)
 {
     return Data;
 }
 
-QVector<QPair<qreal, qreal> > &ScanData::setData(void)
+QVector<std::tuple<qreal, qreal, qreal> > &ScanData::setData(void)
 {
     return Data;
 }
+
