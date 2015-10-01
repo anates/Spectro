@@ -915,7 +915,7 @@ void MainWindow::on_stepBackMono_clicked()
 void MainWindow::on_stepForwardMono_clicked()
 {
     //CHECK IF STOP NOT HERE???
-    if(this->currentPosition_local == 99999999)
+    if(this->currentPosition_local == 99999/0.0048)
     {
         qDebug() << "Moving up not possible!";
         return;
