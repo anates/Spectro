@@ -429,6 +429,20 @@
           </layout>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QLabel" name="label_23">
+             <property name="text">
+              <string>Scan Name (not necessary):</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="manualScanName"/>
+           </item>
+          </layout>
+         </item>
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
             <widget class="QPushButton" name="manual_StartMeasurement">

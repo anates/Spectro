@@ -1,4 +1,5 @@
 #include "scanlist.h"
+#include <QDate>
 
 ScanList::ScanList()
 {
@@ -12,6 +13,11 @@ ScanList::ScanList()
 
 void ScanList::addScan(Scan newScan)
 {
+    for(unsigned int i = 0; i < this->Scans.size(); i++)
+    {
+        if(this->Scans[i].scanName == newScan.scanName)
+            newScan.scanName += QDate::currentDate().toString();
+    }
     ScanList::Scans.push_back(newScan);
     currentScan++;
 }

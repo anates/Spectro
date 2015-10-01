@@ -8,6 +8,7 @@ class ScanList: public QObject
     Q_OBJECT
 private:
     QVector<Scan> Scans;
+    QVector<QString> ScanNames;
     QString fileName;
     QVector<QString> scanFileNames;
     qint32 currentScan;

@@ -683,6 +683,10 @@ void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
     //emit initScanner(tmpScan.Params.startPos, tmpScan.Params.finPos, tmpScan.Params.scanSpeed, newSpectrometer->getMonoPos(), (tmpScan.Params.finPos-tmpScan.Params.startPos)>0?true:false);
     //qDebug() << "Scanner is going to be started!";
     newSpectrometer->scan(ui->setStartPosition->text().toInt(), ui->setTargetPosition->text().toInt(), ui->setScanSpeed->text().toInt());
+    //Maybe result in crash!???
+    delete yes;
+    delete no;
+    //Maybe result in crash???
     yes = NULL;
     no = NULL;
     //Analyze(MainWindow::newScanList);
@@ -962,6 +966,8 @@ void MainWindow::on_logButton_clicked()
         msgBox.exec();
         if(msgBox.clickedButton() == cancel)
         {
+            delete replace;
+            delete cancel;
             replace = NULL;
             cancel = NULL;
             return;
@@ -1473,8 +1479,13 @@ void MainWindow::createLogFile()
     }
     tmpScan.Params.finPos = ui->manual_StopWL->text().toDouble();
     tmpScan.Params.startPos = ui->manual_StartWL->text().toDouble();
-    tmpScan.scanName = QString("Manual Scan");
+    if(ui->manualScanName->text().isEmpty() == true)
+        tmpScan.scanName = QString("Manual Scan");
+    else
+        tmpScan.scanName = ui->manualScanName->text();
     tmpScan.isCalibrated = this->calibrated;
+    delete yes;
+    delete no;
     yes = NULL;
     no = NULL;
     ui->manual_StartWL->setReadOnly(true);
@@ -1497,7 +1508,6 @@ void MainWindow::on_manual_confirmValue_clicked()
     double current_Value = ui->manual_currentValue->text().toDouble();
     ui->manual_currentValue->setText("");
     tmpScan.values.Data.push_back(qMakePair(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), current_Value));
-    double stepSize = 0;
     double WL_difference = ui->manual_StopWL->text().toDouble() - ui->manual_StartWL->text().toDouble();
     double WL_stepSize = WL_difference/ui->manual_Steps->text().toDouble();
     ui->manual_ProgressBar->setValue((int)((double)(this->current_step)/ui->manual_Steps->text().toDouble()*100));

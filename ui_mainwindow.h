@@ -115,6 +115,9 @@ public:
     QLineEdit *manual_StopWL;
     QLabel *label_19;
     QLineEdit *manual_Steps;
+    QHBoxLayout *horizontalLayout_10;
+    QLabel *label_23;
+    QLineEdit *manualScanName;
     QHBoxLayout *horizontalLayout_8;
     QPushButton *manual_StartMeasurement;
     QProgressBar *manual_ProgressBar;
@@ -573,6 +576,22 @@ public:
 
         verticalLayout_2->addLayout(horizontalLayout_7);
 
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setSpacing(6);
+        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
+        label_23 = new QLabel(verticalLayoutWidget);
+        label_23->setObjectName(QStringLiteral("label_23"));
+
+        horizontalLayout_10->addWidget(label_23);
+
+        manualScanName = new QLineEdit(verticalLayoutWidget);
+        manualScanName->setObjectName(QStringLiteral("manualScanName"));
+
+        horizontalLayout_10->addWidget(manualScanName);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_10);
+
         horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setSpacing(6);
         horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
@@ -977,6 +996,7 @@ public:
         label_20->setText(QApplication::translate("MainWindow", "Startwavelength", 0));
         label_21->setText(QApplication::translate("MainWindow", "Stopwavelength", 0));
         label_19->setText(QApplication::translate("MainWindow", "Number of steps", 0));
+        label_23->setText(QApplication::translate("MainWindow", "Scan Name (not necessary):", 0));
         manual_StartMeasurement->setText(QApplication::translate("MainWindow", "Start measurement", 0));
         label_22->setText(QApplication::translate("MainWindow", "Current Value in mV", 0));
         manual_confirmValue->setText(QApplication::translate("MainWindow", "Confirm", 0));
