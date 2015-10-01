@@ -162,18 +162,21 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
 
 Spectrometer_Control::~Spectrometer_Control()
 {
-    //qDebug() << "Cleaning up Spectrometer!";
+    qDebug() << "Cleaning up Spectrometer!";
     if(ipAddr.isEmpty())
     {
+        qDebug() << "Quitting worker in SpecControl";
         workerThread.quit();
-        workerThread.wait();
+        qDebug() << "Waiting for worker in SpecControl";
+        workerThread.wait(1000);
+        qDebug() << "Finished in SpecControl!";
     }
     else
     {
         emit this->shutSpectrometerDown();
         delete remoteControl;
     };
-    //qDebug() << "Spectrometer cleaned!";
+    qDebug() << "Spectrometer cleaned!";
 }
 
 void Spectrometer_Control::TXStatus(bool status)
