@@ -17,6 +17,7 @@
 #include <QJsonValue>
 
 #include "../remoteController/tx_thread.h"
+#include "qsshsocket.h"
 #include "add_functions.h"
 #include "scanlist.h"
 #include "spectrometer.h"
@@ -176,6 +177,9 @@ private:
     QwtPlotPicker* plotPicker;
     QwtPickerMachine* pickerMachine;
 
+    //SSH connection
+    qsshsocket *SshSocket;
+    //End SSH connection
     enum State {ScanState, EditState, MoveState, CalibState};
     State currentState;
     void replot();

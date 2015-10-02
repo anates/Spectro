@@ -101,6 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
     ui->manual_confirmValue->setEnabled(false);
     //Thread work
+    this->SshSocket = NULL;
     //set current state:
     changeState(EditState);
 
@@ -112,7 +113,15 @@ MainWindow::~MainWindow()
     emit stopCounting();
     emit stopControlling();
     emit killScanner();
-
+    qDebug() << "Disconnecting SSH connection";
+    if(this->SshSocket != NULL)
+    {
+        this->SshSocket->disconnectFromHost();
+        qDebug() << "Disconnected from SSH Host";
+        qDebug() << this->SshSocket;
+        delete this->SshSocket;
+    }
+    qDebug() << "SSH disconnected!";
     qDebug() << "Cleaning main!";
     qDebug() << "SC, DPC and SC cleaned";
     delete MainWindow::newSpectrometer;
@@ -131,7 +140,9 @@ MainWindow::~MainWindow()
         delete this->LogFile;
         delete this->LogStream;
     }
+    qDebug() << "LogFile sauber";
     delete ui;
+    qDebug() << "ui sauber";
 }
 
 void MainWindow::connectStatus(bool status)
@@ -1301,9 +1312,22 @@ void MainWindow::on_connect_clicked()
         QMessageBox::information(this, "Information", "No valid ip address entered. Please verify!");
         return;
     }
+    this->SshSocket = new qsshsocket;
+    qDebug() << "Socket starting";
+    this->SshSocket->start();
+    qDebug() << "Socket connecting";
+    this->SshSocket->connectToHost(ui->ipAddress->text());
+    qDebug() << "Is connected? " << this->SshSocket->isConnected();
+    qDebug() << "Socket logging in";
+    this->SshSocket->login("root", "");
+    qDebug() << "Is logged in? " << this->SshSocket->isLoggedIn();
+    qDebug() << "Socket executing command";
+    this->SshSocket->executeCommand("/home/debian/qt-workspace/remoteController_revII/remoteController_revII");
+    sleep(1);
+    qDebug() << "Is disconnected? " << this->SshSocket->isConnected();
     qDebug() << "Connecting now!";
+    sleep(1);
     newSpectrometer->useRemote(ui->ipAddress->text(), 50000);
-    //Must do something here for giving spectrometer the correct ip
 }
 
 void MainWindow::on_CalibButton_clicked()
@@ -1507,9 +1531,6 @@ void MainWindow::createLogFile()
 
 void MainWindow::on_manual_confirmValue_clicked()
 {
-    qDebug() << "########################";
-    qDebug() << "Clicking now on button!";
-    qDebug() << "########################";
     this->reload_data();
     if(this->placed_correctly == false)
     {
@@ -1563,8 +1584,5 @@ void MainWindow::stepperStopped()
     ui->movingBox2->setChecked(false);
     ui->movingBox->setChecked(false);
     ui->manual_confirmValue->setEnabled(true);
-    qDebug() << "########################";
-    qDebug() << "From main: Moving stopped!";
-    qDebug() << "########################";
     return;
 }

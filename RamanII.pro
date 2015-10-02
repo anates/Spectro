@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     dpc.cpp \
     scanner.cpp \
     polarizer_control.cpp \
-    txcontroller.cpp
+    txcontroller.cpp \
+    qsshsocket.cpp
 
 HEADERS  += mainwindow.h \
     add_functions.h \
@@ -51,13 +52,14 @@ HEADERS  += mainwindow.h \
     dpc.h \
     scanner.h \
     polarizer_control.h \
-    txcontroller.h
+    txcontroller.h \
+    qsshsocket.h
 
 FORMS    += mainwindow.ui
 
 INCLUDEPATH += /usr/local/qwt-6.1.1/include
 #Has to be changed back to -L/usr/lib/ afterwards
-LIBS += -L/usr/local/qwt-6.1.1/lib/ -lqwt
+LIBS += -L/usr/local/qwt-6.1.1/lib/ -lqwt -lssh
 
 QMAKE_CXXFLAGS += -std=c++11 -std=gnu++0x
 
