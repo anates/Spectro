@@ -117,6 +117,15 @@ public:
     QLineEdit *manual_StopWL;
     QLabel *label_19;
     QLineEdit *manual_Steps;
+    QHBoxLayout *horizontalLayout_11;
+    QLabel *label_26;
+    QLineEdit *manual_CentralWN;
+    QLabel *label_27;
+    QLineEdit *manual_StartWN;
+    QLabel *label_25;
+    QLineEdit *manual_StopWN;
+    QLabel *label_28;
+    QLineEdit *manual_DeltaWN;
     QHBoxLayout *horizontalLayout_10;
     QLabel *label_23;
     QLineEdit *manualScanName;
@@ -588,6 +597,52 @@ public:
 
         verticalLayout_2->addLayout(horizontalLayout_7);
 
+        horizontalLayout_11 = new QHBoxLayout();
+        horizontalLayout_11->setSpacing(6);
+        horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
+        label_26 = new QLabel(verticalLayoutWidget);
+        label_26->setObjectName(QStringLiteral("label_26"));
+
+        horizontalLayout_11->addWidget(label_26);
+
+        manual_CentralWN = new QLineEdit(verticalLayoutWidget);
+        manual_CentralWN->setObjectName(QStringLiteral("manual_CentralWN"));
+
+        horizontalLayout_11->addWidget(manual_CentralWN);
+
+        label_27 = new QLabel(verticalLayoutWidget);
+        label_27->setObjectName(QStringLiteral("label_27"));
+
+        horizontalLayout_11->addWidget(label_27);
+
+        manual_StartWN = new QLineEdit(verticalLayoutWidget);
+        manual_StartWN->setObjectName(QStringLiteral("manual_StartWN"));
+
+        horizontalLayout_11->addWidget(manual_StartWN);
+
+        label_25 = new QLabel(verticalLayoutWidget);
+        label_25->setObjectName(QStringLiteral("label_25"));
+
+        horizontalLayout_11->addWidget(label_25);
+
+        manual_StopWN = new QLineEdit(verticalLayoutWidget);
+        manual_StopWN->setObjectName(QStringLiteral("manual_StopWN"));
+
+        horizontalLayout_11->addWidget(manual_StopWN);
+
+        label_28 = new QLabel(verticalLayoutWidget);
+        label_28->setObjectName(QStringLiteral("label_28"));
+
+        horizontalLayout_11->addWidget(label_28);
+
+        manual_DeltaWN = new QLineEdit(verticalLayoutWidget);
+        manual_DeltaWN->setObjectName(QStringLiteral("manual_DeltaWN"));
+
+        horizontalLayout_11->addWidget(manual_DeltaWN);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_11);
+
         horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setSpacing(6);
         horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
@@ -1009,6 +1064,10 @@ public:
         label_20->setText(QApplication::translate("MainWindow", "Startwavelength", 0));
         label_21->setText(QApplication::translate("MainWindow", "Stopwavelength", 0));
         label_19->setText(QApplication::translate("MainWindow", "Number of steps", 0));
+        label_26->setText(QApplication::translate("MainWindow", "Central Wavenumber", 0));
+        label_27->setText(QApplication::translate("MainWindow", "Startwavenumber", 0));
+        label_25->setText(QApplication::translate("MainWindow", "Stopwavenumber", 0));
+        label_28->setText(QApplication::translate("MainWindow", "Delta WN", 0));
         label_23->setText(QApplication::translate("MainWindow", "Scan Name (not necessary):", 0));
         manual_StartMeasurement->setText(QApplication::translate("MainWindow", "Start measurement", 0));
         label_22->setText(QApplication::translate("MainWindow", "Current Value in mV", 0));

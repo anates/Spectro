@@ -167,6 +167,24 @@ private slots:
 
     void on_manual_confirmValue_clicked();
 
+    void on_manual_centralWL_textEdited(const QString &arg1);
+
+    void on_manual_StartWL_textEdited(const QString &arg1);
+
+    void on_manual_StopWL_textEdited(const QString &arg1);
+
+    void on_manual_CentralWN_textEdited(const QString &arg1);
+
+    void on_manual_StartWN_textEdited(const QString &arg1);
+
+    void on_manual_StopWN_textEdited(const QString &arg1);
+
+    //void on_manual_currWaveNum_textEdited(const QString &arg1);
+
+    void on_manual_currWaveNum_textChanged(const QString &arg1);
+
+    void on_manual_CentralWN_textChanged(const QString &arg1);
+
 private:
 
 

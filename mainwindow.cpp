@@ -1539,7 +1539,7 @@ void MainWindow::on_manual_confirmValue_clicked()
     }
     double current_Value = ui->manual_currentValue->text().toDouble();
     ui->manual_currentValue->setText("");
-    tmpScan.values.Data.push_back(std::make_tuple(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), convertWLtoWN(convertPosToWL(this->currentPosition_local) - ui->manual_centralWL->text().toDouble()), current_Value));
+    tmpScan.values.Data.push_back(std::make_tuple(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), ui->manual_CentralWN->text().toDouble() - convertPosToWN(this->currentPosition_local), current_Value));
     double WL_difference = ui->manual_StopWL->text().toDouble() - ui->manual_StartWL->text().toDouble();
     double WL_stepSize = WL_difference/ui->manual_Steps->text().toDouble();
     ui->manual_ProgressBar->setValue((int)((double)(this->current_step)/ui->manual_Steps->text().toDouble()*100));
@@ -1585,4 +1585,45 @@ void MainWindow::stepperStopped()
     ui->movingBox->setChecked(false);
     ui->manual_confirmValue->setEnabled(true);
     return;
+}
+
+void MainWindow::on_manual_centralWL_textEdited(const QString &arg1)
+{
+    ui->manual_CentralWN->setText(QString::number(convertWLtoWN(arg1.toDouble())));
+}
+
+void MainWindow::on_manual_StartWL_textEdited(const QString &arg1)
+{
+    ui->manual_StartWN->setText(QString::number(convertWLtoWN(arg1.toDouble())));
+}
+
+void MainWindow::on_manual_StopWL_textEdited(const QString &arg1)
+{
+    ui->manual_StopWN->setText(QString::number(convertWLtoWN(arg1.toDouble())));
+}
+
+void MainWindow::on_manual_CentralWN_textEdited(const QString &arg1)
+{
+    ui->manual_centralWL->setText(QString::number(convertWNtoWL(arg1.toDouble())));
+}
+
+void MainWindow::on_manual_StartWN_textEdited(const QString &arg1)
+{
+    ui->manual_StartWL->setText(QString::number(convertWNtoWL(arg1.toDouble())));
+}
+
+void MainWindow::on_manual_StopWN_textEdited(const QString &arg1)
+{
+    ui->manual_StopWL->setText(QString::number(convertWNtoWL(arg1.toDouble())));
+}
+
+void MainWindow::on_manual_currWaveNum_textChanged(const QString &arg1)
+{
+    if(ui->manual_CentralWN->text().isEmpty() == false)
+        ui->manual_DeltaWN->setText(QString::number(ui->manual_CentralWN->text().toDouble() - convertPosToWN(this->currentPosition_local)));
+}
+
+void MainWindow::on_manual_CentralWN_textChanged(const QString &arg1)
+{
+    ui->manual_DeltaWN->setText(QString::number(convertPosToWN(this->currentPosition_local) - ui->manual_CentralWN->text().toDouble()));
 }
