@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[97];
-    char stringdata[1704];
+    QByteArrayData data[100];
+    char stringdata[1779];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -77,55 +77,58 @@ QT_MOC_LITERAL(44, 571, 10), // "firstPoint"
 QT_MOC_LITERAL(45, 582, 11), // "secondPoint"
 QT_MOC_LITERAL(46, 594, 17), // "calculateInvValue"
 QT_MOC_LITERAL(47, 612, 11), // "targetPoint"
-QT_MOC_LITERAL(48, 624, 28), // "on_loadGenericButton_clicked"
-QT_MOC_LITERAL(49, 653, 4), // "open"
-QT_MOC_LITERAL(50, 658, 11), // "openGeneric"
-QT_MOC_LITERAL(51, 670, 4), // "save"
-QT_MOC_LITERAL(52, 675, 11), // "saveGeneric"
-QT_MOC_LITERAL(53, 687, 19), // "saveGenericAllPlots"
-QT_MOC_LITERAL(54, 707, 21), // "on_dispXValue_toggled"
-QT_MOC_LITERAL(55, 729, 7), // "checked"
-QT_MOC_LITERAL(56, 737, 21), // "on_dispYValue_toggled"
-QT_MOC_LITERAL(57, 759, 21), // "on_dispZValue_toggled"
-QT_MOC_LITERAL(58, 781, 21), // "on_scanButton_clicked"
-QT_MOC_LITERAL(59, 803, 19), // "on_LastScan_clicked"
-QT_MOC_LITERAL(60, 823, 19), // "on_NextScan_clicked"
-QT_MOC_LITERAL(61, 843, 36), // "on_selectScanBox_currentIndex..."
-QT_MOC_LITERAL(62, 880, 5), // "index"
-QT_MOC_LITERAL(63, 886, 19), // "on_saveScan_clicked"
-QT_MOC_LITERAL(64, 906, 11), // "reload_data"
-QT_MOC_LITERAL(65, 918, 14), // "stepperStopped"
-QT_MOC_LITERAL(66, 933, 23), // "on_stepBackMono_clicked"
-QT_MOC_LITERAL(67, 957, 26), // "on_stepForwardMono_clicked"
-QT_MOC_LITERAL(68, 984, 21), // "on_mvButton_2_clicked"
-QT_MOC_LITERAL(69, 1006, 20), // "on_logButton_clicked"
-QT_MOC_LITERAL(70, 1027, 13), // "createLogData"
-QT_MOC_LITERAL(71, 1041, 10), // "loadConfig"
-QT_MOC_LITERAL(72, 1052, 11), // "writeConfig"
-QT_MOC_LITERAL(73, 1064, 23), // "on_execButton_2_clicked"
-QT_MOC_LITERAL(74, 1088, 31), // "on_gridTabWidget_currentChanged"
-QT_MOC_LITERAL(75, 1120, 18), // "on_newScan_clicked"
-QT_MOC_LITERAL(76, 1139, 19), // "on_stopScan_clicked"
-QT_MOC_LITERAL(77, 1159, 29), // "on_saveSettingsButton_clicked"
-QT_MOC_LITERAL(78, 1189, 29), // "on_loadSettingsButton_clicked"
-QT_MOC_LITERAL(79, 1219, 21), // "on_centerMono_clicked"
-QT_MOC_LITERAL(80, 1241, 18), // "on_connect_clicked"
-QT_MOC_LITERAL(81, 1260, 22), // "on_CalibButton_clicked"
-QT_MOC_LITERAL(82, 1283, 24), // "on_CalibFinished_clicked"
-QT_MOC_LITERAL(83, 1308, 23), // "on_CalibConfirm_clicked"
-QT_MOC_LITERAL(84, 1332, 25), // "on_AddMovementLog_clicked"
-QT_MOC_LITERAL(85, 1358, 32), // "on_AddMovementCommentLog_clicked"
-QT_MOC_LITERAL(86, 1391, 34), // "on_manual_StartMeasurement_cl..."
-QT_MOC_LITERAL(87, 1426, 30), // "on_manual_confirmValue_clicked"
-QT_MOC_LITERAL(88, 1457, 30), // "on_manual_centralWL_textEdited"
-QT_MOC_LITERAL(89, 1488, 4), // "arg1"
-QT_MOC_LITERAL(90, 1493, 28), // "on_manual_StartWL_textEdited"
-QT_MOC_LITERAL(91, 1522, 27), // "on_manual_StopWL_textEdited"
-QT_MOC_LITERAL(92, 1550, 30), // "on_manual_CentralWN_textEdited"
-QT_MOC_LITERAL(93, 1581, 28), // "on_manual_StartWN_textEdited"
-QT_MOC_LITERAL(94, 1610, 27), // "on_manual_StopWN_textEdited"
-QT_MOC_LITERAL(95, 1638, 33), // "on_manual_currWaveNum_textCha..."
-QT_MOC_LITERAL(96, 1672, 31) // "on_manual_CentralWN_textChanged"
+QT_MOC_LITERAL(48, 624, 20), // "serialConnectionUsed"
+QT_MOC_LITERAL(49, 645, 28), // "on_loadGenericButton_clicked"
+QT_MOC_LITERAL(50, 674, 4), // "open"
+QT_MOC_LITERAL(51, 679, 11), // "openGeneric"
+QT_MOC_LITERAL(52, 691, 4), // "save"
+QT_MOC_LITERAL(53, 696, 11), // "saveGeneric"
+QT_MOC_LITERAL(54, 708, 19), // "saveGenericAllPlots"
+QT_MOC_LITERAL(55, 728, 21), // "on_dispXValue_toggled"
+QT_MOC_LITERAL(56, 750, 7), // "checked"
+QT_MOC_LITERAL(57, 758, 21), // "on_dispYValue_toggled"
+QT_MOC_LITERAL(58, 780, 21), // "on_dispZValue_toggled"
+QT_MOC_LITERAL(59, 802, 21), // "on_scanButton_clicked"
+QT_MOC_LITERAL(60, 824, 19), // "on_LastScan_clicked"
+QT_MOC_LITERAL(61, 844, 19), // "on_NextScan_clicked"
+QT_MOC_LITERAL(62, 864, 36), // "on_selectScanBox_currentIndex..."
+QT_MOC_LITERAL(63, 901, 5), // "index"
+QT_MOC_LITERAL(64, 907, 19), // "on_saveScan_clicked"
+QT_MOC_LITERAL(65, 927, 11), // "reload_data"
+QT_MOC_LITERAL(66, 939, 14), // "stepperStopped"
+QT_MOC_LITERAL(67, 954, 23), // "on_stepBackMono_clicked"
+QT_MOC_LITERAL(68, 978, 26), // "on_stepForwardMono_clicked"
+QT_MOC_LITERAL(69, 1005, 21), // "on_mvButton_2_clicked"
+QT_MOC_LITERAL(70, 1027, 20), // "on_logButton_clicked"
+QT_MOC_LITERAL(71, 1048, 13), // "createLogData"
+QT_MOC_LITERAL(72, 1062, 10), // "loadConfig"
+QT_MOC_LITERAL(73, 1073, 11), // "writeConfig"
+QT_MOC_LITERAL(74, 1085, 23), // "on_execButton_2_clicked"
+QT_MOC_LITERAL(75, 1109, 31), // "on_gridTabWidget_currentChanged"
+QT_MOC_LITERAL(76, 1141, 18), // "on_newScan_clicked"
+QT_MOC_LITERAL(77, 1160, 19), // "on_stopScan_clicked"
+QT_MOC_LITERAL(78, 1180, 29), // "on_saveSettingsButton_clicked"
+QT_MOC_LITERAL(79, 1210, 29), // "on_loadSettingsButton_clicked"
+QT_MOC_LITERAL(80, 1240, 21), // "on_centerMono_clicked"
+QT_MOC_LITERAL(81, 1262, 18), // "on_connect_clicked"
+QT_MOC_LITERAL(82, 1281, 22), // "on_CalibButton_clicked"
+QT_MOC_LITERAL(83, 1304, 24), // "on_CalibFinished_clicked"
+QT_MOC_LITERAL(84, 1329, 23), // "on_CalibConfirm_clicked"
+QT_MOC_LITERAL(85, 1353, 25), // "on_AddMovementLog_clicked"
+QT_MOC_LITERAL(86, 1379, 32), // "on_AddMovementCommentLog_clicked"
+QT_MOC_LITERAL(87, 1412, 34), // "on_manual_StartMeasurement_cl..."
+QT_MOC_LITERAL(88, 1447, 30), // "on_manual_confirmValue_clicked"
+QT_MOC_LITERAL(89, 1478, 30), // "on_manual_centralWL_textEdited"
+QT_MOC_LITERAL(90, 1509, 4), // "arg1"
+QT_MOC_LITERAL(91, 1514, 28), // "on_manual_StartWL_textEdited"
+QT_MOC_LITERAL(92, 1543, 27), // "on_manual_StopWL_textEdited"
+QT_MOC_LITERAL(93, 1571, 30), // "on_manual_CentralWN_textEdited"
+QT_MOC_LITERAL(94, 1602, 28), // "on_manual_StartWN_textEdited"
+QT_MOC_LITERAL(95, 1631, 27), // "on_manual_StopWN_textEdited"
+QT_MOC_LITERAL(96, 1659, 33), // "on_manual_currWaveNum_textCha..."
+QT_MOC_LITERAL(97, 1693, 31), // "on_manual_CentralWN_textChanged"
+QT_MOC_LITERAL(98, 1725, 25), // "on_connect_serial_clicked"
+QT_MOC_LITERAL(99, 1751, 27) // "on_serial_transmitt_clicked"
 
     },
     "MainWindow\0xPolarizerMoved\0\0Polarizer\0"
@@ -146,8 +149,8 @@ QT_MOC_LITERAL(96, 1672, 31) // "on_manual_CentralWN_textChanged"
     "xVal\0calculateValue\0std::tuple<int,int,int>\0"
     "targetTuple\0firstPoint\0secondPoint\0"
     "calculateInvValue\0targetPoint\0"
-    "on_loadGenericButton_clicked\0open\0"
-    "openGeneric\0save\0saveGeneric\0"
+    "serialConnectionUsed\0on_loadGenericButton_clicked\0"
+    "open\0openGeneric\0save\0saveGeneric\0"
     "saveGenericAllPlots\0on_dispXValue_toggled\0"
     "checked\0on_dispYValue_toggled\0"
     "on_dispZValue_toggled\0on_scanButton_clicked\0"
@@ -177,7 +180,9 @@ QT_MOC_LITERAL(96, 1672, 31) // "on_manual_CentralWN_textChanged"
     "on_manual_StartWN_textEdited\0"
     "on_manual_StopWN_textEdited\0"
     "on_manual_currWaveNum_textChanged\0"
-    "on_manual_CentralWN_textChanged"
+    "on_manual_CentralWN_textChanged\0"
+    "on_connect_serial_clicked\0"
+    "on_serial_transmitt_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -187,7 +192,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      76,   14, // methods
+      79,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -195,84 +200,87 @@ static const uint qt_meta_data_MainWindow[] = {
       12,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,  394,    2, 0x06 /* Public */,
-       4,    2,  399,    2, 0x06 /* Public */,
-       5,    2,  404,    2, 0x06 /* Public */,
-       6,    2,  409,    2, 0x06 /* Public */,
-       7,    2,  414,    2, 0x06 /* Public */,
-       8,    2,  419,    2, 0x06 /* Public */,
-       9,    0,  424,    2, 0x06 /* Public */,
-      10,    0,  425,    2, 0x06 /* Public */,
-      11,    0,  426,    2, 0x06 /* Public */,
-      12,    0,  427,    2, 0x06 /* Public */,
-      13,    0,  428,    2, 0x06 /* Public */,
-      14,    5,  429,    2, 0x06 /* Public */,
+       1,    2,  409,    2, 0x06 /* Public */,
+       4,    2,  414,    2, 0x06 /* Public */,
+       5,    2,  419,    2, 0x06 /* Public */,
+       6,    2,  424,    2, 0x06 /* Public */,
+       7,    2,  429,    2, 0x06 /* Public */,
+       8,    2,  434,    2, 0x06 /* Public */,
+       9,    0,  439,    2, 0x06 /* Public */,
+      10,    0,  440,    2, 0x06 /* Public */,
+      11,    0,  441,    2, 0x06 /* Public */,
+      12,    0,  442,    2, 0x06 /* Public */,
+      13,    0,  443,    2, 0x06 /* Public */,
+      14,    5,  444,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      15,    0,  440,    2, 0x0a /* Public */,
-      16,    1,  441,    2, 0x0a /* Public */,
-      18,    0,  444,    2, 0x0a /* Public */,
-      19,    2,  445,    2, 0x0a /* Public */,
-      21,    0,  450,    2, 0x0a /* Public */,
-      22,    1,  451,    2, 0x0a /* Public */,
-      24,    1,  454,    2, 0x0a /* Public */,
-      27,    0,  457,    2, 0x0a /* Public */,
-      28,    0,  458,    2, 0x0a /* Public */,
-      29,    0,  459,    2, 0x0a /* Public */,
-      30,    1,  460,    2, 0x0a /* Public */,
-      31,    1,  463,    2, 0x0a /* Public */,
-      33,    1,  466,    2, 0x0a /* Public */,
-      34,    1,  469,    2, 0x0a /* Public */,
-      37,    0,  472,    2, 0x0a /* Public */,
-      38,    1,  473,    2, 0x0a /* Public */,
-      41,    3,  476,    2, 0x0a /* Public */,
-      46,    3,  483,    2, 0x0a /* Public */,
-      48,    0,  490,    2, 0x08 /* Private */,
-      49,    0,  491,    2, 0x08 /* Private */,
-      50,    0,  492,    2, 0x08 /* Private */,
-      51,    0,  493,    2, 0x08 /* Private */,
-      52,    0,  494,    2, 0x08 /* Private */,
-      53,    0,  495,    2, 0x08 /* Private */,
-      54,    1,  496,    2, 0x08 /* Private */,
-      56,    1,  499,    2, 0x08 /* Private */,
-      57,    1,  502,    2, 0x08 /* Private */,
-      58,    0,  505,    2, 0x08 /* Private */,
-      59,    0,  506,    2, 0x08 /* Private */,
-      60,    0,  507,    2, 0x08 /* Private */,
-      61,    1,  508,    2, 0x08 /* Private */,
-      63,    0,  511,    2, 0x08 /* Private */,
-      64,    0,  512,    2, 0x08 /* Private */,
-      65,    0,  513,    2, 0x08 /* Private */,
-      66,    0,  514,    2, 0x08 /* Private */,
-      67,    0,  515,    2, 0x08 /* Private */,
-      68,    0,  516,    2, 0x08 /* Private */,
-      69,    0,  517,    2, 0x08 /* Private */,
-      70,    0,  518,    2, 0x08 /* Private */,
-      71,    0,  519,    2, 0x08 /* Private */,
-      72,    0,  520,    2, 0x08 /* Private */,
-      73,    0,  521,    2, 0x08 /* Private */,
-      74,    1,  522,    2, 0x08 /* Private */,
-      75,    0,  525,    2, 0x08 /* Private */,
-      76,    0,  526,    2, 0x08 /* Private */,
-      77,    0,  527,    2, 0x08 /* Private */,
-      78,    0,  528,    2, 0x08 /* Private */,
-      79,    0,  529,    2, 0x08 /* Private */,
-      80,    0,  530,    2, 0x08 /* Private */,
-      81,    0,  531,    2, 0x08 /* Private */,
-      82,    0,  532,    2, 0x08 /* Private */,
-      83,    0,  533,    2, 0x08 /* Private */,
-      84,    0,  534,    2, 0x08 /* Private */,
-      85,    0,  535,    2, 0x08 /* Private */,
-      86,    0,  536,    2, 0x08 /* Private */,
-      87,    0,  537,    2, 0x08 /* Private */,
-      88,    1,  538,    2, 0x08 /* Private */,
-      90,    1,  541,    2, 0x08 /* Private */,
-      91,    1,  544,    2, 0x08 /* Private */,
-      92,    1,  547,    2, 0x08 /* Private */,
-      93,    1,  550,    2, 0x08 /* Private */,
-      94,    1,  553,    2, 0x08 /* Private */,
-      95,    1,  556,    2, 0x08 /* Private */,
-      96,    1,  559,    2, 0x08 /* Private */,
+      15,    0,  455,    2, 0x0a /* Public */,
+      16,    1,  456,    2, 0x0a /* Public */,
+      18,    0,  459,    2, 0x0a /* Public */,
+      19,    2,  460,    2, 0x0a /* Public */,
+      21,    0,  465,    2, 0x0a /* Public */,
+      22,    1,  466,    2, 0x0a /* Public */,
+      24,    1,  469,    2, 0x0a /* Public */,
+      27,    0,  472,    2, 0x0a /* Public */,
+      28,    0,  473,    2, 0x0a /* Public */,
+      29,    0,  474,    2, 0x0a /* Public */,
+      30,    1,  475,    2, 0x0a /* Public */,
+      31,    1,  478,    2, 0x0a /* Public */,
+      33,    1,  481,    2, 0x0a /* Public */,
+      34,    1,  484,    2, 0x0a /* Public */,
+      37,    0,  487,    2, 0x0a /* Public */,
+      38,    1,  488,    2, 0x0a /* Public */,
+      41,    3,  491,    2, 0x0a /* Public */,
+      46,    3,  498,    2, 0x0a /* Public */,
+      48,    1,  505,    2, 0x0a /* Public */,
+      49,    0,  508,    2, 0x08 /* Private */,
+      50,    0,  509,    2, 0x08 /* Private */,
+      51,    0,  510,    2, 0x08 /* Private */,
+      52,    0,  511,    2, 0x08 /* Private */,
+      53,    0,  512,    2, 0x08 /* Private */,
+      54,    0,  513,    2, 0x08 /* Private */,
+      55,    1,  514,    2, 0x08 /* Private */,
+      57,    1,  517,    2, 0x08 /* Private */,
+      58,    1,  520,    2, 0x08 /* Private */,
+      59,    0,  523,    2, 0x08 /* Private */,
+      60,    0,  524,    2, 0x08 /* Private */,
+      61,    0,  525,    2, 0x08 /* Private */,
+      62,    1,  526,    2, 0x08 /* Private */,
+      64,    0,  529,    2, 0x08 /* Private */,
+      65,    0,  530,    2, 0x08 /* Private */,
+      66,    0,  531,    2, 0x08 /* Private */,
+      67,    0,  532,    2, 0x08 /* Private */,
+      68,    0,  533,    2, 0x08 /* Private */,
+      69,    0,  534,    2, 0x08 /* Private */,
+      70,    0,  535,    2, 0x08 /* Private */,
+      71,    0,  536,    2, 0x08 /* Private */,
+      72,    0,  537,    2, 0x08 /* Private */,
+      73,    0,  538,    2, 0x08 /* Private */,
+      74,    0,  539,    2, 0x08 /* Private */,
+      75,    1,  540,    2, 0x08 /* Private */,
+      76,    0,  543,    2, 0x08 /* Private */,
+      77,    0,  544,    2, 0x08 /* Private */,
+      78,    0,  545,    2, 0x08 /* Private */,
+      79,    0,  546,    2, 0x08 /* Private */,
+      80,    0,  547,    2, 0x08 /* Private */,
+      81,    0,  548,    2, 0x08 /* Private */,
+      82,    0,  549,    2, 0x08 /* Private */,
+      83,    0,  550,    2, 0x08 /* Private */,
+      84,    0,  551,    2, 0x08 /* Private */,
+      85,    0,  552,    2, 0x08 /* Private */,
+      86,    0,  553,    2, 0x08 /* Private */,
+      87,    0,  554,    2, 0x08 /* Private */,
+      88,    0,  555,    2, 0x08 /* Private */,
+      89,    1,  556,    2, 0x08 /* Private */,
+      91,    1,  559,    2, 0x08 /* Private */,
+      92,    1,  562,    2, 0x08 /* Private */,
+      93,    1,  565,    2, 0x08 /* Private */,
+      94,    1,  568,    2, 0x08 /* Private */,
+      95,    1,  571,    2, 0x08 /* Private */,
+      96,    1,  574,    2, 0x08 /* Private */,
+      97,    1,  577,    2, 0x08 /* Private */,
+      98,    0,  580,    2, 0x08 /* Private */,
+      99,    0,  581,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3, QMetaType::Bool,    2,    2,
@@ -307,31 +315,20 @@ static const uint qt_meta_data_MainWindow[] = {
     0x80000000 | 39, QMetaType::Int,   40,
     QMetaType::Int, 0x80000000 | 42, 0x80000000 | 25, 0x80000000 | 25,   43,   44,   45,
     QMetaType::Int, 0x80000000 | 25, 0x80000000 | 25, 0x80000000 | 25,   47,   44,   45,
+    QMetaType::Void, QMetaType::Bool,   23,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,   55,
-    QMetaType::Void, QMetaType::Bool,   55,
-    QMetaType::Void, QMetaType::Bool,   55,
+    QMetaType::Void, QMetaType::Bool,   56,
+    QMetaType::Void, QMetaType::Bool,   56,
+    QMetaType::Void, QMetaType::Bool,   56,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   62,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   62,
+    QMetaType::Void, QMetaType::Int,   63,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -343,16 +340,30 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   63,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
-    QMetaType::Void, QMetaType::QString,   89,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void, QMetaType::QString,   90,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -395,52 +406,55 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 29: { int _r = _t->calculateInvValue((*reinterpret_cast< QPair<int,int>(*)>(_a[1])),(*reinterpret_cast< QPair<int,int>(*)>(_a[2])),(*reinterpret_cast< QPair<int,int>(*)>(_a[3])));
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
-        case 30: _t->on_loadGenericButton_clicked(); break;
-        case 31: _t->open(); break;
-        case 32: _t->openGeneric(); break;
-        case 33: _t->save(); break;
-        case 34: _t->saveGeneric(); break;
-        case 35: _t->saveGenericAllPlots(); break;
-        case 36: _t->on_dispXValue_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 37: _t->on_dispYValue_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 38: _t->on_dispZValue_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 39: _t->on_scanButton_clicked(); break;
-        case 40: _t->on_LastScan_clicked(); break;
-        case 41: _t->on_NextScan_clicked(); break;
-        case 42: _t->on_selectScanBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 43: _t->on_saveScan_clicked(); break;
-        case 44: _t->reload_data(); break;
-        case 45: _t->stepperStopped(); break;
-        case 46: _t->on_stepBackMono_clicked(); break;
-        case 47: _t->on_stepForwardMono_clicked(); break;
-        case 48: _t->on_mvButton_2_clicked(); break;
-        case 49: _t->on_logButton_clicked(); break;
-        case 50: _t->createLogData(); break;
-        case 51: _t->loadConfig(); break;
-        case 52: _t->writeConfig(); break;
-        case 53: _t->on_execButton_2_clicked(); break;
-        case 54: _t->on_gridTabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 55: _t->on_newScan_clicked(); break;
-        case 56: _t->on_stopScan_clicked(); break;
-        case 57: _t->on_saveSettingsButton_clicked(); break;
-        case 58: _t->on_loadSettingsButton_clicked(); break;
-        case 59: _t->on_centerMono_clicked(); break;
-        case 60: _t->on_connect_clicked(); break;
-        case 61: _t->on_CalibButton_clicked(); break;
-        case 62: _t->on_CalibFinished_clicked(); break;
-        case 63: _t->on_CalibConfirm_clicked(); break;
-        case 64: _t->on_AddMovementLog_clicked(); break;
-        case 65: _t->on_AddMovementCommentLog_clicked(); break;
-        case 66: _t->on_manual_StartMeasurement_clicked(); break;
-        case 67: _t->on_manual_confirmValue_clicked(); break;
-        case 68: _t->on_manual_centralWL_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 69: _t->on_manual_StartWL_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 70: _t->on_manual_StopWL_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 71: _t->on_manual_CentralWN_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 72: _t->on_manual_StartWN_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 73: _t->on_manual_StopWN_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 74: _t->on_manual_currWaveNum_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 75: _t->on_manual_CentralWN_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 30: _t->serialConnectionUsed((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 31: _t->on_loadGenericButton_clicked(); break;
+        case 32: _t->open(); break;
+        case 33: _t->openGeneric(); break;
+        case 34: _t->save(); break;
+        case 35: _t->saveGeneric(); break;
+        case 36: _t->saveGenericAllPlots(); break;
+        case 37: _t->on_dispXValue_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 38: _t->on_dispYValue_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 39: _t->on_dispZValue_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 40: _t->on_scanButton_clicked(); break;
+        case 41: _t->on_LastScan_clicked(); break;
+        case 42: _t->on_NextScan_clicked(); break;
+        case 43: _t->on_selectScanBox_currentIndexChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 44: _t->on_saveScan_clicked(); break;
+        case 45: _t->reload_data(); break;
+        case 46: _t->stepperStopped(); break;
+        case 47: _t->on_stepBackMono_clicked(); break;
+        case 48: _t->on_stepForwardMono_clicked(); break;
+        case 49: _t->on_mvButton_2_clicked(); break;
+        case 50: _t->on_logButton_clicked(); break;
+        case 51: _t->createLogData(); break;
+        case 52: _t->loadConfig(); break;
+        case 53: _t->writeConfig(); break;
+        case 54: _t->on_execButton_2_clicked(); break;
+        case 55: _t->on_gridTabWidget_currentChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 56: _t->on_newScan_clicked(); break;
+        case 57: _t->on_stopScan_clicked(); break;
+        case 58: _t->on_saveSettingsButton_clicked(); break;
+        case 59: _t->on_loadSettingsButton_clicked(); break;
+        case 60: _t->on_centerMono_clicked(); break;
+        case 61: _t->on_connect_clicked(); break;
+        case 62: _t->on_CalibButton_clicked(); break;
+        case 63: _t->on_CalibFinished_clicked(); break;
+        case 64: _t->on_CalibConfirm_clicked(); break;
+        case 65: _t->on_AddMovementLog_clicked(); break;
+        case 66: _t->on_AddMovementCommentLog_clicked(); break;
+        case 67: _t->on_manual_StartMeasurement_clicked(); break;
+        case 68: _t->on_manual_confirmValue_clicked(); break;
+        case 69: _t->on_manual_centralWL_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 70: _t->on_manual_StartWL_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 71: _t->on_manual_StopWL_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 72: _t->on_manual_CentralWN_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 73: _t->on_manual_StartWN_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 74: _t->on_manual_StopWN_textEdited((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 75: _t->on_manual_currWaveNum_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 76: _t->on_manual_CentralWN_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 77: _t->on_connect_serial_clicked(); break;
+        case 78: _t->on_serial_transmitt_clicked(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -571,13 +585,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 76)
+        if (_id < 79)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 76;
+        _id -= 79;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 76)
+        if (_id < 79)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 76;
+        _id -= 79;
     }
     return _id;
 }

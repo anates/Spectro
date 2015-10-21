@@ -15,6 +15,7 @@
 #include <QWaitCondition>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QtSerialPort/QSerialPortInfo>
 
 #include "../remoteController/tx_thread.h"
 #include "qsshsocket.h"
@@ -22,6 +23,7 @@
 #include "scanlist.h"
 #include "spectrometer.h"
 #include "txcontroller.h"
+
 
 class QPushButton;
 class QLabel;
@@ -69,6 +71,8 @@ public slots:
     QPair<QPair<int, int>, QPair<int, int> > getNearestPoints(int xVal);
     int calculateValue(std::tuple<int, int, int> targetTuple, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
     int calculateInvValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
+
+    void serialConnectionUsed(bool status);
 signals:
     //Polarizer signals
     void xPolarizerMoved(Polarizer, bool);
@@ -185,6 +189,10 @@ private slots:
 
     void on_manual_CentralWN_textChanged(const QString &arg1);
 
+    void on_connect_serial_clicked();
+
+    void on_serial_transmitt_clicked();
+
 private:
 
 
@@ -198,6 +206,7 @@ private:
     //SSH connection
     qsshsocket *SshSocket;
     //End SSH connection
+
     enum State {ScanState, EditState, MoveState, CalibState};
     State currentState;
     void replot();

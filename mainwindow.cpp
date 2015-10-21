@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
     connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::scanIsFinished);
     connect(newSpectrometer, &Spectrometer_Control::currentStatus, this, &MainWindow::newStepperStatus);
+    connect(newSpectrometer, &Spectrometer_Control::SerialIsConnected, this, &MainWindow::serialConnectionUsed);
     //connect(newSpectrometer, &Spectrometer_Control::scanFinished, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::positionChanged, this, &MainWindow::PositionChanged);
     connect(newSpectrometer, &Spectrometer_Control::stepperIsStopped, this, &MainWindow::stepperStopped);
@@ -104,6 +105,11 @@ MainWindow::MainWindow(QWidget *parent) :
     this->SshSocket = NULL;
     //set current state:
     changeState(EditState);
+    //load current serial port list
+    QList<QSerialPortInfo> list;
+    list = QSerialPortInfo::availablePorts();
+    for(int i = 0; i < list.size(); i++)
+        ui->serial_ComboBox->addItem(list[i].description());
 
 }
 
@@ -1078,8 +1084,12 @@ void MainWindow::loadConfig()
 
 void MainWindow::oncurrentCount(int counts)
 {
+
     if(counts != ui->photoCounter->text().toInt())
+    {
+        qDebug() << "New counts!";
         ui->photoCounter->setText(QString::number(counts));
+    }
 }
 
 void MainWindow::writeConfig()
@@ -1626,4 +1636,28 @@ void MainWindow::on_manual_currWaveNum_textChanged(const QString &arg1)
 void MainWindow::on_manual_CentralWN_textChanged(const QString &arg1)
 {
     ui->manual_DeltaWN->setText(QString::number(convertPosToWN(this->currentPosition_local) - ui->manual_CentralWN->text().toDouble()));
+}
+
+void MainWindow::on_connect_serial_clicked()
+{
+    QList<QSerialPortInfo> list;
+    list = QSerialPortInfo::availablePorts();
+    this->newSpectrometer->initSerial(list[ui->serial_ComboBox->currentIndex()].portName(), 1000, 38400);
+    qDebug() << "Current serial is: " << list[ui->serial_ComboBox->currentIndex()].portName();
+    //this->newSpectrometer->get_analog_value();
+}
+
+void MainWindow::on_serial_transmitt_clicked()
+{
+    this->newSpectrometer->get_analog_value();
+}
+
+void MainWindow::serialConnectionUsed(bool status)
+{
+    if(status == true)
+    {
+        ui->serialCheckbox->setChecked(true);
+        ui->serialCheckbox->setDisabled(true);
+        ui->connect_serial->setDisabled(true);
+    }
 }

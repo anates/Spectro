@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network testlib
+QT       += core gui network testlib serialport
 
 TARGET = RamanII
 TEMPLATE = app
@@ -17,8 +17,8 @@ SOURCES += main.cpp\
     ../tcp_client_test/server.cpp \
     ../remoteController/tx_thread.cpp \
     ../BlackLib/v1_0/BlackLib.cpp \
-    ../BlackLib/v2_0/BlackCore.cpp \
-    ../BlackLib/v2_0/BlackGPIO.cpp \
+    ../BlackLib/v3_0/BlackCore.cpp \
+    ../BlackLib/v3_0//BlackGPIO/BlackGPIO.cpp \
     scandata.cpp \
     logfile.cpp \
     scanparams.cpp \
@@ -30,18 +30,19 @@ SOURCES += main.cpp\
     scanner.cpp \
     polarizer_control.cpp \
     txcontroller.cpp \
-    qsshsocket.cpp
+    qsshsocket.cpp \
+    serial_controller.cpp
 
 HEADERS  += mainwindow.h \
     add_functions.h \
     ../tcp_client_test/client.h \
     ../tcp_client_test/server.h \
     ../remoteController/tx_thread.h \
-    ../BlackLib/v2_0/BlackCore.h \
-    ../BlackLib/v2_0/BlackDef.h \
-    ../BlackLib/v2_0/BlackErr.h \
-    ../BlackLib/v2_0/BlackGPIO.h \
-    ../BlackLib/v2_0/BlackLib.h \
+    ../BlackLib/v3_0/BlackCore.h \
+    ../BlackLib/v3_0/BlackDef.h \
+    ../BlackLib/v3_0/BlackErr.h \
+    ../BlackLib/v3_0/BlackGPIO/BlackGPIO.h \
+    ../BlackLib/v3_0/BlackLib.h \
     scandata.h \
     logfile.h \
     scanparams.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     scanner.h \
     polarizer_control.h \
     txcontroller.h \
-    qsshsocket.h
+    qsshsocket.h \
+    serial_controller.h
 
 FORMS    += mainwindow.ui
 

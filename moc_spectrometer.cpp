@@ -405,8 +405,8 @@ void Spectrometer::switchingSucceed(Polarizer _t1)
     QMetaObject::activate(this, &staticMetaObject, 11, _a);
 }
 struct qt_meta_stringdata_Spectrometer_Control_t {
-    QByteArrayData data[39];
-    char stringdata[476];
+    QByteArrayData data[42];
+    char stringdata[520];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -444,16 +444,19 @@ QT_MOC_LITERAL(25, 282, 15), // "positionChanged"
 QT_MOC_LITERAL(26, 298, 13), // "stepperMoving"
 QT_MOC_LITERAL(27, 312, 9), // "TX_status"
 QT_MOC_LITERAL(28, 322, 6), // "status"
-QT_MOC_LITERAL(29, 329, 8), // "scanData"
-QT_MOC_LITERAL(30, 338, 13), // "currentCounts"
-QT_MOC_LITERAL(31, 352, 21), // "updateCurrentPosition"
-QT_MOC_LITERAL(32, 374, 15), // "stepperIsMoving"
-QT_MOC_LITERAL(33, 390, 14), // "stepperStopped"
-QT_MOC_LITERAL(34, 405, 20), // "currentStepperStatus"
-QT_MOC_LITERAL(35, 426, 16), // "updatePolarizers"
-QT_MOC_LITERAL(36, 443, 10), // "scanFinish"
-QT_MOC_LITERAL(37, 454, 12), // "scanPosition"
-QT_MOC_LITERAL(38, 467, 8) // "TXStatus"
+QT_MOC_LITERAL(29, 329, 17), // "SerialIsConnected"
+QT_MOC_LITERAL(30, 347, 8), // "scanData"
+QT_MOC_LITERAL(31, 356, 13), // "currentCounts"
+QT_MOC_LITERAL(32, 370, 21), // "updateCurrentPosition"
+QT_MOC_LITERAL(33, 392, 15), // "stepperIsMoving"
+QT_MOC_LITERAL(34, 408, 14), // "stepperStopped"
+QT_MOC_LITERAL(35, 423, 20), // "currentStepperStatus"
+QT_MOC_LITERAL(36, 444, 16), // "updatePolarizers"
+QT_MOC_LITERAL(37, 461, 10), // "scanFinish"
+QT_MOC_LITERAL(38, 472, 12), // "scanPosition"
+QT_MOC_LITERAL(39, 485, 8), // "TXStatus"
+QT_MOC_LITERAL(40, 494, 8), // "response"
+QT_MOC_LITERAL(41, 503, 16) // "get_analog_value"
 
     },
     "Spectrometer_Control\0switchPolarizer\0"
@@ -465,11 +468,12 @@ QT_MOC_LITERAL(38, 467, 8) // "TXStatus"
     "currentScanPosition\0position\0"
     "currentCounterData\0counts\0currentStatus\0"
     "positionChanged\0stepperMoving\0TX_status\0"
-    "status\0scanData\0currentCounts\0"
-    "updateCurrentPosition\0stepperIsMoving\0"
-    "stepperStopped\0currentStepperStatus\0"
-    "updatePolarizers\0scanFinish\0scanPosition\0"
-    "TXStatus"
+    "status\0SerialIsConnected\0scanData\0"
+    "currentCounts\0updateCurrentPosition\0"
+    "stepperIsMoving\0stepperStopped\0"
+    "currentStepperStatus\0updatePolarizers\0"
+    "scanFinish\0scanPosition\0TXStatus\0"
+    "response\0get_analog_value"
 };
 #undef QT_MOC_LITERAL
 
@@ -479,40 +483,43 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      24,   14, // methods
+      27,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-      14,       // signalCount
+      15,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  134,    2, 0x06 /* Public */,
-       5,    2,  137,    2, 0x06 /* Public */,
-       8,    3,  142,    2, 0x06 /* Public */,
-      12,    1,  149,    2, 0x06 /* Public */,
-      14,    0,  152,    2, 0x06 /* Public */,
-      15,    1,  153,    2, 0x06 /* Public */,
-      18,    0,  156,    2, 0x06 /* Public */,
-      19,    0,  157,    2, 0x06 /* Public */,
-      20,    1,  158,    2, 0x06 /* Public */,
-      22,    1,  161,    2, 0x06 /* Public */,
-      24,    1,  164,    2, 0x06 /* Public */,
-      25,    0,  167,    2, 0x06 /* Public */,
-      26,    0,  168,    2, 0x06 /* Public */,
-      27,    1,  169,    2, 0x06 /* Public */,
+       1,    1,  149,    2, 0x06 /* Public */,
+       5,    2,  152,    2, 0x06 /* Public */,
+       8,    3,  157,    2, 0x06 /* Public */,
+      12,    1,  164,    2, 0x06 /* Public */,
+      14,    0,  167,    2, 0x06 /* Public */,
+      15,    1,  168,    2, 0x06 /* Public */,
+      18,    0,  171,    2, 0x06 /* Public */,
+      19,    0,  172,    2, 0x06 /* Public */,
+      20,    1,  173,    2, 0x06 /* Public */,
+      22,    1,  176,    2, 0x06 /* Public */,
+      24,    1,  179,    2, 0x06 /* Public */,
+      25,    0,  182,    2, 0x06 /* Public */,
+      26,    0,  183,    2, 0x06 /* Public */,
+      27,    1,  184,    2, 0x06 /* Public */,
+      29,    1,  187,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      29,    1,  172,    2, 0x0a /* Public */,
-      30,    1,  175,    2, 0x0a /* Public */,
-      31,    2,  178,    2, 0x0a /* Public */,
-      32,    0,  183,    2, 0x0a /* Public */,
-      33,    0,  184,    2, 0x0a /* Public */,
-      34,    1,  185,    2, 0x0a /* Public */,
-      35,    1,  188,    2, 0x0a /* Public */,
-      36,    0,  191,    2, 0x0a /* Public */,
-      37,    1,  192,    2, 0x0a /* Public */,
-      38,    1,  195,    2, 0x0a /* Public */,
+      30,    1,  190,    2, 0x0a /* Public */,
+      31,    1,  193,    2, 0x0a /* Public */,
+      32,    2,  196,    2, 0x0a /* Public */,
+      33,    0,  201,    2, 0x0a /* Public */,
+      34,    0,  202,    2, 0x0a /* Public */,
+      35,    1,  203,    2, 0x0a /* Public */,
+      36,    1,  206,    2, 0x0a /* Public */,
+      37,    0,  209,    2, 0x0a /* Public */,
+      38,    1,  210,    2, 0x0a /* Public */,
+      39,    1,  213,    2, 0x0a /* Public */,
+      40,    1,  216,    2, 0x0a /* Public */,
+      41,    0,  219,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -529,6 +536,7 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Bool,   28,
+    QMetaType::Void, QMetaType::Bool,   28,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 16,   17,
@@ -541,6 +549,8 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QReal,   21,
     QMetaType::Void, QMetaType::Bool,   28,
+    QMetaType::Void, QMetaType::QString,   40,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -564,16 +574,19 @@ void Spectrometer_Control::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 11: _t->positionChanged(); break;
         case 12: _t->stepperMoving(); break;
         case 13: _t->TX_status((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 14: _t->scanData((*reinterpret_cast< QPair<int,int>(*)>(_a[1]))); break;
-        case 15: _t->currentCounts((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 16: _t->updateCurrentPosition((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
-        case 17: _t->stepperIsMoving(); break;
-        case 18: _t->stepperStopped(); break;
-        case 19: _t->currentStepperStatus((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 20: _t->updatePolarizers((*reinterpret_cast< Polarizer(*)>(_a[1]))); break;
-        case 21: _t->scanFinish(); break;
-        case 22: _t->scanPosition((*reinterpret_cast< qreal(*)>(_a[1]))); break;
-        case 23: _t->TXStatus((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 14: _t->SerialIsConnected((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 15: _t->scanData((*reinterpret_cast< QPair<int,int>(*)>(_a[1]))); break;
+        case 16: _t->currentCounts((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 17: _t->updateCurrentPosition((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
+        case 18: _t->stepperIsMoving(); break;
+        case 19: _t->stepperStopped(); break;
+        case 20: _t->currentStepperStatus((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: _t->updatePolarizers((*reinterpret_cast< Polarizer(*)>(_a[1]))); break;
+        case 22: _t->scanFinish(); break;
+        case 23: _t->scanPosition((*reinterpret_cast< qreal(*)>(_a[1]))); break;
+        case 24: _t->TXStatus((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 25: _t->response((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 26: _t->get_analog_value(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -586,7 +599,7 @@ void Spectrometer_Control::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
                 *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< Polarizer >(); break;
             }
             break;
-        case 20:
+        case 21:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -681,6 +694,12 @@ void Spectrometer_Control::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
                 *result = 13;
             }
         }
+        {
+            typedef void (Spectrometer_Control::*_t)(bool );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Spectrometer_Control::SerialIsConnected)) {
+                *result = 14;
+            }
+        }
     }
 }
 
@@ -709,13 +728,13 @@ int Spectrometer_Control::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 24)
+        if (_id < 27)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 24;
+        _id -= 27;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 24)
+        if (_id < 27)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 24;
+        _id -= 27;
     }
     return _id;
 }
@@ -811,5 +830,12 @@ void Spectrometer_Control::TX_status(bool _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 13, _a);
+}
+
+// SIGNAL 14
+void Spectrometer_Control::SerialIsConnected(bool _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 14, _a);
 }
 QT_END_MOC_NAMESPACE

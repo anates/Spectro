@@ -1,4 +1,5 @@
 #include "spectrometer.h"
+#include <sstream>
 
 //Spectrometer functions
 Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond)
@@ -10,7 +11,6 @@ Spectrometer::Spectrometer(QMutex *mutex, QWaitCondition *WaitCond)
     counterData *Data = new counterData;
     Data->mutex.lock();
     Data->mutex.unlock();
-
 
     stepperControl = new Stepper_Control_Master(MovingMutex, MovingCond);
     scannerControl = new Scanner_Master(MovingMutex, MovingCond, Data);
@@ -118,6 +118,7 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
     for(int i = 0; i < 3; i++)
         polarizerSetting.push_back(false);
     Spectrometer_Control::MonoPos = 0;
+    this->SR_controller = NULL;
     if(ipAddr.isEmpty())
     {
         newSpectrometer = new Spectrometer(MovingMutex, MovingCond);
@@ -125,7 +126,9 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
         connect(&workerThread, &QThread::finished, newSpectrometer, &QObject::deleteLater);
 
         connect(newSpectrometer, &Spectrometer::Data, this, &Spectrometer_Control::scanData);
-        connect(newSpectrometer, &Spectrometer::DPCCounts, this, &Spectrometer_Control::currentCounts);
+        //Temporarily disabled
+        //connect(newSpectrometer, &Spectrometer::DPCCounts, this, &Spectrometer_Control::currentCounts);
+        //Temporarily disabled
         connect(newSpectrometer, &Spectrometer::currentPosition, this, &Spectrometer_Control::updateCurrentPosition);
         connect(newSpectrometer, &Spectrometer::switchingSucceed, this, &Spectrometer_Control::updatePolarizers);
         //connect(newSpectrometer, &Spectrometer::scanFinish, this, &Spectrometer_Control::scanFinish);
@@ -351,4 +354,39 @@ void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
     connect(this, &Spectrometer_Control::moveStepperToTarget, remoteControl, &TXcontroller::moveToTarget);
     connect(this, &Spectrometer_Control::runScan, remoteControl, &TXcontroller::runScan);
     connect(this, &Spectrometer_Control::shutSpectrometerDown, remoteControl, &TXcontroller::shutDown);
+}
+
+void Spectrometer_Control::response(QString response)
+{
+    qDebug() << "Spectrometer-response is: " << response;
+    if(QString::compare(response, "C", Qt::CaseInsensitive) == 0)
+    {
+        this->serial_connected = true;
+        emit this->SerialIsConnected(this->serial_connected);
+    }
+    else
+    {
+
+        QByteArray buffer = response.toLatin1();
+        const char * tmp_buffer = buffer.data();
+        int buffer_int;
+        std::stringstream str;
+        str << tmp_buffer;
+        str >> buffer_int;
+        qDebug() << "Current counts: " << buffer_int;
+        this->currentCounts(buffer_int);
+    }
+}
+
+void Spectrometer_Control::initSerial(const QString &portName, int waitTimeout, int BaudRate)
+{
+    this->SR_controller = new serial_controller(portName, waitTimeout, BaudRate);
+    qDebug() << disconnect(this->newSpectrometer, SIGNAL(DPCCounts(int)));
+    connect(this->SR_controller, &serial_controller::response, this, &Spectrometer_Control::response);
+    this->SR_controller->transaction("C");
+}
+
+void Spectrometer_Control::get_analog_value()
+{
+    this->SR_controller->transaction("a");
 }

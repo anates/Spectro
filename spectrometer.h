@@ -10,6 +10,7 @@
 #include "stepper_control.h"
 #include "polarizer_control.h"
 #include "txcontroller.h"
+#include "serial_controller.h"
 
 class Spectrometer: public QObject
 {
@@ -85,6 +86,10 @@ private:
     QWaitCondition *MovingCond, *CountCond;
     TXcontroller *remoteControl;
     Spectrometer *newSpectrometer;
+    //Serial connection
+    serial_controller *SR_controller;
+    bool serial_connected = true;
+    //End serial connection
 public slots:
     //Internal connections
     //to DPC
@@ -102,6 +107,10 @@ public slots:
     void scanPosition(qreal position);
     //from TX
     void TXStatus(bool status);
+    //from serial
+    void response(QString response);
+    //to serial
+    void get_analog_value(void);
 signals:
     //Internal
     void switchPolarizer(Polarizer pol);
@@ -119,6 +128,7 @@ signals:
     void positionChanged(void);
     void stepperMoving(void);
     void TX_status(bool status);
+    void SerialIsConnected(bool status);
 public:
     Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QString ipAddr = "", quint32 port = 0);
     ~Spectrometer_Control();
@@ -133,6 +143,7 @@ public:
     void scan(int start, int stop, int accuracy);
     void moveStepper(int steps, bool dir);
     void useRemote(QString ipAddr, quint32 port);
+    void initSerial(const QString &portName, int waitTimeout, int BaudRate);
 };
 
 #endif // SPECTROMETER_H

@@ -193,8 +193,14 @@ public:
     QLineEdit *port;
     QLabel *ipLabel;
     QLineEdit *ipAddress;
-    QLabel *portLabel;
     QLabel *label_17;
+    QLabel *portLabel;
+    QLabel *label_30;
+    QPushButton *connect_serial;
+    QLabel *label_29;
+    QComboBox *serial_ComboBox;
+    QCheckBox *serialCheckbox;
+    QPushButton *serial_transmitt;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -954,7 +960,7 @@ public:
         RemoteTab->setObjectName(QStringLiteral("RemoteTab"));
         gridLayoutWidget = new QWidget(RemoteTab);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(9, 9, 581, 321));
+        gridLayoutWidget->setGeometry(QRect(9, 9, 581, 551));
         gridLayout_3 = new QGridLayout(gridLayoutWidget);
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -985,15 +991,45 @@ public:
 
         gridLayout_3->addWidget(ipAddress, 1, 0, 1, 1);
 
+        label_17 = new QLabel(gridLayoutWidget);
+        label_17->setObjectName(QStringLiteral("label_17"));
+
+        gridLayout_3->addWidget(label_17, 3, 0, 1, 1);
+
         portLabel = new QLabel(gridLayoutWidget);
         portLabel->setObjectName(QStringLiteral("portLabel"));
 
         gridLayout_3->addWidget(portLabel, 0, 1, 1, 1);
 
-        label_17 = new QLabel(gridLayoutWidget);
-        label_17->setObjectName(QStringLiteral("label_17"));
+        label_30 = new QLabel(gridLayoutWidget);
+        label_30->setObjectName(QStringLiteral("label_30"));
 
-        gridLayout_3->addWidget(label_17, 3, 0, 1, 1);
+        gridLayout_3->addWidget(label_30, 9, 0, 1, 1);
+
+        connect_serial = new QPushButton(gridLayoutWidget);
+        connect_serial->setObjectName(QStringLiteral("connect_serial"));
+
+        gridLayout_3->addWidget(connect_serial, 7, 1, 1, 1);
+
+        label_29 = new QLabel(gridLayoutWidget);
+        label_29->setObjectName(QStringLiteral("label_29"));
+
+        gridLayout_3->addWidget(label_29, 6, 0, 1, 1);
+
+        serial_ComboBox = new QComboBox(gridLayoutWidget);
+        serial_ComboBox->setObjectName(QStringLiteral("serial_ComboBox"));
+
+        gridLayout_3->addWidget(serial_ComboBox, 6, 1, 1, 1);
+
+        serialCheckbox = new QCheckBox(gridLayoutWidget);
+        serialCheckbox->setObjectName(QStringLiteral("serialCheckbox"));
+
+        gridLayout_3->addWidget(serialCheckbox, 9, 1, 1, 1);
+
+        serial_transmitt = new QPushButton(gridLayoutWidget);
+        serial_transmitt->setObjectName(QStringLiteral("serial_transmitt"));
+
+        gridLayout_3->addWidget(serial_transmitt, 8, 1, 1, 1);
 
         gridTabWidget->addTab(RemoteTab, QString());
 
@@ -1013,7 +1049,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(1);
+        gridTabWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1105,8 +1141,13 @@ public:
         connect->setText(QApplication::translate("MainWindow", "Connect", 0));
         MainTXcon->setText(QApplication::translate("MainWindow", "Connected?", 0));
         ipLabel->setText(QApplication::translate("MainWindow", "IP-Address", 0));
-        portLabel->setText(QApplication::translate("MainWindow", "Port", 0));
         label_17->setText(QApplication::translate("MainWindow", "Main-TX connected?", 0));
+        portLabel->setText(QApplication::translate("MainWindow", "Port", 0));
+        label_30->setText(QApplication::translate("MainWindow", "Serial port connected?", 0));
+        connect_serial->setText(QApplication::translate("MainWindow", "Connect", 0));
+        label_29->setText(QApplication::translate("MainWindow", "Serial Port", 0));
+        serialCheckbox->setText(QApplication::translate("MainWindow", "CheckBox", 0));
+        serial_transmitt->setText(QApplication::translate("MainWindow", "Transmit data", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(RemoteTab), QApplication::translate("MainWindow", "Remote settings", 0));
     } // retranslateUi
 
