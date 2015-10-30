@@ -47,7 +47,7 @@ public:
     
 public slots:
     void calibrate(void);
-    void oncurrentCount(int counts);
+    void oncurrentCount(double counts);
 
     void closeProgressBar(void);
 
@@ -73,6 +73,17 @@ public slots:
     int calculateInvValue(QPair<int, int> targetPoint, QPair<int, int> firstPoint, QPair<int, int> secondPoint);
 
     void serialConnectionUsed(bool status);
+    void set_1(bool status);
+    void set_2(bool status);
+    void set_3(bool status);
+    void set_4(bool status);
+    void set_5(bool status);
+    void set_6(bool status);
+    void set_7(bool status);
+    void set_8(bool status);
+
+    void continue_this_scan(double counts);
+
 signals:
     //Polarizer signals
     void xPolarizerMoved(Polarizer, bool);
@@ -91,6 +102,8 @@ signals:
     void startScan(void);
     void killScanner(void);
     void initScanner(int, int, int, int, bool);
+    //Internal
+    void continue_scan(double counts);
 private slots:
 
     void on_loadGenericButton_clicked();
@@ -193,6 +206,50 @@ private slots:
 
     void on_serial_transmitt_clicked();
 
+    void on_lockin_1up_stateChanged(int arg1);
+
+    void on_lockin_2up_stateChanged(int arg1);
+
+    void on_lockin_3up_stateChanged(int arg1);
+
+    void on_lockin_4up_stateChanged(int arg1);
+
+    void on_lockin_5up_stateChanged(int arg1);
+
+    void on_lockin_6up_stateChanged(int arg1);
+
+    void on_lockin_7up_stateChanged(int arg1);
+
+    void on_lockin_8up_stateChanged(int arg1);
+
+    void on_lockin_1down_stateChanged(int arg1);
+
+    void on_lockin_2down_stateChanged(int arg1);
+
+    void on_lockin_3down_stateChanged(int arg1);
+
+    void on_lockin_4down_stateChanged(int arg1);
+
+    void on_lockin_5down_stateChanged(int arg1);
+
+    void on_lockin_6down_stateChanged(int arg1);
+
+    void on_lockin_7down_stateChanged(int arg1);
+
+    void on_lockin_8down_stateChanged(int arg1);
+
+    void on_lockin_baud_combo_currentIndexChanged(const QString &arg1);
+
+    void on_lockin_stop_combo_currentIndexChanged(const QString &arg1);
+
+    void on_lockin_Parity_currentIndexChanged(const QString &arg1);
+
+    void on_lockin_EchoMode_currentIndexChanged(const QString &arg1);
+
+    void on_UpdateCurrentPosition_clicked();
+
+    void on_manual_CancelScan_clicked();
+
 private:
 
 
@@ -206,6 +263,21 @@ private:
     //SSH connection
     qsshsocket *SshSocket;
     //End SSH connection
+    //Serial connection
+    int BaudRate;
+    int numStopBits;
+    int parity;
+    bool useParity;
+
+    QString portName;
+    QString request;
+//    int numStopBits;
+//    bool useParity;
+//    bool parity;
+    int waitTimeout;
+//    int baudrate;
+    QSerialPort *serial;
+    //End serial connection
 
     enum State {ScanState, EditState, MoveState, CalibState};
     State currentState;

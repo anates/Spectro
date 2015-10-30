@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network testlib serialport
+QT       += core gui network testlib serialport widgets
 
 TARGET = RamanII
 TEMPLATE = app

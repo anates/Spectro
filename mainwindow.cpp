@@ -100,6 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newSpectrometer, &Spectrometer_Control::stepperIsStopped, this, &MainWindow::stepperStopped);
     connect(newSpectrometer, &Spectrometer_Control::stepperMoving, this, &MainWindow::StepperMoving);
     connect(plotPicker, SIGNAL(selected(const QPointF&)), this, SLOT(mousePoint(QPointF)));
+    connect(this, &MainWindow::continue_scan, this, &MainWindow::continue_this_scan);
     ui->manual_confirmValue->setEnabled(false);
     //Thread work
     this->SshSocket = NULL;
@@ -110,6 +111,34 @@ MainWindow::MainWindow(QWidget *parent) :
     list = QSerialPortInfo::availablePorts();
     for(int i = 0; i < list.size(); i++)
         ui->serial_ComboBox->addItem(list[i].description());
+    QList<QString> baudRateList;
+    baudRateList.append(QString::number(300));
+    baudRateList.append(QString::number(600));
+    baudRateList.append(QString::number(1200));
+    baudRateList.append(QString::number(2400));
+    baudRateList.append(QString::number(4800));
+    baudRateList.append(QString::number(9600));
+    baudRateList.append(QString::number(19200));
+    ui->lockin_baud_combo->addItems(baudRateList);
+    QList<QString> stopBitList;
+    stopBitList.append(QString::number(1));
+    stopBitList.append(QString::number(2));
+    ui->lockin_stop_combo->addItems(stopBitList);
+    QList<QString> parityList;
+    parityList.append("None");
+    parityList.append("Even");
+    parityList.append("Odd");
+    ui->lockin_Parity->addItems(parityList);
+    QList<QString> echoList;
+    echoList.append("No echo mode");
+    echoList.append("Echo mode");
+    ui->lockin_EchoMode->addItems(echoList);
+//    serial = new QSerialPort(this);
+
+    //connect(serial, &QSerialPort::error, this, &MainWindow::handleError);
+//    connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this,
+//            SLOT(handleError(QSerialPort::SerialPortError)));
+//    connect(serial, &QSerialPort::readyRead, this, &MainWindow::readData);
 
 }
 
@@ -1082,14 +1111,13 @@ void MainWindow::loadConfig()
     this->reload_data();
 }
 
-void MainWindow::oncurrentCount(int counts)
+void MainWindow::oncurrentCount(double counts)
 {
-
-    if(counts != ui->photoCounter->text().toInt())
-    {
-        qDebug() << "New counts!";
-        ui->photoCounter->setText(QString::number(counts));
-    }
+    qDebug() << "New counts: " << QString::number(counts);
+    qDebug() << "New counts: " << counts;
+    ui->photoCounter->setText(QString::number(counts));
+    if(ui->manual_automat->isChecked())
+        emit this->continue_scan(counts);
 }
 
 void MainWindow::writeConfig()
@@ -1453,6 +1481,7 @@ void MainWindow::on_manual_StartMeasurement_clicked()
         ui->manual_Steps->setText(QString(""));
         return;
     }
+    ui->manual_numAqu->setReadOnly(true);
     ui->manual_StartWL->setReadOnly(true);
     ui->manual_StopWL->setReadOnly(true);
     ui->manual_Steps->setReadOnly(true);
@@ -1462,6 +1491,7 @@ void MainWindow::on_manual_StartMeasurement_clicked()
     double startWL = ui->manual_StartWL->text().toDouble();
     double newPosition = convertWLtoPos(startWL);
     this->manualScan = true;
+    newSpectrometer->setAquisitions(ui->manual_numAqu->text().toInt());
     newSpectrometer->moveStepper(fabs(currentPosition - newPosition), (currentPosition < newPosition));
     this->createLogFile();
     this->currentPosition_local = newPosition;
@@ -1539,6 +1569,54 @@ void MainWindow::createLogFile()
     this->current_step = 0;
 }
 
+void MainWindow::continue_this_scan(double counts)
+{
+    this->reload_data();
+    double current_Value = counts;
+    ui->manual_currentValue->setText(QString::number(counts));
+    tmpScan.values.Data.push_back(std::make_tuple(convertWNtoWL(ui->manual_currWaveNum->text().toDouble()), ui->manual_CentralWN->text().toDouble() - convertPosToWN(this->currentPosition_local), current_Value));
+    double WL_difference = ui->manual_StopWL->text().toDouble() - ui->manual_StartWL->text().toDouble();
+    double WL_stepSize = WL_difference/ui->manual_Steps->text().toDouble();
+    ui->manual_ProgressBar->setValue((int)((double)(this->current_step)/ui->manual_Steps->text().toDouble()*100));
+    if(current_step == ui->manual_Steps->text().toInt())
+    {
+        QMessageBox::information(this, tr("Information"), QString("Scan finished, returning!"));
+        ui->manual_automat->setChecked(false);
+        ui->manual_StartWL->setReadOnly(false);
+        ui->manual_StartMeasurement->setEnabled(true);
+        this->placed_correctly = false;
+        this->current_step = 0;
+        this->manualScan = false;
+        ui->manual_StartWL->setText(QString(""));
+        ui->manual_StopWL->setText(QString(""));
+        ui->manual_StopWL->setReadOnly(false);
+        ui->manual_numAqu->setReadOnly(false);
+        ui->manual_ProgressBar->setValue(0);
+        ui->manual_centralWL->setReadOnly(false);
+        ui->manual_Steps->setReadOnly(false);
+        ui->manual_centralWL->setText("");
+        ui->manual_Steps->setText(QString(""));
+        newScanList.addScan(this->tmpScan);
+        newScanList.getNextScan();
+        ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
+        this->tmpScan.clear();
+        this->reload_data();
+        this->replot();
+        ui->manual_confirmValue->setEnabled(false);
+        return;
+    }
+    else
+    {
+        double next_step_size = convertWLtoPos(convertPosToWL(this->currentPosition_local) + WL_stepSize) - this->currentPosition_local;
+        qDebug() << "Current step is: " << this->current_step;
+        qDebug() << "Current step size is: " << next_step_size;
+        this->current_step += 1;
+        newSpectrometer->moveStepper(next_step_size, true);
+        this->currentPosition_local += next_step_size;
+        return;
+    }
+}
+
 void MainWindow::on_manual_confirmValue_clicked()
 {
     this->reload_data();
@@ -1560,10 +1638,12 @@ void MainWindow::on_manual_confirmValue_clicked()
         ui->manual_StartMeasurement->setEnabled(true);
         this->placed_correctly = false;
         this->current_step = 0;
+        ui->manual_ProgressBar->setValue(0);
         this->manualScan = false;
         ui->manual_StartWL->setText(QString(""));
         ui->manual_StopWL->setText(QString(""));
         ui->manual_StopWL->setReadOnly(false);
+        ui->manual_numAqu->setReadOnly(false);
         ui->manual_centralWL->setReadOnly(false);
         ui->manual_Steps->setReadOnly(false);
         ui->manual_centralWL->setText("");
@@ -1594,6 +1674,7 @@ void MainWindow::stepperStopped()
     ui->movingBox2->setChecked(false);
     ui->movingBox->setChecked(false);
     ui->manual_confirmValue->setEnabled(true);
+    this->newSpectrometer->get_analog_value();
     return;
 }
 
@@ -1642,7 +1723,68 @@ void MainWindow::on_connect_serial_clicked()
 {
     QList<QSerialPortInfo> list;
     list = QSerialPortInfo::availablePorts();
-    this->newSpectrometer->initSerial(list[ui->serial_ComboBox->currentIndex()].portName(), 1000, 38400);
+    this->BaudRate = 0;
+    this->parity = true;
+    int switchSetting = (ui->lockin_1up->isChecked()?1:0)*4+(ui->lockin_2up->isChecked()?1:0)*2 + (ui->lockin_3up->isChecked()?1:0);
+    switch(switchSetting)
+    {
+    case 1:
+        this->BaudRate = 2400;
+        ui->lockin_baud_combo->setCurrentIndex(3);
+        break;
+    case 2:
+        this->BaudRate = 600;
+        ui->lockin_baud_combo->setCurrentIndex(1);
+        break;
+    case 3:
+        this->BaudRate = 9600;
+        ui->lockin_baud_combo->setCurrentIndex(5);
+        break;
+    case 4:
+        this->BaudRate = 300;
+        ui->lockin_baud_combo->setCurrentIndex(0);
+        break;
+    case 5:
+        this->BaudRate = 4800;
+        ui->lockin_baud_combo->setCurrentIndex(4);
+        break;
+    case 6:
+        this->BaudRate = 1200;
+        ui->lockin_baud_combo->setCurrentIndex(2);
+        break;
+    case 7:
+        this->BaudRate = 19200;
+        ui->lockin_baud_combo->setCurrentIndex(6);
+        break;
+    default:
+        this->BaudRate = 9600;
+        break;
+    }
+    this->parity = ui->lockin_4up->isChecked();
+    this->useParity = ui->lockin_5down->isChecked();
+    bool echoMode = ui->lockin_6down->isChecked();
+    this->numStopBits = (ui->lockin_7up->isChecked()?2:1);
+//    serial->setPortName(list[ui->serial_ComboBox->currentIndex()].portName());
+//    serial->setBaudRate(this->BaudRate);
+//    serial->setDataBits(QSerialPort::Data8);
+//    serial->setParity(QSerialPort::NoParity);
+//    serial->setStopBits((this->numStopBits==1)?QSerialPort::OneStop:QSerialPort::TwoStop);
+//    serial->setFlowControl(QSerialPort::NoFlowControl);
+//    if (serial->open(QIODevice::ReadWrite)) {
+//        qDebug() << tr("Connected to %1 : %2, %3, %4, %5, %6")
+//                          .arg(list[ui->serial_ComboBox->currentIndex()].portName()).arg(this->BaudRate).arg(QSerialPort::Data8)
+//                          .arg(QSerialPort::NoParity).arg((this->numStopBits==1)?QSerialPort::OneStop:QSerialPort::TwoStop).arg(QSerialPort::NoFlowControl);
+//    } else {
+//        QMessageBox::critical(this, tr("Error"), serial->errorString());
+
+//        //showStatusMessage(tr("Open error"));
+//    }
+//    if(echoMode != true)
+//    {
+//        QMessageBox::information(this, tr("Error"),tr("Please set the echo switch (Switch 6) to ""Down"". Then try again!"));
+//        return;
+//    }
+    this->newSpectrometer->initSerial(list[ui->serial_ComboBox->currentIndex()].portName(), 1000, this->BaudRate, this->numStopBits, this->parity, this->useParity, echoMode);
     qDebug() << "Current serial is: " << list[ui->serial_ComboBox->currentIndex()].portName();
     //this->newSpectrometer->get_analog_value();
 }
@@ -1650,6 +1792,9 @@ void MainWindow::on_connect_serial_clicked()
 void MainWindow::on_serial_transmitt_clicked()
 {
     this->newSpectrometer->get_analog_value();
+//    QString data = "Q1\x00D";
+//    serial->write(data.toLocal8Bit());
+//    qDebug() << data;
 }
 
 void MainWindow::serialConnectionUsed(bool status)
@@ -1660,4 +1805,476 @@ void MainWindow::serialConnectionUsed(bool status)
         ui->serialCheckbox->setDisabled(true);
         ui->connect_serial->setDisabled(true);
     }
+}
+
+void MainWindow::on_lockin_1up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_1up->setEnabled(true);
+        ui->lockin_1down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_1up->setEnabled(false);
+        ui->lockin_1down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_2up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_2up->setEnabled(true);
+        ui->lockin_2down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_2up->setEnabled(false);
+        ui->lockin_2down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_3up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_3up->setEnabled(true);
+        ui->lockin_3down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_3up->setEnabled(false);
+        ui->lockin_3down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_4up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_4up->setEnabled(true);
+        ui->lockin_4down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_4up->setEnabled(false);
+        ui->lockin_4down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_5up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_5up->setEnabled(true);
+        ui->lockin_4up->setEnabled(false);
+        ui->lockin_4down->setEnabled(false);
+        ui->lockin_4up->setChecked(false);
+        ui->lockin_4down->setChecked(false);
+        ui->lockin_5down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_5up->setEnabled(false);
+        ui->lockin_4down->setEnabled(true);
+        ui->lockin_4up->setEnabled(true);
+        ui->lockin_5down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_6up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_6up->setEnabled(true);
+        ui->lockin_6down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_6up->setEnabled(false);
+        ui->lockin_6down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_7up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_7up->setEnabled(true);
+        ui->lockin_7down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_7up->setEnabled(false);
+        ui->lockin_7down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_8up_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_8up->setEnabled(true);
+        ui->lockin_8down->setEnabled(false);
+    }
+    else
+    {
+        ui->lockin_8up->setEnabled(false);
+        ui->lockin_8down->setEnabled(true);
+    }
+}
+
+void MainWindow::on_lockin_1down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_1up->setEnabled(false);
+        ui->lockin_1down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_1up->setEnabled(true);
+        ui->lockin_1down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_2down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_2up->setEnabled(false);
+        ui->lockin_2down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_2up->setEnabled(true);
+        ui->lockin_2down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_3down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_3up->setEnabled(false);
+        ui->lockin_3down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_3up->setEnabled(true);
+        ui->lockin_3down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_4down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_4up->setEnabled(false);
+        ui->lockin_4down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_4up->setEnabled(true);
+        ui->lockin_4down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_5down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_5up->setEnabled(false);
+        ui->lockin_5down->setEnabled(true);
+        ui->lockin_4down->setEnabled(true);
+        ui->lockin_4up->setEnabled(true);
+        ui->lockin_4down->setChecked(true);
+        ui->lockin_4up->setChecked(true);
+    }
+    else
+    {
+        ui->lockin_4down->setEnabled(false);
+        ui->lockin_4up->setEnabled(false);
+        ui->lockin_4down->setChecked(false);
+        ui->lockin_4up->setChecked(false);
+        ui->lockin_5up->setEnabled(true);
+        ui->lockin_5down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_6down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_6up->setEnabled(false);
+        ui->lockin_6down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_6up->setEnabled(true);
+        ui->lockin_6down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_7down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_7up->setEnabled(false);
+        ui->lockin_7down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_7up->setEnabled(true);
+        ui->lockin_7down->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lockin_8down_stateChanged(int arg1)
+{
+    if(arg1 == Qt::Checked)
+    {
+        ui->lockin_8up->setEnabled(false);
+        ui->lockin_8down->setEnabled(true);
+    }
+    else
+    {
+        ui->lockin_8up->setEnabled(true);
+        ui->lockin_8down->setEnabled(false);
+    }
+}
+
+void MainWindow::set_1(bool status)
+{
+    if(status)
+    {
+        ui->lockin_1up->setChecked(true);
+        ui->lockin_1down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_1up->setChecked(false);
+        ui->lockin_1down->setChecked(true);
+    }
+}
+
+void MainWindow::set_2(bool status)
+{
+    if(status)
+    {
+        ui->lockin_2up->setChecked(true);
+        ui->lockin_2down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_2up->setChecked(false);
+        ui->lockin_2down->setChecked(true);
+    }
+}
+
+void MainWindow::set_3(bool status)
+{
+    if(status)
+    {
+        ui->lockin_3up->setChecked(true);
+        ui->lockin_3down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_3up->setChecked(false);
+        ui->lockin_3down->setChecked(true);
+    }
+}
+
+void MainWindow::set_4(bool status)
+{
+    if(status)
+    {
+        ui->lockin_4up->setChecked(true);
+        ui->lockin_4down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_4up->setChecked(false);
+        ui->lockin_4down->setChecked(true);
+    }
+}
+
+void MainWindow::set_5(bool status)
+{
+    if(status)
+    {
+        ui->lockin_5up->setChecked(true);
+        ui->lockin_5down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_5up->setChecked(false);
+        ui->lockin_5down->setChecked(true);
+    }
+}
+
+void MainWindow::set_6(bool status)
+{
+    if(status)
+    {
+        ui->lockin_6up->setChecked(true);
+        ui->lockin_6down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_6up->setChecked(false);
+        ui->lockin_6down->setChecked(true);
+    }
+}
+
+void MainWindow::set_7(bool status)
+{
+    if(status)
+    {
+        ui->lockin_7up->setChecked(true);
+        ui->lockin_7down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_7up->setChecked(false);
+        ui->lockin_7down->setChecked(true);
+    }
+}
+
+void MainWindow::set_8(bool status)
+{
+    if(status)
+    {
+        ui->lockin_8up->setChecked(true);
+        ui->lockin_8down->setChecked(false);
+    }
+    else
+    {
+        ui->lockin_8up->setChecked(false);
+        ui->lockin_8down->setChecked(true);
+    }
+}
+
+
+void MainWindow::on_lockin_baud_combo_currentIndexChanged(const QString &arg1)
+{
+    this->BaudRate = arg1.toInt();
+    switch(this->BaudRate)
+    {
+    case 2400:
+        this->set_1(false);
+        this->set_2(false);
+        this->set_3(true);
+        break;
+    case 600:
+        this->set_1(false);
+        this->set_2(true);
+        this->set_3(false);
+        break;
+    case 9600:
+        this->set_1(false);
+        this->set_2(true);
+        this->set_3(true);
+        break;
+    case 300:
+        this->set_1(true);
+        this->set_2(false);
+        this->set_3(false);
+        break;
+    case 4800:
+        this->set_1(true);
+        this->set_2(false);
+        this->set_3(true);
+        break;
+    case 1200:
+        this->set_1(true);
+        this->set_2(true);
+        this->set_3(false);
+        break;
+    case 19200:
+        this->set_1(true);
+        this->set_2(true);
+        this->set_3(true);
+        break;
+    default:
+        this->set_1(false);
+        this->set_2(true);
+        this->set_3(true);
+    }
+    int switchSetting = (ui->lockin_1up->isChecked()?1:0)*4+(ui->lockin_2up->isChecked()?1:0)*2 + (ui->lockin_3up->isChecked()?1:0);
+    switch(switchSetting)
+    {
+    case 1:
+        this->BaudRate = 2400;
+        break;
+    case 2:
+        this->BaudRate = 600;
+        break;
+    case 3:
+        this->BaudRate = 9600;
+        break;
+    case 4:
+        this->BaudRate = 300;
+        break;
+    case 5:
+        this->BaudRate = 4800;
+        break;
+    case 6:
+        this->BaudRate = 1200;
+        break;
+    case 7:
+        this->BaudRate = 19200;
+        break;
+    default:
+        this->BaudRate = 9600;
+        break;
+    }
+}
+
+void MainWindow::on_lockin_stop_combo_currentIndexChanged(const QString &arg1)
+{
+    if(arg1 == "1")
+        this->set_7(false);
+    else
+        this->set_7(true);
+}
+
+void MainWindow::on_lockin_Parity_currentIndexChanged(const QString &arg1)
+{
+    if(arg1 == "None")
+        this->set_5(true);
+    else if(arg1 == "Even")
+    {
+        this->set_5(false);
+        this->set_4(false);
+    }
+    else if(arg1 == "Odd")
+    {
+        this->set_5(false);
+        this->set_4(true);
+    }
+    else
+        this->set_5(true);
+}
+
+void MainWindow::on_lockin_EchoMode_currentIndexChanged(const QString &arg1)
+{
+    if(arg1 == "No echo mode")
+        this->set_6(true);
+    else
+        this->set_6(false);
+}
+
+void MainWindow::on_UpdateCurrentPosition_clicked()
+{
+    this->currentPosition_local = ui->updateCurrentPositionLine->text().toDouble()/0.0048;
+    ui->updateCurrentPositionLine->setText("");
+    this->reload_data();
+}
+
+void MainWindow::on_manual_CancelScan_clicked()
+{
+
 }
