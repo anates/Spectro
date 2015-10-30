@@ -531,7 +531,7 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QReal,   21,
-    QMetaType::Void, QMetaType::Int,   23,
+    QMetaType::Void, QMetaType::Double,   23,
     QMetaType::Void, QMetaType::Int,    2,
     QMetaType::Void,
     QMetaType::Void,
@@ -540,7 +540,7 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 16,   17,
-    QMetaType::Void, QMetaType::Int,   23,
+    QMetaType::Void, QMetaType::Double,   23,
     QMetaType::Void, QMetaType::Int, QMetaType::Bool,    6,    7,
     QMetaType::Void,
     QMetaType::Void,
@@ -569,14 +569,14 @@ void Spectrometer_Control::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 6: _t->scanFinished(); break;
         case 7: _t->stepperIsStopped(); break;
         case 8: _t->currentScanPosition((*reinterpret_cast< qreal(*)>(_a[1]))); break;
-        case 9: _t->currentCounterData((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 9: _t->currentCounterData((*reinterpret_cast< double(*)>(_a[1]))); break;
         case 10: _t->currentStatus((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 11: _t->positionChanged(); break;
         case 12: _t->stepperMoving(); break;
         case 13: _t->TX_status((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 14: _t->SerialIsConnected((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 15: _t->scanData((*reinterpret_cast< QPair<int,int>(*)>(_a[1]))); break;
-        case 16: _t->currentCounts((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 16: _t->currentCounts((*reinterpret_cast< double(*)>(_a[1]))); break;
         case 17: _t->updateCurrentPosition((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< bool(*)>(_a[2]))); break;
         case 18: _t->stepperIsMoving(); break;
         case 19: _t->stepperStopped(); break;
@@ -665,7 +665,7 @@ void Spectrometer_Control::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
             }
         }
         {
-            typedef void (Spectrometer_Control::*_t)(int );
+            typedef void (Spectrometer_Control::*_t)(double );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Spectrometer_Control::currentCounterData)) {
                 *result = 9;
             }
@@ -800,7 +800,7 @@ void Spectrometer_Control::currentScanPosition(qreal _t1)
 }
 
 // SIGNAL 9
-void Spectrometer_Control::currentCounterData(int _t1)
+void Spectrometer_Control::currentCounterData(double _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 9, _a);

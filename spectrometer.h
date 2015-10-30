@@ -78,6 +78,9 @@ class Spectrometer_Control:public QObject
     QThread workerThread;
 private:
     int MonoPos = 0;
+    int multiAqu;
+    int numAqu;
+    double currCounts;
     bool moving;
     QString ipAddr;
     quint32 port;
@@ -94,7 +97,7 @@ public slots:
     //Internal connections
     //to DPC
     void scanData(QPair<int, int> data);
-    void currentCounts(int counts);
+    void currentCounts(double counts);
     //to stepper
     void updateCurrentPosition(int steps, bool dir);
     void stepperIsMoving(void);
@@ -123,7 +126,7 @@ signals:
     void scanFinished(void);
     void stepperIsStopped(void);
     void currentScanPosition(qreal position);
-    void currentCounterData(int counts);
+    void currentCounterData(double counts);
     void currentStatus(int);
     void positionChanged(void);
     void stepperMoving(void);
@@ -141,9 +144,10 @@ public:
     bool getPolarizerState(Polarizer pol);
     QVector<bool> getPolarizers(void);
     void scan(int start, int stop, int accuracy);
+    void setAquisitions(int numAqu);
     void moveStepper(int steps, bool dir);
     void useRemote(QString ipAddr, quint32 port);
-    void initSerial(const QString &portName, int waitTimeout, int BaudRate);
+    void initSerial(const QString &portName, int waitTimeout, int BaudRate, int numStopBits, bool parity, bool useParity, bool useEchoMode);
 };
 
 #endif // SPECTROMETER_H

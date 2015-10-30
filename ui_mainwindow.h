@@ -108,6 +108,8 @@ public:
     QLineEdit *manual_currWaveNum;
     QLabel *label_18;
     QLineEdit *manual_currWaveLength;
+    QLabel *label_43;
+    QCheckBox *manual_automat;
     QHBoxLayout *horizontalLayout_7;
     QLabel *label_24;
     QLineEdit *manual_centralWL;
@@ -129,6 +131,8 @@ public:
     QHBoxLayout *horizontalLayout_10;
     QLabel *label_23;
     QLineEdit *manualScanName;
+    QLabel *label_44;
+    QLineEdit *manual_numAqu;
     QHBoxLayout *horizontalLayout_8;
     QPushButton *manual_StartMeasurement;
     QProgressBar *manual_ProgressBar;
@@ -136,9 +140,11 @@ public:
     QLabel *label_22;
     QLineEdit *manual_currentValue;
     QPushButton *manual_confirmValue;
+    QPushButton *manual_CancelScan;
     QWidget *scanTab;
     QFormLayout *formLayout;
     QGridLayout *gridLayout_7;
+    QLineEdit *newWavelength;
     QHBoxLayout *horizontalLayout_4;
     QLineEdit *moveData;
     QPushButton *mvButton_2;
@@ -149,17 +155,19 @@ public:
     QLabel *label;
     QCheckBox *movingBox2;
     QLineEdit *currentWavelength;
-    QLineEdit *newWavelength;
     QLineEdit *newWaveNumber;
+    QLabel *label_13;
     QLabel *label_9;
     QLineEdit *currentWaveNumber;
-    QLabel *label_13;
-    QLineEdit *currentPosition;
     QPushButton *execButton_2;
     QLineEdit *newPosition;
+    QLineEdit *currentPosition;
     QLabel *label_11;
     QLabel *label_12;
     QLabel *label_10;
+    QLineEdit *updateCurrentPositionLine;
+    QLabel *label_47;
+    QPushButton *UpdateCurrentPosition;
     QPushButton *AddMovementLog;
     QGridLayout *MovementLogLayout;
     QLabel *label_2;
@@ -193,14 +201,60 @@ public:
     QLineEdit *port;
     QLabel *ipLabel;
     QLineEdit *ipAddress;
-    QLabel *label_17;
     QLabel *portLabel;
-    QLabel *label_30;
-    QPushButton *connect_serial;
-    QLabel *label_29;
+    QLabel *label_17;
+    QWidget *Lockintab;
+    QWidget *gridLayoutWidget_2;
+    QGridLayout *gridLayout_4;
     QComboBox *serial_ComboBox;
-    QCheckBox *serialCheckbox;
+    QPushButton *connect_serial;
+    QLabel *label_30;
+    QLineEdit *lockin_CommandReturn_Value;
     QPushButton *serial_transmitt;
+    QCheckBox *serialCheckbox;
+    QLineEdit *lockin_commandValue;
+    QLineEdit *lockin_CommandReturn;
+    QComboBox *lockin_command;
+    QLabel *label_29;
+    QGridLayout *gridLayout_6;
+    QLabel *label_31;
+    QLabel *label_32;
+    QCheckBox *lockin_2down;
+    QLabel *label_35;
+    QLabel *label_33;
+    QCheckBox *lockin_4down;
+    QLabel *label_37;
+    QLabel *label_34;
+    QCheckBox *lockin_7up;
+    QLabel *label_38;
+    QCheckBox *lockin_1down;
+    QCheckBox *lockin_5up;
+    QCheckBox *lockin_8up;
+    QCheckBox *lockin_6down;
+    QCheckBox *lockin_5down;
+    QLabel *label_36;
+    QCheckBox *lockin_1up;
+    QCheckBox *lockin_3up;
+    QCheckBox *lockin_2up;
+    QCheckBox *lockin_4up;
+    QCheckBox *lockin_6up;
+    QCheckBox *lockin_8down;
+    QCheckBox *lockin_7down;
+    QLabel *label_39;
+    QLabel *label_40;
+    QCheckBox *lockin_3down;
+    QHBoxLayout *horizontalLayout_12;
+    QLabel *label_41;
+    QComboBox *lockin_baud_combo;
+    QHBoxLayout *horizontalLayout_14;
+    QLabel *label_42;
+    QComboBox *lockin_stop_combo;
+    QHBoxLayout *horizontalLayout_15;
+    QLabel *label_45;
+    QComboBox *lockin_Parity;
+    QHBoxLayout *horizontalLayout_16;
+    QLabel *label_46;
+    QComboBox *lockin_EchoMode;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -554,6 +608,16 @@ public:
 
         horizontalLayout_6->addWidget(manual_currWaveLength);
 
+        label_43 = new QLabel(verticalLayoutWidget);
+        label_43->setObjectName(QStringLiteral("label_43"));
+
+        horizontalLayout_6->addWidget(label_43);
+
+        manual_automat = new QCheckBox(verticalLayoutWidget);
+        manual_automat->setObjectName(QStringLiteral("manual_automat"));
+
+        horizontalLayout_6->addWidget(manual_automat);
+
 
         verticalLayout_2->addLayout(horizontalLayout_6);
 
@@ -662,6 +726,16 @@ public:
 
         horizontalLayout_10->addWidget(manualScanName);
 
+        label_44 = new QLabel(verticalLayoutWidget);
+        label_44->setObjectName(QStringLiteral("label_44"));
+
+        horizontalLayout_10->addWidget(label_44);
+
+        manual_numAqu = new QLineEdit(verticalLayoutWidget);
+        manual_numAqu->setObjectName(QStringLiteral("manual_numAqu"));
+
+        horizontalLayout_10->addWidget(manual_numAqu);
+
 
         verticalLayout_2->addLayout(horizontalLayout_10);
 
@@ -700,6 +774,11 @@ public:
 
         horizontalLayout_9->addWidget(manual_confirmValue);
 
+        manual_CancelScan = new QPushButton(verticalLayoutWidget);
+        manual_CancelScan->setObjectName(QStringLiteral("manual_CancelScan"));
+
+        horizontalLayout_9->addWidget(manual_CancelScan);
+
 
         verticalLayout_2->addLayout(horizontalLayout_9);
 
@@ -714,6 +793,11 @@ public:
         gridLayout_7 = new QGridLayout();
         gridLayout_7->setSpacing(6);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        newWavelength = new QLineEdit(scanTab);
+        newWavelength->setObjectName(QStringLiteral("newWavelength"));
+
+        gridLayout_7->addWidget(newWavelength, 4, 2, 1, 1);
+
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
@@ -728,7 +812,7 @@ public:
         horizontalLayout_4->addWidget(mvButton_2);
 
 
-        gridLayout_7->addLayout(horizontalLayout_4, 6, 2, 1, 1);
+        gridLayout_7->addLayout(horizontalLayout_4, 7, 2, 1, 1);
 
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
@@ -749,49 +833,54 @@ public:
         gridLayout_2->addWidget(stepForwardMono, 0, 2, 1, 1);
 
 
-        gridLayout_7->addLayout(gridLayout_2, 7, 2, 1, 1);
+        gridLayout_7->addLayout(gridLayout_2, 8, 2, 1, 1);
 
         label = new QLabel(scanTab);
         label->setObjectName(QStringLiteral("label"));
 
-        gridLayout_7->addWidget(label, 4, 0, 1, 1);
+        gridLayout_7->addWidget(label, 5, 0, 1, 1);
 
         movingBox2 = new QCheckBox(scanTab);
         movingBox2->setObjectName(QStringLiteral("movingBox2"));
 
-        gridLayout_7->addWidget(movingBox2, 4, 1, 1, 1);
+        gridLayout_7->addWidget(movingBox2, 5, 1, 1, 1);
 
         currentWavelength = new QLineEdit(scanTab);
         currentWavelength->setObjectName(QStringLiteral("currentWavelength"));
         currentWavelength->setReadOnly(true);
 
-        gridLayout_7->addWidget(currentWavelength, 3, 1, 1, 1);
-
-        newWavelength = new QLineEdit(scanTab);
-        newWavelength->setObjectName(QStringLiteral("newWavelength"));
-
-        gridLayout_7->addWidget(newWavelength, 3, 2, 1, 1);
+        gridLayout_7->addWidget(currentWavelength, 4, 1, 1, 1);
 
         newWaveNumber = new QLineEdit(scanTab);
         newWaveNumber->setObjectName(QStringLiteral("newWaveNumber"));
 
-        gridLayout_7->addWidget(newWaveNumber, 2, 2, 1, 1);
-
-        label_9 = new QLabel(scanTab);
-        label_9->setObjectName(QStringLiteral("label_9"));
-
-        gridLayout_7->addWidget(label_9, 3, 0, 1, 1);
-
-        currentWaveNumber = new QLineEdit(scanTab);
-        currentWaveNumber->setObjectName(QStringLiteral("currentWaveNumber"));
-        currentWaveNumber->setReadOnly(true);
-
-        gridLayout_7->addWidget(currentWaveNumber, 2, 1, 1, 1);
+        gridLayout_7->addWidget(newWaveNumber, 3, 2, 1, 1);
 
         label_13 = new QLabel(scanTab);
         label_13->setObjectName(QStringLiteral("label_13"));
 
         gridLayout_7->addWidget(label_13, 1, 0, 1, 1);
+
+        label_9 = new QLabel(scanTab);
+        label_9->setObjectName(QStringLiteral("label_9"));
+
+        gridLayout_7->addWidget(label_9, 4, 0, 1, 1);
+
+        currentWaveNumber = new QLineEdit(scanTab);
+        currentWaveNumber->setObjectName(QStringLiteral("currentWaveNumber"));
+        currentWaveNumber->setReadOnly(true);
+
+        gridLayout_7->addWidget(currentWaveNumber, 3, 1, 1, 1);
+
+        execButton_2 = new QPushButton(scanTab);
+        execButton_2->setObjectName(QStringLiteral("execButton_2"));
+
+        gridLayout_7->addWidget(execButton_2, 6, 2, 1, 1);
+
+        newPosition = new QLineEdit(scanTab);
+        newPosition->setObjectName(QStringLiteral("newPosition"));
+
+        gridLayout_7->addWidget(newPosition, 1, 2, 1, 1);
 
         currentPosition = new QLineEdit(scanTab);
         currentPosition->setObjectName(QStringLiteral("currentPosition"));
@@ -799,20 +888,10 @@ public:
 
         gridLayout_7->addWidget(currentPosition, 1, 1, 1, 1);
 
-        execButton_2 = new QPushButton(scanTab);
-        execButton_2->setObjectName(QStringLiteral("execButton_2"));
-
-        gridLayout_7->addWidget(execButton_2, 5, 2, 1, 1);
-
-        newPosition = new QLineEdit(scanTab);
-        newPosition->setObjectName(QStringLiteral("newPosition"));
-
-        gridLayout_7->addWidget(newPosition, 1, 2, 1, 1);
-
         label_11 = new QLabel(scanTab);
         label_11->setObjectName(QStringLiteral("label_11"));
 
-        gridLayout_7->addWidget(label_11, 2, 0, 1, 1);
+        gridLayout_7->addWidget(label_11, 3, 0, 1, 1);
 
         label_12 = new QLabel(scanTab);
         label_12->setObjectName(QStringLiteral("label_12"));
@@ -823,6 +902,21 @@ public:
         label_10->setObjectName(QStringLiteral("label_10"));
 
         gridLayout_7->addWidget(label_10, 0, 2, 1, 1);
+
+        updateCurrentPositionLine = new QLineEdit(scanTab);
+        updateCurrentPositionLine->setObjectName(QStringLiteral("updateCurrentPositionLine"));
+
+        gridLayout_7->addWidget(updateCurrentPositionLine, 2, 1, 1, 1);
+
+        label_47 = new QLabel(scanTab);
+        label_47->setObjectName(QStringLiteral("label_47"));
+
+        gridLayout_7->addWidget(label_47, 2, 0, 1, 1);
+
+        UpdateCurrentPosition = new QPushButton(scanTab);
+        UpdateCurrentPosition->setObjectName(QStringLiteral("UpdateCurrentPosition"));
+
+        gridLayout_7->addWidget(UpdateCurrentPosition, 2, 2, 1, 1);
 
 
         formLayout->setLayout(0, QFormLayout::SpanningRole, gridLayout_7);
@@ -991,47 +1085,278 @@ public:
 
         gridLayout_3->addWidget(ipAddress, 1, 0, 1, 1);
 
-        label_17 = new QLabel(gridLayoutWidget);
-        label_17->setObjectName(QStringLiteral("label_17"));
-
-        gridLayout_3->addWidget(label_17, 3, 0, 1, 1);
-
         portLabel = new QLabel(gridLayoutWidget);
         portLabel->setObjectName(QStringLiteral("portLabel"));
 
         gridLayout_3->addWidget(portLabel, 0, 1, 1, 1);
 
-        label_30 = new QLabel(gridLayoutWidget);
-        label_30->setObjectName(QStringLiteral("label_30"));
+        label_17 = new QLabel(gridLayoutWidget);
+        label_17->setObjectName(QStringLiteral("label_17"));
 
-        gridLayout_3->addWidget(label_30, 9, 0, 1, 1);
-
-        connect_serial = new QPushButton(gridLayoutWidget);
-        connect_serial->setObjectName(QStringLiteral("connect_serial"));
-
-        gridLayout_3->addWidget(connect_serial, 7, 1, 1, 1);
-
-        label_29 = new QLabel(gridLayoutWidget);
-        label_29->setObjectName(QStringLiteral("label_29"));
-
-        gridLayout_3->addWidget(label_29, 6, 0, 1, 1);
-
-        serial_ComboBox = new QComboBox(gridLayoutWidget);
-        serial_ComboBox->setObjectName(QStringLiteral("serial_ComboBox"));
-
-        gridLayout_3->addWidget(serial_ComboBox, 6, 1, 1, 1);
-
-        serialCheckbox = new QCheckBox(gridLayoutWidget);
-        serialCheckbox->setObjectName(QStringLiteral("serialCheckbox"));
-
-        gridLayout_3->addWidget(serialCheckbox, 9, 1, 1, 1);
-
-        serial_transmitt = new QPushButton(gridLayoutWidget);
-        serial_transmitt->setObjectName(QStringLiteral("serial_transmitt"));
-
-        gridLayout_3->addWidget(serial_transmitt, 8, 1, 1, 1);
+        gridLayout_3->addWidget(label_17, 3, 0, 1, 1);
 
         gridTabWidget->addTab(RemoteTab, QString());
+        Lockintab = new QWidget();
+        Lockintab->setObjectName(QStringLiteral("Lockintab"));
+        gridLayoutWidget_2 = new QWidget(Lockintab);
+        gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
+        gridLayoutWidget_2->setGeometry(QRect(10, 10, 971, 671));
+        gridLayout_4 = new QGridLayout(gridLayoutWidget_2);
+        gridLayout_4->setSpacing(6);
+        gridLayout_4->setContentsMargins(11, 11, 11, 11);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        gridLayout_4->setContentsMargins(0, 0, 0, 0);
+        serial_ComboBox = new QComboBox(gridLayoutWidget_2);
+        serial_ComboBox->setObjectName(QStringLiteral("serial_ComboBox"));
+
+        gridLayout_4->addWidget(serial_ComboBox, 0, 1, 1, 1);
+
+        connect_serial = new QPushButton(gridLayoutWidget_2);
+        connect_serial->setObjectName(QStringLiteral("connect_serial"));
+
+        gridLayout_4->addWidget(connect_serial, 6, 1, 1, 1);
+
+        label_30 = new QLabel(gridLayoutWidget_2);
+        label_30->setObjectName(QStringLiteral("label_30"));
+
+        gridLayout_4->addWidget(label_30, 10, 0, 1, 1);
+
+        lockin_CommandReturn_Value = new QLineEdit(gridLayoutWidget_2);
+        lockin_CommandReturn_Value->setObjectName(QStringLiteral("lockin_CommandReturn_Value"));
+
+        gridLayout_4->addWidget(lockin_CommandReturn_Value, 9, 1, 1, 1);
+
+        serial_transmitt = new QPushButton(gridLayoutWidget_2);
+        serial_transmitt->setObjectName(QStringLiteral("serial_transmitt"));
+
+        gridLayout_4->addWidget(serial_transmitt, 8, 1, 1, 1);
+
+        serialCheckbox = new QCheckBox(gridLayoutWidget_2);
+        serialCheckbox->setObjectName(QStringLiteral("serialCheckbox"));
+
+        gridLayout_4->addWidget(serialCheckbox, 10, 1, 1, 1);
+
+        lockin_commandValue = new QLineEdit(gridLayoutWidget_2);
+        lockin_commandValue->setObjectName(QStringLiteral("lockin_commandValue"));
+
+        gridLayout_4->addWidget(lockin_commandValue, 7, 1, 1, 1);
+
+        lockin_CommandReturn = new QLineEdit(gridLayoutWidget_2);
+        lockin_CommandReturn->setObjectName(QStringLiteral("lockin_CommandReturn"));
+
+        gridLayout_4->addWidget(lockin_CommandReturn, 9, 0, 1, 1);
+
+        lockin_command = new QComboBox(gridLayoutWidget_2);
+        lockin_command->setObjectName(QStringLiteral("lockin_command"));
+
+        gridLayout_4->addWidget(lockin_command, 7, 0, 1, 1);
+
+        label_29 = new QLabel(gridLayoutWidget_2);
+        label_29->setObjectName(QStringLiteral("label_29"));
+
+        gridLayout_4->addWidget(label_29, 0, 0, 1, 1);
+
+        gridLayout_6 = new QGridLayout();
+        gridLayout_6->setSpacing(6);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        label_31 = new QLabel(gridLayoutWidget_2);
+        label_31->setObjectName(QStringLiteral("label_31"));
+
+        gridLayout_6->addWidget(label_31, 0, 8, 1, 1);
+
+        label_32 = new QLabel(gridLayoutWidget_2);
+        label_32->setObjectName(QStringLiteral("label_32"));
+
+        gridLayout_6->addWidget(label_32, 0, 7, 1, 1);
+
+        lockin_2down = new QCheckBox(gridLayoutWidget_2);
+        lockin_2down->setObjectName(QStringLiteral("lockin_2down"));
+
+        gridLayout_6->addWidget(lockin_2down, 2, 2, 1, 1);
+
+        label_35 = new QLabel(gridLayoutWidget_2);
+        label_35->setObjectName(QStringLiteral("label_35"));
+
+        gridLayout_6->addWidget(label_35, 0, 4, 1, 1);
+
+        label_33 = new QLabel(gridLayoutWidget_2);
+        label_33->setObjectName(QStringLiteral("label_33"));
+
+        gridLayout_6->addWidget(label_33, 0, 6, 1, 1);
+
+        lockin_4down = new QCheckBox(gridLayoutWidget_2);
+        lockin_4down->setObjectName(QStringLiteral("lockin_4down"));
+
+        gridLayout_6->addWidget(lockin_4down, 2, 4, 1, 1);
+
+        label_37 = new QLabel(gridLayoutWidget_2);
+        label_37->setObjectName(QStringLiteral("label_37"));
+
+        gridLayout_6->addWidget(label_37, 0, 3, 1, 1);
+
+        label_34 = new QLabel(gridLayoutWidget_2);
+        label_34->setObjectName(QStringLiteral("label_34"));
+
+        gridLayout_6->addWidget(label_34, 0, 5, 1, 1);
+
+        lockin_7up = new QCheckBox(gridLayoutWidget_2);
+        lockin_7up->setObjectName(QStringLiteral("lockin_7up"));
+
+        gridLayout_6->addWidget(lockin_7up, 1, 7, 1, 1);
+
+        label_38 = new QLabel(gridLayoutWidget_2);
+        label_38->setObjectName(QStringLiteral("label_38"));
+
+        gridLayout_6->addWidget(label_38, 0, 1, 1, 1);
+
+        lockin_1down = new QCheckBox(gridLayoutWidget_2);
+        lockin_1down->setObjectName(QStringLiteral("lockin_1down"));
+
+        gridLayout_6->addWidget(lockin_1down, 2, 1, 1, 1);
+
+        lockin_5up = new QCheckBox(gridLayoutWidget_2);
+        lockin_5up->setObjectName(QStringLiteral("lockin_5up"));
+
+        gridLayout_6->addWidget(lockin_5up, 1, 5, 1, 1);
+
+        lockin_8up = new QCheckBox(gridLayoutWidget_2);
+        lockin_8up->setObjectName(QStringLiteral("lockin_8up"));
+
+        gridLayout_6->addWidget(lockin_8up, 1, 8, 1, 1);
+
+        lockin_6down = new QCheckBox(gridLayoutWidget_2);
+        lockin_6down->setObjectName(QStringLiteral("lockin_6down"));
+
+        gridLayout_6->addWidget(lockin_6down, 2, 6, 1, 1);
+
+        lockin_5down = new QCheckBox(gridLayoutWidget_2);
+        lockin_5down->setObjectName(QStringLiteral("lockin_5down"));
+
+        gridLayout_6->addWidget(lockin_5down, 2, 5, 1, 1);
+
+        label_36 = new QLabel(gridLayoutWidget_2);
+        label_36->setObjectName(QStringLiteral("label_36"));
+
+        gridLayout_6->addWidget(label_36, 0, 2, 1, 1);
+
+        lockin_1up = new QCheckBox(gridLayoutWidget_2);
+        lockin_1up->setObjectName(QStringLiteral("lockin_1up"));
+
+        gridLayout_6->addWidget(lockin_1up, 1, 1, 1, 1);
+
+        lockin_3up = new QCheckBox(gridLayoutWidget_2);
+        lockin_3up->setObjectName(QStringLiteral("lockin_3up"));
+
+        gridLayout_6->addWidget(lockin_3up, 1, 3, 1, 1);
+
+        lockin_2up = new QCheckBox(gridLayoutWidget_2);
+        lockin_2up->setObjectName(QStringLiteral("lockin_2up"));
+
+        gridLayout_6->addWidget(lockin_2up, 1, 2, 1, 1);
+
+        lockin_4up = new QCheckBox(gridLayoutWidget_2);
+        lockin_4up->setObjectName(QStringLiteral("lockin_4up"));
+
+        gridLayout_6->addWidget(lockin_4up, 1, 4, 1, 1);
+
+        lockin_6up = new QCheckBox(gridLayoutWidget_2);
+        lockin_6up->setObjectName(QStringLiteral("lockin_6up"));
+
+        gridLayout_6->addWidget(lockin_6up, 1, 6, 1, 1);
+
+        lockin_8down = new QCheckBox(gridLayoutWidget_2);
+        lockin_8down->setObjectName(QStringLiteral("lockin_8down"));
+
+        gridLayout_6->addWidget(lockin_8down, 2, 8, 1, 1);
+
+        lockin_7down = new QCheckBox(gridLayoutWidget_2);
+        lockin_7down->setObjectName(QStringLiteral("lockin_7down"));
+
+        gridLayout_6->addWidget(lockin_7down, 2, 7, 1, 1);
+
+        label_39 = new QLabel(gridLayoutWidget_2);
+        label_39->setObjectName(QStringLiteral("label_39"));
+
+        gridLayout_6->addWidget(label_39, 1, 0, 1, 1);
+
+        label_40 = new QLabel(gridLayoutWidget_2);
+        label_40->setObjectName(QStringLiteral("label_40"));
+
+        gridLayout_6->addWidget(label_40, 2, 0, 1, 1);
+
+        lockin_3down = new QCheckBox(gridLayoutWidget_2);
+        lockin_3down->setObjectName(QStringLiteral("lockin_3down"));
+
+        gridLayout_6->addWidget(lockin_3down, 2, 3, 1, 1);
+
+
+        gridLayout_4->addLayout(gridLayout_6, 1, 1, 1, 1);
+
+        horizontalLayout_12 = new QHBoxLayout();
+        horizontalLayout_12->setSpacing(6);
+        horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
+        label_41 = new QLabel(gridLayoutWidget_2);
+        label_41->setObjectName(QStringLiteral("label_41"));
+
+        horizontalLayout_12->addWidget(label_41);
+
+        lockin_baud_combo = new QComboBox(gridLayoutWidget_2);
+        lockin_baud_combo->setObjectName(QStringLiteral("lockin_baud_combo"));
+
+        horizontalLayout_12->addWidget(lockin_baud_combo);
+
+
+        gridLayout_4->addLayout(horizontalLayout_12, 2, 1, 1, 1);
+
+        horizontalLayout_14 = new QHBoxLayout();
+        horizontalLayout_14->setSpacing(6);
+        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
+        label_42 = new QLabel(gridLayoutWidget_2);
+        label_42->setObjectName(QStringLiteral("label_42"));
+
+        horizontalLayout_14->addWidget(label_42);
+
+        lockin_stop_combo = new QComboBox(gridLayoutWidget_2);
+        lockin_stop_combo->setObjectName(QStringLiteral("lockin_stop_combo"));
+
+        horizontalLayout_14->addWidget(lockin_stop_combo);
+
+
+        gridLayout_4->addLayout(horizontalLayout_14, 3, 1, 1, 1);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setSpacing(6);
+        horizontalLayout_15->setObjectName(QStringLiteral("horizontalLayout_15"));
+        label_45 = new QLabel(gridLayoutWidget_2);
+        label_45->setObjectName(QStringLiteral("label_45"));
+
+        horizontalLayout_15->addWidget(label_45);
+
+        lockin_Parity = new QComboBox(gridLayoutWidget_2);
+        lockin_Parity->setObjectName(QStringLiteral("lockin_Parity"));
+
+        horizontalLayout_15->addWidget(lockin_Parity);
+
+
+        gridLayout_4->addLayout(horizontalLayout_15, 4, 1, 1, 1);
+
+        horizontalLayout_16 = new QHBoxLayout();
+        horizontalLayout_16->setSpacing(6);
+        horizontalLayout_16->setObjectName(QStringLiteral("horizontalLayout_16"));
+        label_46 = new QLabel(gridLayoutWidget_2);
+        label_46->setObjectName(QStringLiteral("label_46"));
+
+        horizontalLayout_16->addWidget(label_46);
+
+        lockin_EchoMode = new QComboBox(gridLayoutWidget_2);
+        lockin_EchoMode->setObjectName(QStringLiteral("lockin_EchoMode"));
+
+        horizontalLayout_16->addWidget(lockin_EchoMode);
+
+
+        gridLayout_4->addLayout(horizontalLayout_16, 5, 1, 1, 1);
+
+        gridTabWidget->addTab(Lockintab, QString());
 
         gridLayout_5->addWidget(gridTabWidget, 0, 0, 1, 1);
 
@@ -1049,7 +1374,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(4);
+        gridTabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1096,6 +1421,8 @@ public:
         gridTabWidget->setTabText(gridTabWidget->indexOf(plotTab), QApplication::translate("MainWindow", "Plot", 0));
         label_4->setText(QApplication::translate("MainWindow", "Current Wavenumber", 0));
         label_18->setText(QApplication::translate("MainWindow", "Current Wavelength", 0));
+        label_43->setText(QApplication::translate("MainWindow", "Enable automatic scan", 0));
+        manual_automat->setText(QString());
         label_24->setText(QApplication::translate("MainWindow", "Central Wavelength", 0));
         label_20->setText(QApplication::translate("MainWindow", "Startwavelength", 0));
         label_21->setText(QApplication::translate("MainWindow", "Stopwavelength", 0));
@@ -1105,9 +1432,11 @@ public:
         label_25->setText(QApplication::translate("MainWindow", "Stopwavenumber", 0));
         label_28->setText(QApplication::translate("MainWindow", "Delta WN", 0));
         label_23->setText(QApplication::translate("MainWindow", "Scan Name (not necessary):", 0));
+        label_44->setText(QApplication::translate("MainWindow", "Number of aquisitions", 0));
         manual_StartMeasurement->setText(QApplication::translate("MainWindow", "Start measurement", 0));
         label_22->setText(QApplication::translate("MainWindow", "Current Value in mV", 0));
         manual_confirmValue->setText(QApplication::translate("MainWindow", "Confirm", 0));
+        manual_CancelScan->setText(QApplication::translate("MainWindow", "Cancel Scan", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(manualScan), QApplication::translate("MainWindow", "Manual Scan", 0));
         mvButton_2->setText(QApplication::translate("MainWindow", "Move", 0));
         centerMono->setText(QApplication::translate("MainWindow", "Center", 0));
@@ -1115,12 +1444,14 @@ public:
         stepForwardMono->setText(QApplication::translate("MainWindow", "Forward", 0));
         label->setText(QApplication::translate("MainWindow", "Moving?", 0));
         movingBox2->setText(QString());
-        label_9->setText(QApplication::translate("MainWindow", "Wavelength", 0));
         label_13->setText(QApplication::translate("MainWindow", "Position", 0));
+        label_9->setText(QApplication::translate("MainWindow", "Wavelength", 0));
         execButton_2->setText(QApplication::translate("MainWindow", "Execute", 0));
         label_11->setText(QApplication::translate("MainWindow", "Wave number [cm-1]", 0));
         label_12->setText(QApplication::translate("MainWindow", "Current settings", 0));
         label_10->setText(QApplication::translate("MainWindow", "New settings", 0));
+        label_47->setText(QApplication::translate("MainWindow", "Correct current position [cm-1]", 0));
+        UpdateCurrentPosition->setText(QApplication::translate("MainWindow", "Update Position", 0));
         AddMovementLog->setText(QApplication::translate("MainWindow", "Add movement log file", 0));
         label_2->setText(QApplication::translate("MainWindow", "Filename", 0));
         label_3->setText(QApplication::translate("MainWindow", "Comment", 0));
@@ -1141,14 +1472,45 @@ public:
         connect->setText(QApplication::translate("MainWindow", "Connect", 0));
         MainTXcon->setText(QApplication::translate("MainWindow", "Connected?", 0));
         ipLabel->setText(QApplication::translate("MainWindow", "IP-Address", 0));
-        label_17->setText(QApplication::translate("MainWindow", "Main-TX connected?", 0));
         portLabel->setText(QApplication::translate("MainWindow", "Port", 0));
-        label_30->setText(QApplication::translate("MainWindow", "Serial port connected?", 0));
-        connect_serial->setText(QApplication::translate("MainWindow", "Connect", 0));
-        label_29->setText(QApplication::translate("MainWindow", "Serial Port", 0));
-        serialCheckbox->setText(QApplication::translate("MainWindow", "CheckBox", 0));
-        serial_transmitt->setText(QApplication::translate("MainWindow", "Transmit data", 0));
+        label_17->setText(QApplication::translate("MainWindow", "Main-TX connected?", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(RemoteTab), QApplication::translate("MainWindow", "Remote settings", 0));
+        connect_serial->setText(QApplication::translate("MainWindow", "Connect", 0));
+        label_30->setText(QApplication::translate("MainWindow", "Serial port connected?", 0));
+        serial_transmitt->setText(QApplication::translate("MainWindow", "Transmit data", 0));
+        serialCheckbox->setText(QApplication::translate("MainWindow", "CheckBox", 0));
+        label_29->setText(QApplication::translate("MainWindow", "Serial Port", 0));
+        label_31->setText(QApplication::translate("MainWindow", "Switch 8", 0));
+        label_32->setText(QApplication::translate("MainWindow", "Switch 7", 0));
+        lockin_2down->setText(QString());
+        label_35->setText(QApplication::translate("MainWindow", "Switch 4", 0));
+        label_33->setText(QApplication::translate("MainWindow", "Switch 6", 0));
+        lockin_4down->setText(QString());
+        label_37->setText(QApplication::translate("MainWindow", "Switch 3", 0));
+        label_34->setText(QApplication::translate("MainWindow", "Switch 5", 0));
+        lockin_7up->setText(QString());
+        label_38->setText(QApplication::translate("MainWindow", "Switch 1", 0));
+        lockin_1down->setText(QString());
+        lockin_5up->setText(QString());
+        lockin_8up->setText(QString());
+        lockin_6down->setText(QString());
+        lockin_5down->setText(QString());
+        label_36->setText(QApplication::translate("MainWindow", "Switch 2", 0));
+        lockin_1up->setText(QString());
+        lockin_3up->setText(QString());
+        lockin_2up->setText(QString());
+        lockin_4up->setText(QString());
+        lockin_6up->setText(QString());
+        lockin_8down->setText(QString());
+        lockin_7down->setText(QString());
+        label_39->setText(QApplication::translate("MainWindow", "Up", 0));
+        label_40->setText(QApplication::translate("MainWindow", "Down", 0));
+        lockin_3down->setText(QString());
+        label_41->setText(QApplication::translate("MainWindow", "Baudrate", 0));
+        label_42->setText(QApplication::translate("MainWindow", "Stopbits", 0));
+        label_45->setText(QApplication::translate("MainWindow", "Parity", 0));
+        label_46->setText(QApplication::translate("MainWindow", "Echo mode", 0));
+        gridTabWidget->setTabText(gridTabWidget->indexOf(Lockintab), QApplication::translate("MainWindow", "Lock-in settings", 0));
     } // retranslateUi
 
 };

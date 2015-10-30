@@ -112,6 +112,9 @@ Spectrometer_Control::Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitFo
 {
     Spectrometer_Control::MovingMutex = mutex;
     Spectrometer_Control::MovingCond = WaitForEngine;
+    this->multiAqu = 1;
+    this->numAqu = 1;
+    this->currCounts = 0;
     moving = false;
 //    Spectrometer_Control::CountCond = WaitCond;
 //    Spectrometer_Control::CountMutex = cmutex;
@@ -218,9 +221,27 @@ void Spectrometer_Control::scanData(QPair<int, int> data)
     emit currentData(data);
 }
 
-void Spectrometer_Control::currentCounts(int counts)
+void Spectrometer_Control::setAquisitions(int numAqu)
 {
-    emit currentCounterData(counts);
+    this->numAqu = numAqu;
+}
+
+void Spectrometer_Control::currentCounts(double counts)
+{
+//    if(this->numAqu >= this->multiAqu)
+//    {
+//        this->currCounts /= this->multiAqu;
+//        this->numAqu = 1;
+//        emit currentCounterData(this->currCounts);
+//        this->currCounts = 0;
+//    }
+//    else
+//    {
+//        this->numAqu++;
+//        this->currCounts += counts;
+//    }
+    emit this->currentCounterData(counts);
+    qDebug() << "Current counts in spectrometer: " << counts;
 }
 
 void Spectrometer_Control::updateCurrentPosition(int steps, bool dir)
@@ -356,10 +377,12 @@ void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
     connect(this, &Spectrometer_Control::shutSpectrometerDown, remoteControl, &TXcontroller::shutDown);
 }
 
+
+
 void Spectrometer_Control::response(QString response)
 {
     qDebug() << "Spectrometer-response is: " << response;
-    if(QString::compare(response, "C", Qt::CaseInsensitive) == 0)
+    if(QString::compare(response, "1", Qt::CaseInsensitive) == 0 || QString::compare(response, "2", Qt::CaseInsensitive) == 0)//To be reworked, after 'H' does not return anything
     {
         this->serial_connected = true;
         emit this->SerialIsConnected(this->serial_connected);
@@ -373,20 +396,21 @@ void Spectrometer_Control::response(QString response)
         std::stringstream str;
         str << tmp_buffer;
         str >> buffer_int;
-        qDebug() << "Current counts: " << buffer_int;
+        //qDebug() << "Current counts: " << buffer_int;
         this->currentCounts(buffer_int);
     }
 }
 
-void Spectrometer_Control::initSerial(const QString &portName, int waitTimeout, int BaudRate)
+void Spectrometer_Control::initSerial(const QString &portName, int waitTimeout, int BaudRate, int numStopBits, bool parity, bool useParity, bool useEchoMode)
 {
-    this->SR_controller = new serial_controller(portName, waitTimeout, BaudRate);
+    this->SR_controller = new serial_controller(portName, waitTimeout, BaudRate, numStopBits, parity, useParity, useEchoMode);
     qDebug() << disconnect(this->newSpectrometer, SIGNAL(DPCCounts(int)));
     connect(this->SR_controller, &serial_controller::response, this, &Spectrometer_Control::response);
-    this->SR_controller->transaction("C");
+    connect(this->SR_controller, &serial_controller::CountValue, this, &Spectrometer_Control::currentCounts);
+    this->SR_controller->transaction("H");
 }
 
 void Spectrometer_Control::get_analog_value()
 {
-    this->SR_controller->transaction("a");
+    this->SR_controller->transaction("Q1");
 }

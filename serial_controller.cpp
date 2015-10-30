@@ -1,13 +1,22 @@
 #include "serial_controller.h"
 
-serial_controller_worker::serial_controller_worker(const QString &portname, int waitTimeout, int BaudRate)
+serial_controller_worker::serial_controller_worker(const QString &portname, int waitTimeout, int BaudRate, int numStopBits, bool parity, bool useParity)
 {
     this->portName = portname;
     this->waitTimeout = waitTimeout;
     this->baudrate = BaudRate;
+    this->numStopBits = numStopBits;
+    this->useParity = useParity;
+    this->parity = parity;
     this->serial = new QSerialPort(this);
+    this->storage = "";
+    connect(this->serial, &QSerialPort::readyRead, this, &serial_controller_worker::read_data);
     this->serial->setPortName(this->portName);
+    this->serial->setDataBits(QSerialPort::Data8);
     this->serial->setBaudRate(this->baudrate);
+    this->serial->setStopBits((this->numStopBits==2)?QSerialPort::TwoStop:QSerialPort::OneStop);
+    this->serial->setParity((this->useParity?(this->parity?QSerialPort::OddParity:QSerialPort::EvenParity):QSerialPort::NoParity));
+    qDebug() << "Using " << this->baudrate << " and " << this->useParity << " as parity and " << this->numStopBits << " as stopbits and " << (this->useParity?(this->parity?QSerialPort::OddParity:QSerialPort::EvenParity):QSerialPort::NoParity) << " as parity";
     if (!serial->open(QIODevice::ReadWrite))
     {
         emit error(tr("Can't open %1, error code %2").arg(portName).arg(serial->error()));
@@ -23,91 +32,39 @@ serial_controller_worker::serial_controller_worker(const QString &portname, int 
 
 serial_controller_worker::~serial_controller_worker()
 {
-    this->serial->close();
+    if(this->serial->isOpen())
+        this->serial->close();
+    if(this->serial != NULL)
+        delete this->serial;
+}
+
+void serial_controller_worker::read_data()
+{
+    qDebug() << "Reading data";
+    QByteArray data = this->serial->readAll();
+    qDebug() << "Data is: " << data;
+    storage += QString::fromLatin1(data.data());
+    //emit this->response(QString::fromLatin1(data.data()));
+    if(data == ">")
+    {
+        emit this->response(storage);
+        this->storage = "";
+    }
+
 }
 
 void serial_controller_worker::process_data()
 {
-    bool newData = false;
-    bool run = false;
-    this->mutex.lock();
-    newData = this->sendNewData;
-    run = this->recvLoop;
-    this->mutex.unlock();
-    if(run == false)
-    {
-        qDebug() << "Run is false, returning!";
-        return;
-    }
-    else
-    {
-        if(newData == true)
-        {
-            qDebug() << "TransAction started!";
-            QByteArray requestData = request.toLocal8Bit();
-            qDebug() << "Writing data: " << requestData;
-            serial->write(requestData);
-            qDebug() << "Data written";
-            if(serial->waitForBytesWritten(waitTimeout))
-            {
-                if(serial->waitForReadyRead(waitTimeout))
-                {
-                    qDebug() << "Waiting for data!";
-                    QByteArray responseData = serial->readAll();
-                    while(serial->waitForReadyRead(10))
-                        responseData += serial->readAll();
-                    QString response(responseData);
-                    QByteArray response_arr = response.toLocal8Bit();
-                    qDebug() << "Response is: " << response_arr.toHex();
-                    emit this->response(response);
-                }
-                else
-                {
-                    qDebug() << "Wait read response timeout";
-                    emit this->timeout(tr("Wait read response timeout %1").arg(QTime::currentTime().toString()));
-                }
-            }
-            else
-            {
-                qDebug() << "Wait write request timeout!";
-                emit this->timeout(tr("Wait write request timeout %1").arg(QTime::currentTime().toString()));
-            }
-            mutex.lock();
-            this->sendNewData = false;
-            mutex.unlock();
-        }
-//        else
-//        {
-//            if(serial.waitForReadyRead(waitTimeout))
-//            {
-//                qDebug() << "Waiting for data!";
-//                QByteArray responseData = serial.readAll();
-//                while(serial.waitForReadyRead(10))
-//                    responseData += serial.readAll();
-//                QString response(responseData);
-//                QByteArray response_arr = response.toLocal8Bit();
-//                qDebug() << "Response is: " << response_arr.toHex();
-//                emit this->response(response);
-//            }
-//            else
-//            {
-//                qDebug() << "Wait read response timeout";
-//                emit this->timeout(tr("Wait read response timeout %1").arg(QTime::currentTime().toString()));
-//            }
-//        }
-        QThread::msleep(10);
-//        this->process_data();
-    }
-
 }
 
 void serial_controller_worker::transaction(const QString &request)
 {
 //    qDebug() << "TransAction started!";
-//    QByteArray requestData = request.toLocal8Bit();
-//    qDebug() << "Writing data: " << requestData;
-//    serial.write(requestData);
-//    qDebug() << "Data written";
+    QString request_enter = request + QString("\x00D");
+    QByteArray requestData = request_enter.toLocal8Bit();
+    qDebug() << "Writing data: " << requestData;
+    serial->write(requestData);
+    qDebug() << "Data written";
 //    if(serial.waitForBytesWritten(waitTimeout))
 //    {
 //        if(serial.waitForReadyRead(waitTimeout))
@@ -165,34 +122,63 @@ void serial_controller_worker::transaction(const QString &request)
     //        qDebug() << "Wait write request timeout!";
     //        emit this->timeout(tr("Wait write request timeout %1").arg(QTime::currentTime().toString()));
     //    }
-        mutex.lock();
-        qDebug() << "Got new request, transmitting!";
-        this->sendNewData = true;
-        this->recvLoop = true;
-        this->request = request;
-        mutex.unlock();
-        this->process_data();
+//        mutex.lock();
+//        qDebug() << "Got new request, transmitting!";
+//        this->sendNewData = true;
+//        this->recvLoop = true;
+//        this->request = request;
+//        mutex.unlock();
+//        this->process_data();
+//    QByteArray writData = request.toLocal8Bit();
+//    this->serial->writeData(writData);
 }
 
+//Updater-class
+updater::updater(int update_frequency)
+{
+    this->frequency = update_frequency;
+}
+
+updater::~updater()
+{
+
+}
 
 //Serial_controller functions
-serial_controller::serial_controller(const QString &portName, int waitTimeout, int BaudRate)
+serial_controller::serial_controller(const QString &portName, int waitTimeout, int BaudRate, int numStopBits, bool parity, bool useParity, bool useEchoMode)
 {
-    serial_controller_worker *newWorker = new serial_controller_worker(portName, waitTimeout, BaudRate);
+    serial_controller_worker *newWorker = new serial_controller_worker(portName, waitTimeout, BaudRate, numStopBits, parity, useParity);
     newWorker->moveToThread(&workerThread);
+    this->EchoMode = useEchoMode;
     connect(&workerThread, &QThread::finished, newWorker, &QObject::deleteLater);
     connect(this, &serial_controller::newTransaction, newWorker, &serial_controller_worker::transaction);
     connect(newWorker, &serial_controller_worker::response, this, &serial_controller::response_slot);
     workerThread.start();
+
 //    this->portName = portName;
 //    this->waitTimeout = waitTimeout;
 //    this->baudrate = BaudRate;
-//    this->serial.setPortName(this->portName);
-//    this->serial.setBaudRate(this->baudrate);
-//    if (!serial.open(QIODevice::ReadWrite))
+//    this->numStopBits = numStopBits;
+//    this->useParity = useParity;
+//    this->parity = parity;
+//    this->serial = new QSerialPort(this);
+//    qDebug() << "Connect working: " << connect(this->serial, &QSerialPort::readyRead, this, &serial_controller::read_data);
+//    this->serial->setPortName(this->portName);
+//    this->serial->setDataBits(QSerialPort::Data8);
+//    this->serial->setBaudRate(this->baudrate);
+//    this->serial->setStopBits((this->numStopBits==2)?QSerialPort::TwoStop:QSerialPort::OneStop);
+//    this->serial->setParity((this->useParity?(this->parity?QSerialPort::OddParity:QSerialPort::EvenParity):QSerialPort::NoParity));
+//    qDebug() << "Using " << this->baudrate << " and " << this->useParity << " as parity and " << this->numStopBits << " as stopbits and " << (this->useParity?(this->parity?QSerialPort::OddParity:QSerialPort::EvenParity):QSerialPort::NoParity) << " as parity";
+//    if (!serial->open(QIODevice::ReadWrite))
 //    {
-//        emit error(tr("Can't open %1, error code %2").arg(portName).arg(serial.error()));
+//        emit error(tr("Can't open %1, error code %2").arg(portName).arg(serial->error()));
+//        qDebug() << tr("Can't open %1, error code %2").arg(portName).arg(serial->error());
 //        return;
+//    }
+//    else
+//    {
+//        emit error(tr("Opened %1").arg(portName));
+//        qDebug() << tr("Opened %1").arg(portName);
 //    }
 }
 
@@ -200,18 +186,59 @@ serial_controller::~serial_controller()
 {
     workerThread.quit();
     workerThread.wait();
+//    if(this->serial->isOpen())
+//        this->serial->close();
+//    if(this->serial != NULL)
+//        delete this->serial;
 }
 
 void serial_controller::transaction(const QString &request)
 {
     qDebug() << "Sent new transaction request " << request << " to worker!";
     emit this->newTransaction(request);
+//    QByteArray requestData = request.toLocal8Bit();
+//    qDebug() << "Writing data: " << requestData;
+//    serial->write(requestData);
+//    qDebug() << "Data written";
 }
 
-
+void serial_controller::read_data()
+{
+//    qDebug() << "Reading data";
+//    QByteArray data = this->serial->readAll();
+//    qDebug() << "Data is: " << data;
+//    emit this->response(QString::fromLatin1(data.data()));
+}
 
 void serial_controller::response_slot(QString response)
 {
-    emit this->response(response);
+    if(this->EchoMode)
+    {
+        QStringList splitList = response.split('\n', QString::SkipEmptyParts);
+        QString dataString = splitList[1].remove(splitList[1].length()-1);
+        QStringList splitList2 = dataString.split('E');
+        if(splitList2.length() == 2)
+        {
+            double value = splitList2[0].toDouble();
+            double mantisse = splitList2[1].toDouble();
+            value *= pow(10, mantisse);
+            emit this->CountValue(value);
+        }
+        else
+            emit this->response(response);
+    }
+    else
+    {
+        QStringList splitList2 = response.split('E');
+        if(splitList2.length() == 2)
+        {
+            double value = splitList2[0].toDouble();
+            double mantisse = splitList2[1].toDouble();
+            value *= pow(10, mantisse);
+            emit this->CountValue(value);
+        }
+        else
+            emit this->response(response);
+    }
 }
 
