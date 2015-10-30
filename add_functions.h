@@ -39,7 +39,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName);
 void write_unformatted_file(const Scan &Data, QString fileName);
 void write_log_file(const Scan &Data, QString fileName);
 void splitToDoubles(QPair<double, double> &valuePair, QString input);
-void vectorToMap(const QVector<std::tuple<qreal, qreal, qreal> > &indata, QMap<double, double> &outdata);
+void vectorToMap(const QVector<std::tuple<qreal, qreal, qreal> > &indata, QMap<double, double> &outdata, bool Valueposition);
 
 inline double convertWNtoWL(double input)
 {

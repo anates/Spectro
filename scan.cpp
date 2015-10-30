@@ -5,6 +5,7 @@ Scan::Scan()
     Scan::isLoaded = false;
     Scan::isCalibrated = false;
     Scan::log.clear();
+    Scan::hasWN = false;
     Scan::Central_WL = 0;
     Scan::Params.clear();
     Scan::readonly = false;
@@ -17,6 +18,7 @@ void Scan::clear(void)
 {
     Scan::av = NoAverage;
     Scan::log.clear();
+    Scan::hasWN = false;
     Scan::Central_WL = 0;
     Scan::Params.clear();
     Scan::readonly = false;

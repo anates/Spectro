@@ -18,6 +18,7 @@ public:
     void dropScan(void);
     int getScanNumbers(void);
     int getCurrentScanNumber(void);
+    int getLength(void);
     Scan &getCurrentScan(void);
     Scan getNextScan(void);
     Scan getLastScan(void);

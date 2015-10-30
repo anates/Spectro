@@ -38,6 +38,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
         iss_temp >> tmpstring;
         linecheck.push_back(tmpstring);
     }while(iss_temp);
+    Data.hasWN = false;
     if(linecheck.size() != 3)
     {
         if(version == "8008135" || version == "80081E5" || version == "B0081E5" || version == "130081E5")
@@ -71,6 +72,7 @@ void read_unformatted_file(Scan &Data, const QString &fileName)
         {
             qDebug() << "Fourth data check!";
             Data.Central_WL = in.readLine().toDouble();
+            Data.hasWN = true;
         }
     }
     else
@@ -180,12 +182,18 @@ void splitToDoubles(QPair<double, double> &valuePair, QString input)
     valuePair = qMakePair(x, y);
 }
 
-void vectorToMap(const QVector<std::tuple<qreal, qreal, qreal> > &indata, QMap<double, double> &outdata)//Assumes that all values are already ordered
+void vectorToMap(const QVector<std::tuple<qreal, qreal, qreal> > &indata, QMap<double, double> &outdata, bool Valueposition)//Assumes that all values are already ordered
 {
-    for(int i = 0; i < indata.size(); i++)
-    {
-        outdata[std::get<0>(indata[i])] = std::get<2>(indata[i]);
-    }
+    if(Valueposition)
+        for(int i = 0; i < indata.size(); i++)
+        {
+            outdata[std::get<1>(indata[i])] = std::get<2>(indata[i]);
+        }
+    else
+        for(int i = 0; i < indata.size(); i++)
+        {
+            outdata[std::get<0>(indata[i])] = std::get<2>(indata[i]);
+        }
 }
 
 

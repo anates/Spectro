@@ -45,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->countNumber->setReadOnly(true);
     ui->LastScan->hide();
     ui->NextScan->hide();
+    ui->XValsLabel->hide();
+    ui->change_Xvals->hide();
     ui->ChooseScanLabel->hide();
     ui->selectScanBox->hide();
     ui->selectScanLabel->hide();
@@ -68,9 +70,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->manual_ProgressBar->setValue(0);
     //ui->gridTabWidget->setTabEnabled(3, false);
     ui->movingBox->setDisabled(true);
-    //ui->movingBox->setCheckable(false);
-    //ui->movingBox2->setCheckable(false);
-    //ui->newWaveNumber->setDisabled(true);
     ui->currentPosition->setReadOnly(true);
     ui->currentWavelength->setReadOnly(true);
     ui->currentWaveNumber->setReadOnly(true);
@@ -86,6 +85,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QString myStyleSheet = QString("QProgressBar{ border: 2px solid black; border-radius: 5px; text-align: center} QProgressBar::chunk { background: green; width: 10px; margin: 0.5px}");
     QString s = ui->progressBar->styleSheet().append(myStyleSheet);
     ui->progressBar->setStyleSheet(s);
+
+    QList<QString> xvals;
+    xvals.append("Wavenumbers");
+    xvals.append("Wavelengths");
+    ui->change_Xvals->addItems(xvals);
+    this->xVals = false;
+    this->logFinished = false;
 
     //Creating connections
     connect(newSpectrometer, &Spectrometer_Control::currentCounterData, this, &MainWindow::oncurrentCount);
@@ -207,15 +213,21 @@ void MainWindow::replot()
 
     QVector<double> x, y;
     MainWindow::Scandata.clear();
-    vectorToMap(newScanList.getCurrentScan().getValues().getData()/*currentScan.values.Data*/, MainWindow::Scandata);
-    x = QVector<double>::fromList(Scandata.keys());
-    y = QVector<double>::fromList(Scandata.values());
+    if(newScanList.getLength() > 0)
+    {
+        if(newScanList.getCurrentScan().hasWN)
+            vectorToMap(newScanList.getCurrentScan().getValues().getData()/*currentScan.values.Data*/, MainWindow::Scandata, this->xVals);
+        else
+            vectorToMap(newScanList.getCurrentScan().getValues().getData(), MainWindow::Scandata, false);
+        x = QVector<double>::fromList(Scandata.keys());
+        y = QVector<double>::fromList(Scandata.values());
 
-    MainWindow::Curve.setSamples(x, y);
-    MainWindow::Curve.attach(ui->qwtPlot);
-    ui->qwtPlot->updateAxes();
-    ui->qwtPlot->show();
-    ui->qwtPlot->replot();
+        MainWindow::Curve.setSamples(x, y);
+        MainWindow::Curve.attach(ui->qwtPlot);
+        ui->qwtPlot->updateAxes();
+        ui->qwtPlot->show();
+        ui->qwtPlot->replot();
+    }
     MainWindow::reload_data();
 }
 
@@ -297,6 +309,8 @@ void MainWindow::open()//Missing update to v.4
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
             MainWindow::newScanList.addScan(newScan);
+            ui->change_Xvals->show();
+            ui->XValsLabel->show();
             MainWindow::newScanList.addFileName(fileName);
             if(MainWindow::newScanList.getScanNumbers() > 1)
             {
@@ -337,12 +351,15 @@ void MainWindow::openGeneric()//Missing magic numbers?
         if(newScan.values.Data.isEmpty())
         {
             QMessageBox::information(this, tr("No scan data in file"),tr("The file you are attempting to open contains no scan data"));//Eventuell Scan eigenen Header verpassen
+            return;
         }
         else
         {
             QMessageBox::information(0, "Information", "Finished loading, all data imported, no data checked!");
             MainWindow::newScanList.addScan(newScan);
             MainWindow::newScanList.addFileName(fileName);
+            ui->change_Xvals->show();
+            ui->XValsLabel->show();
             if(MainWindow::newScanList.getScanNumbers() > 1)
             {
                 ui->LastScan->show();
@@ -1551,6 +1568,7 @@ void MainWindow::createLogFile()
             tmpScan.log.logfileSet = false;
         }
     }
+    tmpScan.hasWN = true;
     tmpScan.Params.finPos = ui->manual_StopWL->text().toDouble();
     tmpScan.Params.startPos = ui->manual_StartWL->text().toDouble();
     if(ui->manualScanName->text().isEmpty() == true)
@@ -1567,6 +1585,10 @@ void MainWindow::createLogFile()
     ui->manual_StopWL->setReadOnly(true);
     ui->manual_Steps->setReadOnly(true);
     this->current_step = 0;
+    if(ui->movingBox2->isChecked())
+        this->logFinished = true;
+    else
+        newSpectrometer->get_analog_value();
 }
 
 void MainWindow::continue_this_scan(double counts)
@@ -1602,6 +1624,7 @@ void MainWindow::continue_this_scan(double counts)
         this->tmpScan.clear();
         this->reload_data();
         this->replot();
+        this->logFinished = false;
         ui->manual_confirmValue->setEnabled(false);
         return;
     }
@@ -1623,6 +1646,11 @@ void MainWindow::on_manual_confirmValue_clicked()
     if(this->placed_correctly == false)
     {
         QMessageBox::information(this, tr("Error"), QString("Please use the ""Start measurement""-button before using this button."));
+        return;
+    }
+    if(ui->manual_currentValue->text().isEmpty())
+    {
+        QMessageBox::information(this, tr("Error"), QString("Please enter a value in the value line edit!"));
         return;
     }
     double current_Value = ui->manual_currentValue->text().toDouble();
@@ -1654,6 +1682,7 @@ void MainWindow::on_manual_confirmValue_clicked()
         this->tmpScan.clear();
         this->reload_data();
         this->replot();
+        this->logFinished = false;
         ui->manual_confirmValue->setEnabled(false);
         return;
     }
@@ -1674,7 +1703,8 @@ void MainWindow::stepperStopped()
     ui->movingBox2->setChecked(false);
     ui->movingBox->setChecked(false);
     ui->manual_confirmValue->setEnabled(true);
-    this->newSpectrometer->get_analog_value();
+    if(this->logFinished)
+        this->newSpectrometer->get_analog_value();
     return;
 }
 
@@ -2277,4 +2307,13 @@ void MainWindow::on_UpdateCurrentPosition_clicked()
 void MainWindow::on_manual_CancelScan_clicked()
 {
 
+}
+
+void MainWindow::on_change_Xvals_currentIndexChanged(const QString &arg1)
+{
+    if(arg1 == "Wavenumbers")
+        this->xVals = true;
+    else
+        this->xVals = false;
+    this->replot();
 }

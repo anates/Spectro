@@ -16,6 +16,7 @@ public:
     AveMode av;
     bool isCalibrated;
     LogFile log;
+    bool hasWN;
     bool readonly = false;
     bool isLoaded = false;
     double Central_WL;

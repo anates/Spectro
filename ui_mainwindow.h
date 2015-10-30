@@ -51,7 +51,14 @@ public:
     QHBoxLayout *horizontalLayout_5;
     QLineEdit *photoCounter;
     QPushButton *activateCounter;
+    QCheckBox *movingBox;
     QFrame *line;
+    QLabel *mouseLabel;
+    QGridLayout *MouseLayout;
+    QLabel *xPosLabel;
+    QLineEdit *xPos;
+    QLineEdit *yPos;
+    QLabel *yPosLabel;
     QLabel *NameLabel;
     QLineEdit *scanName;
     QLabel *StartLabel;
@@ -65,6 +72,7 @@ public:
     QCheckBox *dispXValue;
     QCheckBox *dispYValue;
     QCheckBox *dispZValue;
+    QCheckBox *CalibratedBox;
     QPushButton *newScan;
     QPushButton *scanButton;
     QPushButton *stopScan;
@@ -92,14 +100,8 @@ public:
     QPushButton *CalibConfirm;
     QLabel *selectScanLabel;
     QComboBox *selectScanBox;
-    QLabel *mouseLabel;
-    QGridLayout *MouseLayout;
-    QLabel *xPosLabel;
-    QLineEdit *xPos;
-    QLineEdit *yPos;
-    QLabel *yPosLabel;
-    QCheckBox *CalibratedBox;
-    QCheckBox *movingBox;
+    QLabel *XValsLabel;
+    QComboBox *change_Xvals;
     QWidget *manualScan;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout_2;
@@ -317,12 +319,48 @@ public:
 
         formLayout_2->setLayout(0, QFormLayout::FieldRole, horizontalLayout_5);
 
+        movingBox = new QCheckBox(plotTab);
+        movingBox->setObjectName(QStringLiteral("movingBox"));
+
+        formLayout_2->setWidget(1, QFormLayout::FieldRole, movingBox);
+
         line = new QFrame(plotTab);
         line->setObjectName(QStringLiteral("line"));
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
 
         formLayout_2->setWidget(2, QFormLayout::LabelRole, line);
+
+        mouseLabel = new QLabel(plotTab);
+        mouseLabel->setObjectName(QStringLiteral("mouseLabel"));
+
+        formLayout_2->setWidget(4, QFormLayout::LabelRole, mouseLabel);
+
+        MouseLayout = new QGridLayout();
+        MouseLayout->setSpacing(6);
+        MouseLayout->setObjectName(QStringLiteral("MouseLayout"));
+        xPosLabel = new QLabel(plotTab);
+        xPosLabel->setObjectName(QStringLiteral("xPosLabel"));
+
+        MouseLayout->addWidget(xPosLabel, 0, 0, 1, 1);
+
+        xPos = new QLineEdit(plotTab);
+        xPos->setObjectName(QStringLiteral("xPos"));
+
+        MouseLayout->addWidget(xPos, 0, 1, 1, 1);
+
+        yPos = new QLineEdit(plotTab);
+        yPos->setObjectName(QStringLiteral("yPos"));
+
+        MouseLayout->addWidget(yPos, 0, 3, 1, 1);
+
+        yPosLabel = new QLabel(plotTab);
+        yPosLabel->setObjectName(QStringLiteral("yPosLabel"));
+
+        MouseLayout->addWidget(yPosLabel, 0, 2, 1, 1);
+
+
+        formLayout_2->setLayout(4, QFormLayout::FieldRole, MouseLayout);
 
         NameLabel = new QLabel(plotTab);
         NameLabel->setObjectName(QStringLiteral("NameLabel"));
@@ -389,6 +427,11 @@ public:
 
 
         formLayout_2->setLayout(9, QFormLayout::FieldRole, horizontalLayout_3);
+
+        CalibratedBox = new QCheckBox(plotTab);
+        CalibratedBox->setObjectName(QStringLiteral("CalibratedBox"));
+
+        formLayout_2->setWidget(10, QFormLayout::FieldRole, CalibratedBox);
 
         newScan = new QPushButton(plotTab);
         newScan->setObjectName(QStringLiteral("newScan"));
@@ -527,46 +570,15 @@ public:
 
         formLayout_2->setWidget(22, QFormLayout::FieldRole, selectScanBox);
 
-        mouseLabel = new QLabel(plotTab);
-        mouseLabel->setObjectName(QStringLiteral("mouseLabel"));
+        XValsLabel = new QLabel(plotTab);
+        XValsLabel->setObjectName(QStringLiteral("XValsLabel"));
 
-        formLayout_2->setWidget(4, QFormLayout::LabelRole, mouseLabel);
+        formLayout_2->setWidget(24, QFormLayout::LabelRole, XValsLabel);
 
-        MouseLayout = new QGridLayout();
-        MouseLayout->setSpacing(6);
-        MouseLayout->setObjectName(QStringLiteral("MouseLayout"));
-        xPosLabel = new QLabel(plotTab);
-        xPosLabel->setObjectName(QStringLiteral("xPosLabel"));
+        change_Xvals = new QComboBox(plotTab);
+        change_Xvals->setObjectName(QStringLiteral("change_Xvals"));
 
-        MouseLayout->addWidget(xPosLabel, 0, 0, 1, 1);
-
-        xPos = new QLineEdit(plotTab);
-        xPos->setObjectName(QStringLiteral("xPos"));
-
-        MouseLayout->addWidget(xPos, 0, 1, 1, 1);
-
-        yPos = new QLineEdit(plotTab);
-        yPos->setObjectName(QStringLiteral("yPos"));
-
-        MouseLayout->addWidget(yPos, 0, 3, 1, 1);
-
-        yPosLabel = new QLabel(plotTab);
-        yPosLabel->setObjectName(QStringLiteral("yPosLabel"));
-
-        MouseLayout->addWidget(yPosLabel, 0, 2, 1, 1);
-
-
-        formLayout_2->setLayout(4, QFormLayout::FieldRole, MouseLayout);
-
-        CalibratedBox = new QCheckBox(plotTab);
-        CalibratedBox->setObjectName(QStringLiteral("CalibratedBox"));
-
-        formLayout_2->setWidget(10, QFormLayout::FieldRole, CalibratedBox);
-
-        movingBox = new QCheckBox(plotTab);
-        movingBox->setObjectName(QStringLiteral("movingBox"));
-
-        formLayout_2->setWidget(1, QFormLayout::FieldRole, movingBox);
+        formLayout_2->setWidget(24, QFormLayout::FieldRole, change_Xvals);
 
 
         horizontalLayout_2->addLayout(formLayout_2);
@@ -1374,7 +1386,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(1);
+        gridTabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1385,6 +1397,10 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         label_16->setText(QApplication::translate("MainWindow", "Current photo count", 0));
         activateCounter->setText(QApplication::translate("MainWindow", "Activate Counter", 0));
+        movingBox->setText(QApplication::translate("MainWindow", "Moving?", 0));
+        mouseLabel->setText(QApplication::translate("MainWindow", "Mouse position", 0));
+        xPosLabel->setText(QApplication::translate("MainWindow", "x position", 0));
+        yPosLabel->setText(QApplication::translate("MainWindow", "y position", 0));
         NameLabel->setText(QApplication::translate("MainWindow", "Scan name", 0));
         StartLabel->setText(QApplication::translate("MainWindow", "Start Position [cm-1]", 0));
         TargetLabel->setText(QApplication::translate("MainWindow", "Target Position [cm-1]", 0));
@@ -1393,6 +1409,7 @@ public:
         dispXValue->setText(QApplication::translate("MainWindow", "X polarizer set", 0));
         dispYValue->setText(QApplication::translate("MainWindow", "Y polarizer set", 0));
         dispZValue->setText(QApplication::translate("MainWindow", "Z polarizer set", 0));
+        CalibratedBox->setText(QApplication::translate("MainWindow", "Calibrated?", 0));
         newScan->setText(QApplication::translate("MainWindow", "New Scan", 0));
         scanButton->setText(QApplication::translate("MainWindow", "Start scan", 0));
         stopScan->setText(QApplication::translate("MainWindow", "Stop Scan", 0));
@@ -1413,11 +1430,7 @@ public:
         AddCalibration->setText(QApplication::translate("MainWindow", "Add new calibration data", 0));
         CalibConfirm->setText(QApplication::translate("MainWindow", "Confirm values", 0));
         selectScanLabel->setText(QApplication::translate("MainWindow", "Select Scan", 0));
-        mouseLabel->setText(QApplication::translate("MainWindow", "Mouse position", 0));
-        xPosLabel->setText(QApplication::translate("MainWindow", "x position", 0));
-        yPosLabel->setText(QApplication::translate("MainWindow", "y position", 0));
-        CalibratedBox->setText(QApplication::translate("MainWindow", "Calibrated?", 0));
-        movingBox->setText(QApplication::translate("MainWindow", "Moving?", 0));
+        XValsLabel->setText(QApplication::translate("MainWindow", "X-Values", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(plotTab), QApplication::translate("MainWindow", "Plot", 0));
         label_4->setText(QApplication::translate("MainWindow", "Current Wavenumber", 0));
         label_18->setText(QApplication::translate("MainWindow", "Current Wavelength", 0));

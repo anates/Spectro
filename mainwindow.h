@@ -250,12 +250,15 @@ private slots:
 
     void on_manual_CancelScan_clicked();
 
+    void on_change_Xvals_currentIndexChanged(const QString &arg1);
+
 private:
 
 
     QMutex mutex/*, cmutex*/;
     QWaitCondition EngineMoving/*, CountCond*/;
 
+    bool xVals;
 
     QwtPlotPicker* plotPicker;
     QwtPickerMachine* pickerMachine;
@@ -308,6 +311,7 @@ private:
     int currentScanNumber;
     Spectrometer_Control *newSpectrometer;
     bool calibrated;
+    bool logFinished;
     //Manual movement
     bool placed_correctly;
     int current_step;

@@ -44,6 +44,11 @@ Scan & ScanList::getCurrentScan(void)
         return Scans[currentScan];
 }
 
+int ScanList::getLength()
+{
+    return this->Scans.length();
+}
+
 Scan ScanList::getNextScan(void)
 {
     if(!Scans.isEmpty())
