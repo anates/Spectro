@@ -210,15 +210,25 @@ void MainWindow::replot()
     MainWindow::pen.setJoinStyle(Qt::RoundJoin);
 
     MainWindow::Curve.setPen(MainWindow::pen);
-
+    ui->qwtPlot->setAxisTitle(QwtPlot::yLeft, "Measured Voltage [V]");
+    ui->qwtPlot->setAxisTitle(QwtPlot::xBottom, "Wavelength [nm]");
     QVector<double> x, y;
     MainWindow::Scandata.clear();
     if(newScanList.getLength() > 0)
     {
         if(newScanList.getCurrentScan().hasWN)
+        {
             vectorToMap(newScanList.getCurrentScan().getValues().getData()/*currentScan.values.Data*/, MainWindow::Scandata, this->xVals);
+            if(this->xVals)
+                ui->qwtPlot->setAxisTitle(QwtPlot::xBottom, "Wavenumber [cm-1]");
+            else
+                ui->qwtPlot->setAxisTitle(QwtPlot::xBottom, "Wavelength [nm]");
+        }
         else
+        {
             vectorToMap(newScanList.getCurrentScan().getValues().getData(), MainWindow::Scandata, false);
+            ui->qwtPlot->setAxisTitle(QwtPlot::xBottom, "Wavelength [nm]");
+        }
         x = QVector<double>::fromList(Scandata.keys());
         y = QVector<double>::fromList(Scandata.values());
 
