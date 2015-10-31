@@ -1144,7 +1144,10 @@ void MainWindow::oncurrentCount(double counts)
     qDebug() << "New counts: " << counts;
     ui->photoCounter->setText(QString::number(counts));
     if(ui->manual_automat->isChecked())
+    {
+        qDebug() << "Continuing with scan!";
         emit this->continue_scan(counts);
+    }
 }
 
 void MainWindow::writeConfig()
@@ -1644,6 +1647,7 @@ void MainWindow::continue_this_scan(double counts)
         qDebug() << "Current step is: " << this->current_step;
         qDebug() << "Current step size is: " << next_step_size;
         this->current_step += 1;
+        this->logFinished = true;
         newSpectrometer->moveStepper(next_step_size, true);
         this->currentPosition_local += next_step_size;
         return;
@@ -1702,6 +1706,7 @@ void MainWindow::on_manual_confirmValue_clicked()
         qDebug() << "Current step is: " << this->current_step;
         qDebug() << "Current step size is: " << next_step_size;
         this->current_step += 1;
+        this->logFinished = true;
         newSpectrometer->moveStepper(next_step_size, true);
         this->currentPosition_local += next_step_size;
         return;
