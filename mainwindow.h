@@ -252,6 +252,9 @@ private slots:
 
     void on_change_Xvals_currentIndexChanged(const QString &arg1);
 
+    void on_lockin_SetTime_clicked();
+
+
 private:
 
 

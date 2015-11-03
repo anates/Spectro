@@ -379,10 +379,10 @@ void Spectrometer_Control::useRemote(QString ipAddr, quint32 port)
 
 
 
-void Spectrometer_Control::response(QString response)
+void Spectrometer_Control::response(QVector<QString> response)
 {
     qDebug() << "Spectrometer-response is: " << response;
-    if(QString::compare(response, "1", Qt::CaseInsensitive) == 0 || QString::compare(response, "2", Qt::CaseInsensitive) == 0)//To be reworked, after 'H' does not return anything
+    if(QString::compare(response.first(), "1", Qt::CaseInsensitive) == 0 || QString::compare(response.first(), "2", Qt::CaseInsensitive) == 0)//To be reworked, after 'H' does not return anything
     {
         this->serial_connected = true;
         emit this->SerialIsConnected(this->serial_connected);
@@ -390,14 +390,15 @@ void Spectrometer_Control::response(QString response)
     else
     {
 
-        QByteArray buffer = response.toLatin1();
-        const char * tmp_buffer = buffer.data();
-        int buffer_int;
-        std::stringstream str;
-        str << tmp_buffer;
-        str >> buffer_int;
-        //qDebug() << "Current counts: " << buffer_int;
-        this->currentCounts(buffer_int);
+           emit this->SerialData(response);
+//        QByteArray buffer = response.toLatin1();
+//        const char * tmp_buffer = buffer.data();
+//        int buffer_int;
+//        std::stringstream str;
+//        str << tmp_buffer;
+//        str >> buffer_int;
+//        //qDebug() << "Current counts: " << buffer_int;
+//        this->currentCounts(buffer_int);
     }
 }
 
@@ -407,10 +408,15 @@ void Spectrometer_Control::initSerial(const QString &portName, int waitTimeout, 
     qDebug() << disconnect(this->newSpectrometer, SIGNAL(DPCCounts(int)));
     connect(this->SR_controller, &serial_controller::response, this, &Spectrometer_Control::response);
     connect(this->SR_controller, &serial_controller::CountValue, this, &Spectrometer_Control::currentCounts);
-    this->SR_controller->transaction("H");
+    this->SR_controller->transaction("H", 0);
+}
+
+void Spectrometer_Control::lockin_value(QString value, int firstValue, int secondValue)
+{
+    this->SR_controller->transaction((firstValue == -1?value:((secondValue == -1)?value + " " + QString::number(firstValue):value + " " + QString::number(firstValue) + " " + QString::number(secondValue))), 0);
 }
 
 void Spectrometer_Control::get_analog_value()
 {
-    this->SR_controller->transaction("Q1");
+    this->SR_controller->transaction("Q1", this->serial_waiting_time);
 }

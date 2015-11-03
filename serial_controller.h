@@ -13,6 +13,7 @@ private:
     QString portName;
     QString request;
     QString storage;
+    int delay_write;
     int numStopBits;
     bool useParity;
     bool parity;
@@ -25,7 +26,7 @@ private:
     bool sendNewData = false;
     bool recvLoop = false;
 public slots:
-    void transaction(const QString &request);
+    void transaction(const QString &request, int delay);
     void read_data(void);
 signals:
     void response(QString s);
@@ -82,12 +83,12 @@ public:
     ~serial_controller();
 
 public slots:
-    void transaction(const QString &request);
+    void transaction(const QString &request, int delay);
     void response_slot(QString response);
     void read_data(void);
 signals:
-    void newTransaction(const QString &request);
-    void response(QString s);
+    void newTransaction(const QString &request, int delay);
+    void response(QVector<QString> s);
     void error(const QString &s);
     void timeout(const QString &s);
     void CountValue(double val);

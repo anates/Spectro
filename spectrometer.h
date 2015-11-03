@@ -82,6 +82,7 @@ private:
     int numAqu;
     double currCounts;
     bool moving;
+    double serial_waiting_time;
     QString ipAddr;
     quint32 port;
     QVector<bool> polarizerSetting;
@@ -111,9 +112,10 @@ public slots:
     //from TX
     void TXStatus(bool status);
     //from serial
-    void response(QString response);
+    void response(QVector<QString> response);
     //to serial
     void get_analog_value(void);
+    void lockin_value(QString value, int firstValue, int secondValue);
 signals:
     //Internal
     void switchPolarizer(Polarizer pol);
@@ -132,6 +134,7 @@ signals:
     void stepperMoving(void);
     void TX_status(bool status);
     void SerialIsConnected(bool status);
+    void SerialData(QVector<QString> data);
 public:
     Spectrometer_Control(QMutex *mutex, QWaitCondition *WaitForEngine, QString ipAddr = "", quint32 port = 0);
     ~Spectrometer_Control();

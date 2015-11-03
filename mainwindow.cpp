@@ -1380,21 +1380,23 @@ void MainWindow::on_connect_clicked()
         QMessageBox::information(this, "Information", "No valid ip address entered. Please verify!");
         return;
     }
-    this->SshSocket = new qsshsocket;
-    qDebug() << "Socket starting";
-    this->SshSocket->start();
-    qDebug() << "Socket connecting";
-    this->SshSocket->connectToHost(ui->ipAddress->text());
-    qDebug() << "Is connected? " << this->SshSocket->isConnected();
-    qDebug() << "Socket logging in";
-    this->SshSocket->login("root", "");
-    qDebug() << "Is logged in? " << this->SshSocket->isLoggedIn();
-    qDebug() << "Socket executing command";
-    this->SshSocket->executeCommand("/home/debian/qt-workspace/remoteController_revII/remoteController_revII");
-    sleep(1);
-    qDebug() << "Is disconnected? " << this->SshSocket->isConnected();
-    qDebug() << "Connecting now!";
-    sleep(1);
+//    //For debugging disabled
+//    this->SshSocket = new qsshsocket;
+//    qDebug() << "Socket starting";
+//    this->SshSocket->start();
+//    qDebug() << "Socket connecting";
+//    this->SshSocket->connectToHost(ui->ipAddress->text());
+//    qDebug() << "Is connected? " << this->SshSocket->isConnected();
+//    qDebug() << "Socket logging in";
+//    this->SshSocket->login("root", "");
+//    qDebug() << "Is logged in? " << this->SshSocket->isLoggedIn();
+//    qDebug() << "Socket executing command";
+//    this->SshSocket->executeCommand("/home/debian/qt-workspace/remoteController_revII/remoteController_revII");
+//    sleep(1);
+//    qDebug() << "Is disconnected? " << this->SshSocket->isConnected();
+//    qDebug() << "Connecting now!";
+//    sleep(1);
+//    //End of debugging
     newSpectrometer->useRemote(ui->ipAddress->text(), 50000);
 }
 
@@ -1831,6 +1833,7 @@ void MainWindow::on_connect_serial_clicked()
 //    }
     this->newSpectrometer->initSerial(list[ui->serial_ComboBox->currentIndex()].portName(), 1000, this->BaudRate, this->numStopBits, this->parity, this->useParity, echoMode);
     qDebug() << "Current serial is: " << list[ui->serial_ComboBox->currentIndex()].portName();
+    ui->connect_serial->setEnabled(false);
     //this->newSpectrometer->get_analog_value();
 }
 
@@ -2321,7 +2324,7 @@ void MainWindow::on_UpdateCurrentPosition_clicked()
 
 void MainWindow::on_manual_CancelScan_clicked()
 {
-
+    qDebug() << "Not implemented yet!";
 }
 
 void MainWindow::on_change_Xvals_currentIndexChanged(const QString &arg1)
@@ -2331,4 +2334,9 @@ void MainWindow::on_change_Xvals_currentIndexChanged(const QString &arg1)
     else
         this->xVals = false;
     this->replot();
+}
+
+void MainWindow::on_lockin_SetTime_clicked()
+{
+    this->newSpectrometer->lockin_value("T", 2, (ui->lockin_time_line->text() == "1"?2:1));
 }

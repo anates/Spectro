@@ -10,6 +10,7 @@ serial_controller_worker::serial_controller_worker(const QString &portname, int 
     this->parity = parity;
     this->serial = new QSerialPort(this);
     this->storage = "";
+    this->delay_write = 0;
     connect(this->serial, &QSerialPort::readyRead, this, &serial_controller_worker::read_data);
     this->serial->setPortName(this->portName);
     this->serial->setDataBits(QSerialPort::Data8);
@@ -57,11 +58,13 @@ void serial_controller_worker::process_data()
 {
 }
 
-void serial_controller_worker::transaction(const QString &request)
+void serial_controller_worker::transaction(const QString &request, int delay)
 {
 //    qDebug() << "TransAction started!";
+    this->delay_write = delay;
     QString request_enter = request + QString("\x00D");
     QByteArray requestData = request_enter.toLocal8Bit();
+    QThread::msleep(this->delay_write);
     qDebug() << "Writing data: " << requestData;
     serial->write(requestData);
     qDebug() << "Data written";
@@ -192,10 +195,10 @@ serial_controller::~serial_controller()
 //        delete this->serial;
 }
 
-void serial_controller::transaction(const QString &request)
+void serial_controller::transaction(const QString &request, int delay)
 {
     qDebug() << "Sent new transaction request " << request << " to worker!";
-    emit this->newTransaction(request);
+    emit this->newTransaction(request, delay);
 //    QByteArray requestData = request.toLocal8Bit();
 //    qDebug() << "Writing data: " << requestData;
 //    serial->write(requestData);
@@ -225,7 +228,12 @@ void serial_controller::response_slot(QString response)
             emit this->CountValue(value);
         }
         else
-            emit this->response(response);
+        {
+            QVector<QString> returnVector;
+            returnVector.push_back(splitList[0]);
+            returnVector.push_back(splitList[1]);
+            emit this->response(returnVector);
+        }
     }
     else
     {
@@ -238,7 +246,12 @@ void serial_controller::response_slot(QString response)
             emit this->CountValue(value);
         }
         else
-            emit this->response(response);
+        {
+            QVector<QString> returnVector;
+            returnVector.push_back("E");
+            returnVector.push_back(response);
+            emit this->response(returnVector);
+        }
     }
 }
 

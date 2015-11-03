@@ -213,9 +213,9 @@ public:
     QLabel *label_30;
     QLineEdit *lockin_CommandReturn_Value;
     QPushButton *serial_transmitt;
-    QCheckBox *serialCheckbox;
-    QLineEdit *lockin_commandValue;
     QLineEdit *lockin_CommandReturn;
+    QLineEdit *lockin_commandValue;
+    QCheckBox *serialCheckbox;
     QComboBox *lockin_command;
     QLabel *label_29;
     QGridLayout *gridLayout_6;
@@ -257,6 +257,9 @@ public:
     QHBoxLayout *horizontalLayout_16;
     QLabel *label_46;
     QComboBox *lockin_EchoMode;
+    QPushButton *lockin_getTime;
+    QPushButton *lockin_SetTime;
+    QLineEdit *lockin_time_line;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -1112,7 +1115,7 @@ public:
         Lockintab->setObjectName(QStringLiteral("Lockintab"));
         gridLayoutWidget_2 = new QWidget(Lockintab);
         gridLayoutWidget_2->setObjectName(QStringLiteral("gridLayoutWidget_2"));
-        gridLayoutWidget_2->setGeometry(QRect(10, 10, 971, 671));
+        gridLayoutWidget_2->setGeometry(QRect(10, 10, 971, 771));
         gridLayout_4 = new QGridLayout(gridLayoutWidget_2);
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
@@ -1143,20 +1146,20 @@ public:
 
         gridLayout_4->addWidget(serial_transmitt, 8, 1, 1, 1);
 
-        serialCheckbox = new QCheckBox(gridLayoutWidget_2);
-        serialCheckbox->setObjectName(QStringLiteral("serialCheckbox"));
+        lockin_CommandReturn = new QLineEdit(gridLayoutWidget_2);
+        lockin_CommandReturn->setObjectName(QStringLiteral("lockin_CommandReturn"));
 
-        gridLayout_4->addWidget(serialCheckbox, 10, 1, 1, 1);
+        gridLayout_4->addWidget(lockin_CommandReturn, 9, 0, 1, 1);
 
         lockin_commandValue = new QLineEdit(gridLayoutWidget_2);
         lockin_commandValue->setObjectName(QStringLiteral("lockin_commandValue"));
 
         gridLayout_4->addWidget(lockin_commandValue, 7, 1, 1, 1);
 
-        lockin_CommandReturn = new QLineEdit(gridLayoutWidget_2);
-        lockin_CommandReturn->setObjectName(QStringLiteral("lockin_CommandReturn"));
+        serialCheckbox = new QCheckBox(gridLayoutWidget_2);
+        serialCheckbox->setObjectName(QStringLiteral("serialCheckbox"));
 
-        gridLayout_4->addWidget(lockin_CommandReturn, 9, 0, 1, 1);
+        gridLayout_4->addWidget(serialCheckbox, 10, 1, 1, 1);
 
         lockin_command = new QComboBox(gridLayoutWidget_2);
         lockin_command->setObjectName(QStringLiteral("lockin_command"));
@@ -1368,6 +1371,21 @@ public:
 
         gridLayout_4->addLayout(horizontalLayout_16, 5, 1, 1, 1);
 
+        lockin_getTime = new QPushButton(gridLayoutWidget_2);
+        lockin_getTime->setObjectName(QStringLiteral("lockin_getTime"));
+
+        gridLayout_4->addWidget(lockin_getTime, 11, 0, 1, 1);
+
+        lockin_SetTime = new QPushButton(gridLayoutWidget_2);
+        lockin_SetTime->setObjectName(QStringLiteral("lockin_SetTime"));
+
+        gridLayout_4->addWidget(lockin_SetTime, 11, 1, 1, 1);
+
+        lockin_time_line = new QLineEdit(gridLayoutWidget_2);
+        lockin_time_line->setObjectName(QStringLiteral("lockin_time_line"));
+
+        gridLayout_4->addWidget(lockin_time_line, 12, 1, 1, 1);
+
         gridTabWidget->addTab(Lockintab, QString());
 
         gridLayout_5->addWidget(gridTabWidget, 0, 0, 1, 1);
@@ -1386,7 +1404,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(0);
+        gridTabWidget->setCurrentIndex(5);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1523,6 +1541,8 @@ public:
         label_42->setText(QApplication::translate("MainWindow", "Stopbits", 0));
         label_45->setText(QApplication::translate("MainWindow", "Parity", 0));
         label_46->setText(QApplication::translate("MainWindow", "Echo mode", 0));
+        lockin_getTime->setText(QApplication::translate("MainWindow", "Get time constant", 0));
+        lockin_SetTime->setText(QApplication::translate("MainWindow", "Set time constant", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(Lockintab), QApplication::translate("MainWindow", "Lock-in settings", 0));
     } // retranslateUi
 
