@@ -196,4 +196,89 @@ void vectorToMap(const QVector<std::tuple<qreal, qreal, qreal> > &indata, QMap<d
         }
 }
 
+inline double getAverage(const QVector<double> indata)
+{
+    double res = 0;
+    for(int i = 0; i < indata.size(); i++)
+    {
+        res += indata[i];
+    }
+    res/= indata.size();
+    return res;
+}
 
+void walkingAverage(int length, const QMap<double, double> &indata, QMap<double, double> &outdata)
+{
+    if(length > indata.size())
+        length = indata.size()-1;
+    for(int i = 0; i < indata.size(); i++)
+    {
+        if((i - length) < 0)
+        {
+            QVector<double> vec;
+            int x0 = 0;
+            int x1 = i + length;
+            for(int j = x0; j < x1; j++)
+            {
+                vec.push_back(indata.value(j));
+            }
+            outdata[indata.key(i)] = getAverage(vec);
+        }
+        else if((i+length) > indata.size()-1)
+        {
+            QVector<double> vec;
+            int x0 = i-length;
+            int x1 = indata.size()-1;
+            for(int j = x0; j < x1; j++)
+            {
+                vec.push_back(indata.value(j));
+            }
+            outdata[indata.key(i)] = getAverage(vec);
+        }
+        else
+        {
+            QVector<double> vec;
+            int x0 = i-length;
+            int x1 = i+length;
+            for(int j = x0; j < x1; j++)
+            {
+                vec.push_back(indata.value(j));
+            }
+            outdata[indata.key(i)] = getAverage(vec);
+        }
+    }
+}
+
+void bicubicAverage(const QMap<double, double> &indata, QMap<double, double> outdata)
+{
+
+}
+
+void splineAverage(const QMap<double, double> &indata, QMap<double, double> outdata)
+{
+
+}
+
+void calculateInterpolation(const QMap<double, double> &indata, QMap<double, double> &outdata, interpolMethods method, const int interpolVariable = 0)
+{
+    switch(method)
+    {
+        case walking:
+        {
+            walkingAverage(interpolVariable, indata, outdata);
+            break;
+        }
+        case bicubic:
+        {
+            bicubicAverage(indata, outdata);
+            break;
+        }
+        case spline:
+        {
+            splineAverage(indata, outdata);
+            break;
+        }
+        default:
+            break;
+    }
+}

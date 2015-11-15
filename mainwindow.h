@@ -255,6 +255,14 @@ private slots:
     void on_lockin_SetTime_clicked();
 
 
+    void on_setTimeConstant_currentIndexChanged(const QString &arg1);
+
+    void on_lockin_getTime_clicked();
+
+    void on_setInterpolationMethod_currentIndexChanged(const QString &arg1);
+
+    void on_setInterpolationVariables_currentIndexChanged(const QString &arg1);
+
 private:
 
 
@@ -288,6 +296,7 @@ private:
     enum State {ScanState, EditState, MoveState, CalibState};
     State currentState;
     void replot();
+    void replot_interpolation();
     void createActions();
     void createLogFile();
     void startManualMeasurement();
@@ -308,6 +317,7 @@ private:
     bool manualScan;
 
     QMap<double, double> Scandata;
+    QMap<double, double> InterpolatedData;
     QVector<bool> polarizerSettings;
     ScanList newScanList;
     struct Scan tmpScan;
@@ -323,9 +333,9 @@ private:
     quint32 port;
 
     //QWT tools
-    QPen pen;
-    QwtPlotCurve Curve;
-    QwtPlotGrid Grid;
+    QPen pen, pen_orig, pen_interp;
+    QwtPlotCurve Curve, Curve_orig, Curve_interp;
+    QwtPlotGrid Grid, Grid_orig, Grid_interp;
     //Menu actions
     QMenu *fileMenu;
     QAction *openAct;

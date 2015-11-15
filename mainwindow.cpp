@@ -139,6 +139,28 @@ MainWindow::MainWindow(QWidget *parent) :
     echoList.append("No echo mode");
     echoList.append("Echo mode");
     ui->lockin_EchoMode->addItems(echoList);
+    QList<QString> timeList;
+    timeList.append("1");
+    timeList.append("0.1");
+    ui->setTimeConstant->addItems(timeList);
+    ui->setTimeConstant->setCurrentText("0.1");
+    //Fill interpolation methods
+    QList<QString> interpolationList;
+    interpolationList.append("None");
+    interpolationList.append("Walking average");
+    interpolationList.append("Spline");
+    interpolationList.append("Bicubic");
+    ui->setInterpolationMethod->addItems(interpolationList);
+    ui->setInterpolationMethod->setCurrentText("None");
+    ui->setInterpolationVariables->hide();
+    ui->interpol_Variables_label->hide();
+    QList<QString> interpolationVariablesList;
+    for(int i = 1; i < 11; i++)
+    {
+        interpolationVariablesList.append(QString::number(i));
+    }
+    ui->setInterpolationVariables->addItems(interpolationVariablesList);
+    ui->setInterpolationVariables->setCurrentText(QString::number(1));
 //    serial = new QSerialPort(this);
 
     //connect(serial, &QSerialPort::error, this, &MainWindow::handleError);
@@ -333,6 +355,7 @@ void MainWindow::open()//Missing update to v.4
             ui->selectScanBox->addItem(newScanList.getCurrentScan().scanName);
             //QMessageBox::information(this, tr("Info"),QString::number(currentScanNumber) + " " + QString::number(newScanList.Scans.size()));
             MainWindow::replot();
+            MainWindow::replot_interpolation();
         }
     }
 }
@@ -393,6 +416,7 @@ void MainWindow::openGeneric()//Missing magic numbers?
                 ui->dispZValue->setChecked(newScan.Params.polSettings[2]);
 //            }
             MainWindow::replot();
+            MainWindow::replot_interpolation();
         }
     }
 }
@@ -882,7 +906,8 @@ void MainWindow::scanIsFinished(void)
     if(currentState != CalibState)
         changeState(EditState);
     reload_data();
-    replot();
+    this->replot();
+    this->replot_interpolation();
 }
 
 void MainWindow::CurrentScanStatus(qreal status)
@@ -902,6 +927,7 @@ void MainWindow::on_LastScan_clicked()
     ui->selectScanBox->setCurrentIndex(newScanList.getCurrentScanNumber());
 
     MainWindow::replot();
+    MainWindow::replot_interpolation();
 }
 
 void MainWindow::on_NextScan_clicked()
@@ -910,12 +936,14 @@ void MainWindow::on_NextScan_clicked()
     MainWindow::setWindowTitle(newScanList.getCurrentScan().scanName);
     ui->selectScanBox->setCurrentIndex(newScanList.getCurrentScanNumber());
     MainWindow::replot();
+    MainWindow::replot_interpolation();
 }
 
 void MainWindow::on_selectScanBox_currentIndexChanged(int index)
 {
     newScanList.setCurrentScan(index);
     MainWindow::replot();
+    MainWindow::replot_interpolation();
 }
 
 void MainWindow::on_saveScan_clicked()
@@ -1364,6 +1392,7 @@ void MainWindow::clear_window(void)
     ui->qwtPlot->updateAxes();
     ui->qwtPlot->show();
     ui->qwtPlot->replot();
+    MainWindow::replot_interpolation();
     //ui->qwtPlot->detachItems(QwtPlotItem::Rtti_PlotItem, true);
 }
 
@@ -1639,6 +1668,7 @@ void MainWindow::continue_this_scan(double counts)
         this->tmpScan.clear();
         this->reload_data();
         this->replot();
+        this->replot_interpolation();
         this->logFinished = false;
         ui->manual_confirmValue->setEnabled(false);
         return;
@@ -1698,6 +1728,7 @@ void MainWindow::on_manual_confirmValue_clicked()
         this->tmpScan.clear();
         this->reload_data();
         this->replot();
+        this->replot_interpolation();
         this->logFinished = false;
         ui->manual_confirmValue->setEnabled(false);
         return;
@@ -2334,9 +2365,103 @@ void MainWindow::on_change_Xvals_currentIndexChanged(const QString &arg1)
     else
         this->xVals = false;
     this->replot();
+    this->replot_interpolation();
 }
 
 void MainWindow::on_lockin_SetTime_clicked()
 {
-    this->newSpectrometer->lockin_value("T", 2, (ui->lockin_time_line->text() == "1"?2:1));
+    this->newSpectrometer->lockin_value("T", 2, (ui->setTimeConstant->currentText() == "1"?2:1));
+    this->newSpectrometer->set_serial_waiting_time(ui->setTimeConstant->currentText().toDouble()*3);
+}
+
+void MainWindow::on_setTimeConstant_currentIndexChanged(const QString &arg1)
+{
+    this->newSpectrometer->lockin_value("T", 2, (arg1 == "1"?2:1));
+    this->newSpectrometer->set_serial_waiting_time(3*arg1.toDouble());
+}
+
+
+void MainWindow::on_lockin_getTime_clicked()
+{
+    this->newSpectrometer->lockin_value("T", 2, -1);
+}
+
+void MainWindow::on_setInterpolationMethod_currentIndexChanged(const QString &arg1)
+{
+    if(arg1 == "Walking average")
+    {
+        ui->setInterpolationVariables->show();
+        ui->interpol_Variables_label->show();
+    }
+    else
+    {
+        ui->setInterpolationVariables->hide();
+        ui->interpol_Variables_label->hide();
+    }
+    if(arg1 == "None")
+    {
+        this->InterpolatedData = this->Scandata;
+        return;
+    }
+    calculateInterpolation(this->Scandata, this->InterpolatedData, (arg1 == "Walking average"?walking:(arg1=="Spline")?spline:bicubic), (arg1=="Walking average")?ui->setInterpolationVariables->currentData().toInt():0);
+}
+
+void MainWindow::on_setInterpolationVariables_currentIndexChanged(const QString &arg1)
+{
+    calculateInterpolation(this->Scandata, this->InterpolatedData, walking, arg1.toInt());
+}
+
+void MainWindow::replot_interpolation()
+{
+        MainWindow::Grid_orig.attach(ui->origPlot);
+        MainWindow::Grid_interp.attach(ui->interpol_Plot);
+        MainWindow::Curve_orig.attach(NULL);
+        MainWindow::Curve_interp.attach(NULL);
+        MainWindow::Curve_orig.setTitle("Raman spectrum");
+        MainWindow::Curve_interp.setTitle("Raman spectrum, interpolated");
+        MainWindow::Curve_orig.setRenderHint(QwtPlotItem::RenderAntialiased, true);
+        MainWindow::Curve_interp.setRenderHint(QwtPlotItem::RenderAntialiased, true);
+
+        MainWindow::pen_orig.setStyle(Qt::SolidLine);
+        MainWindow::pen_orig.setWidth(3);
+        MainWindow::pen_orig.setBrush(Qt::red);
+        MainWindow::pen_orig.setCapStyle(Qt::RoundCap);
+        MainWindow::pen_orig.setJoinStyle(Qt::RoundJoin);
+
+        MainWindow::pen_interp.setStyle(Qt::SolidLine);
+        MainWindow::pen_interp.setWidth(3);
+        MainWindow::pen_interp.setBrush(Qt::red);
+        MainWindow::pen_interp.setCapStyle(Qt::RoundCap);
+        MainWindow::pen_interp.setJoinStyle(Qt::RoundJoin);
+
+        MainWindow::Curve_orig.setPen(MainWindow::pen_orig);
+        MainWindow::Curve_interp.setPen(MainWindow::pen_interp);
+        ui->origPlot->setAxisTitle(QwtPlot::yLeft, "Measured Voltage [V]");
+        ui->origPlot->setAxisTitle(QwtPlot::xBottom, "Wavelength [nm]");
+        ui->interpol_Plot->setAxisTitle(QwtPlot::yLeft, "Measured Voltage [V]");
+        ui->interpol_Plot->setAxisTitle(QwtPlot::xBottom, "Wavelength [nm]");
+        QVector<double> x_orig, y_orig, x_interp, y_interp;
+        x_orig = QVector<double>::fromList(Scandata.keys());
+        y_orig = QVector<double>::fromList(Scandata.values());
+        if(this->InterpolatedData.size() == 0)
+        {
+            x_interp = QVector<double>::fromList(Scandata.keys());
+            y_interp = QVector<double>::fromList(Scandata.values());
+        }
+        else
+        {
+            x_interp = QVector<double>::fromList(this->InterpolatedData.keys());
+            y_interp = QVector<double>::fromList(this->InterpolatedData.values());
+        }
+        MainWindow::Curve_orig.setSamples(x_orig, y_orig);
+        MainWindow::Curve_interp.setSamples(x_interp, y_interp);
+        MainWindow::Curve_orig.attach(ui->origPlot);
+        MainWindow::Curve_interp.attach(ui->interpol_Plot);
+        ui->origPlot->updateAxes();
+        ui->origPlot->show();
+        ui->origPlot->replot();
+        ui->interpol_Plot->updateAxes();
+        ui->interpol_Plot->show();
+        ui->interpol_Plot->replot();
+        MainWindow::reload_data();
 }

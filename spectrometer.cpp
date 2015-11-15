@@ -404,19 +404,35 @@ void Spectrometer_Control::response(QVector<QString> response)
 
 void Spectrometer_Control::initSerial(const QString &portName, int waitTimeout, int BaudRate, int numStopBits, bool parity, bool useParity, bool useEchoMode)
 {
-    this->SR_controller = new serial_controller(portName, waitTimeout, BaudRate, numStopBits, parity, useParity, useEchoMode);
-    qDebug() << disconnect(this->newSpectrometer, SIGNAL(DPCCounts(int)));
-    connect(this->SR_controller, &serial_controller::response, this, &Spectrometer_Control::response);
-    connect(this->SR_controller, &serial_controller::CountValue, this, &Spectrometer_Control::currentCounts);
-    this->SR_controller->transaction("H", 0);
+    if(this->SR_controller == NULL)
+    {
+        this->SR_controller = new serial_controller(portName, waitTimeout, BaudRate, numStopBits, parity, useParity, useEchoMode);
+        qDebug() << disconnect(this->newSpectrometer, SIGNAL(DPCCounts(int)));
+        connect(this->SR_controller, &serial_controller::response, this, &Spectrometer_Control::response);
+        connect(this->SR_controller, &serial_controller::CountValue, this, &Spectrometer_Control::currentCounts);
+        this->SR_controller->transaction("H", 0);
+    }
+    else
+        qDebug() << "Serial controller already available";
 }
 
 void Spectrometer_Control::lockin_value(QString value, int firstValue, int secondValue)
 {
-    this->SR_controller->transaction((firstValue == -1?value:((secondValue == -1)?value + " " + QString::number(firstValue):value + " " + QString::number(firstValue) + " " + QString::number(secondValue))), 0);
+    if(this->SR_controller != NULL)
+        this->SR_controller->transaction((firstValue == -1?value:((secondValue == -1)?value + " " + QString::number(firstValue):value + " " + QString::number(firstValue) + "," + QString::number(secondValue))), 0);
+    else
+        qDebug() << "No serial connection available";
 }
 
 void Spectrometer_Control::get_analog_value()
 {
-    this->SR_controller->transaction("Q1", this->serial_waiting_time);
+    if(this->SR_controller != NULL)
+        this->SR_controller->transaction("Q1", this->serial_waiting_time);
+    else
+        qDebug() << "No serial connection available";
+}
+
+void Spectrometer_Control::set_serial_waiting_time(double time)
+{
+    this->serial_waiting_time = time;
 }

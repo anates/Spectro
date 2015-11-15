@@ -64,7 +64,7 @@ void serial_controller_worker::transaction(const QString &request, int delay)
     this->delay_write = delay;
     QString request_enter = request + QString("\x00D");
     QByteArray requestData = request_enter.toLocal8Bit();
-    QThread::msleep(this->delay_write);
+    QThread::msleep((this->delay_write)*1000);
     qDebug() << "Writing data: " << requestData;
     serial->write(requestData);
     qDebug() << "Data written";

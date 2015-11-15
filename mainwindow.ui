@@ -15,10 +15,10 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QTabWidget" name="gridTabWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="plotTab">
        <attribute name="title">
@@ -370,224 +370,215 @@
        <attribute name="title">
         <string>Manual Scan</string>
        </attribute>
-       <widget class="QWidget" name="verticalLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>2</x>
-          <y>9</y>
-          <width>981</width>
-          <height>781</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Current Wavenumber</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_currWaveNum"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_18">
-             <property name="text">
-              <string>Current Wavelength</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_currWaveLength"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_43">
-             <property name="text">
-              <string>Enable automatic scan</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="manual_automat">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="QLabel" name="label_24">
-             <property name="text">
-              <string>Central Wavelength</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_centralWL"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_20">
-             <property name="text">
-              <string>Startwavelength</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_StartWL"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>Stopwavelength</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_StopWL"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_19">
-             <property name="text">
-              <string>Number of steps</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_Steps"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_11">
-           <item>
-            <widget class="QLabel" name="label_26">
-             <property name="text">
-              <string>Central Wavenumber</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_CentralWN"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_27">
-             <property name="text">
-              <string>Startwavenumber</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_StartWN"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_25">
-             <property name="text">
-              <string>Stopwavenumber</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_StopWN"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_28">
-             <property name="text">
-              <string>Delta WN</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_DeltaWN"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_10">
-           <item>
-            <widget class="QLabel" name="label_23">
-             <property name="text">
-              <string>Scan Name (not necessary):</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manualScanName"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_44">
-             <property name="text">
-              <string>Number of aquisitions</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_numAqu"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
-           <item>
-            <widget class="QPushButton" name="manual_StartMeasurement">
-             <property name="text">
-              <string>Start measurement</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QProgressBar" name="manual_ProgressBar">
-             <property name="value">
-              <number>24</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_9">
-           <item>
-            <widget class="QLabel" name="label_22">
-             <property name="text">
-              <string>Current Value in mV</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="manual_currentValue"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="manual_confirmValue">
-             <property name="text">
-              <string>Confirm</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="manual_CancelScan">
-             <property name="text">
-              <string>Cancel Scan</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_13">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Current Wavenumber</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_currWaveNum"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>Current Wavelength</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_currWaveLength"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_43">
+              <property name="text">
+               <string>Enable automatic scan</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="manual_automat">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="label_24">
+              <property name="text">
+               <string>Central Wavelength</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_centralWL"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>Startwavelength</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_StartWL"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_21">
+              <property name="text">
+               <string>Stopwavelength</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_StopWL"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Number of steps</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_Steps"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="label_26">
+              <property name="text">
+               <string>Central Wavenumber</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_CentralWN"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>Startwavenumber</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_StartWN"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>Stopwavenumber</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_StopWN"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_28">
+              <property name="text">
+               <string>Delta WN</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_DeltaWN"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>Scan Name (not necessary):</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manualScanName"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_44">
+              <property name="text">
+               <string>Number of aquisitions</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_numAqu"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QPushButton" name="manual_StartMeasurement">
+              <property name="text">
+               <string>Start measurement</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QProgressBar" name="manual_ProgressBar">
+              <property name="value">
+               <number>24</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>Current Value in mV</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="manual_currentValue"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="manual_confirmValue">
+              <property name="text">
+               <string>Confirm</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="manual_CancelScan">
+              <property name="text">
+               <string>Cancel Scan</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="scanTab">
        <attribute name="title">
         <string>Movement settings</string>
        </attribute>
-       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-        </property>
-        <item row="0" column="0" colspan="2">
+       <layout class="QGridLayout" name="gridLayout_12">
+        <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="4" column="2">
            <widget class="QLineEdit" name="newWavelength"/>
@@ -733,14 +724,14 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="1">
+        <item row="1" column="0">
          <widget class="QPushButton" name="AddMovementLog">
           <property name="text">
            <string>Add movement log file</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="2" column="0">
          <layout class="QGridLayout" name="MovementLogLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
@@ -794,10 +785,7 @@
        <attribute name="title">
         <string>Logfile settings</string>
        </attribute>
-       <layout class="QFormLayout" name="formLayout_4">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-        </property>
+       <layout class="QGridLayout" name="gridLayout_11">
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
@@ -879,385 +867,431 @@
        <attribute name="title">
         <string>Remote settings</string>
        </attribute>
-       <widget class="QWidget" name="gridLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>581</width>
-          <height>551</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="2" column="1">
-          <widget class="QPushButton" name="connect">
-           <property name="text">
-            <string>Connect</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QCheckBox" name="MainTXcon">
-           <property name="text">
-            <string>Connected?</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="port"/>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="ipLabel">
-           <property name="text">
-            <string>IP-Address</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="ipAddress"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="portLabel">
-           <property name="text">
-            <string>Port</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_17">
-           <property name="text">
-            <string>Main-TX connected?</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="2" column="1">
+           <widget class="QPushButton" name="connect">
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="MainTXcon">
+            <property name="text">
+             <string>Connected?</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="port"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="ipLabel">
+            <property name="text">
+             <string>IP-Address</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLineEdit" name="ipAddress"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="portLabel">
+            <property name="text">
+             <string>Port</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>Main-TX connected?</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="Lockintab">
        <attribute name="title">
         <string>Lock-in settings</string>
        </attribute>
-       <widget class="QWidget" name="gridLayoutWidget_2">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>971</width>
-          <height>771</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="1">
-          <widget class="QComboBox" name="serial_ComboBox"/>
-         </item>
-         <item row="6" column="1">
-          <widget class="QPushButton" name="connect_serial">
-           <property name="text">
-            <string>Connect</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="label_30">
-           <property name="text">
-            <string>Serial port connected?</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QLineEdit" name="lockin_CommandReturn_Value"/>
-         </item>
-         <item row="8" column="1">
-          <widget class="QPushButton" name="serial_transmitt">
-           <property name="text">
-            <string>Transmit data</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLineEdit" name="lockin_CommandReturn"/>
-         </item>
-         <item row="7" column="1">
-          <widget class="QLineEdit" name="lockin_commandValue"/>
-         </item>
-         <item row="10" column="1">
-          <widget class="QCheckBox" name="serialCheckbox">
-           <property name="text">
-            <string>CheckBox</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QComboBox" name="lockin_command"/>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_29">
-           <property name="text">
-            <string>Serial Port</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <layout class="QGridLayout" name="gridLayout_6">
-           <item row="0" column="8">
-            <widget class="QLabel" name="label_31">
-             <property name="text">
-              <string>Switch 8</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="7">
-            <widget class="QLabel" name="label_32">
-             <property name="text">
-              <string>Switch 7</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QCheckBox" name="lockin_2down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="4">
-            <widget class="QLabel" name="label_35">
-             <property name="text">
-              <string>Switch 4</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="6">
-            <widget class="QLabel" name="label_33">
-             <property name="text">
-              <string>Switch 6</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="4">
-            <widget class="QCheckBox" name="lockin_4down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_37">
-             <property name="text">
-              <string>Switch 3</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="5">
-            <widget class="QLabel" name="label_34">
-             <property name="text">
-              <string>Switch 5</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="7">
-            <widget class="QCheckBox" name="lockin_7up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_38">
-             <property name="text">
-              <string>Switch 1</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QCheckBox" name="lockin_1down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="5">
-            <widget class="QCheckBox" name="lockin_5up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="8">
-            <widget class="QCheckBox" name="lockin_8up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="6">
-            <widget class="QCheckBox" name="lockin_6down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="5">
-            <widget class="QCheckBox" name="lockin_5down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_36">
-             <property name="text">
-              <string>Switch 2</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QCheckBox" name="lockin_1up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3">
-            <widget class="QCheckBox" name="lockin_3up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QCheckBox" name="lockin_2up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="4">
-            <widget class="QCheckBox" name="lockin_4up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="6">
-            <widget class="QCheckBox" name="lockin_6up">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="8">
-            <widget class="QCheckBox" name="lockin_8down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="7">
-            <widget class="QCheckBox" name="lockin_7down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_39">
-             <property name="text">
-              <string>Up</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_40">
-             <property name="text">
-              <string>Down</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="3">
-            <widget class="QCheckBox" name="lockin_3down">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
-           <item>
-            <widget class="QLabel" name="label_41">
-             <property name="text">
-              <string>Baudrate</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="lockin_baud_combo"/>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_14">
-           <item>
-            <widget class="QLabel" name="label_42">
-             <property name="text">
-              <string>Stopbits</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="lockin_stop_combo"/>
-           </item>
-          </layout>
-         </item>
-         <item row="4" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_15">
-           <item>
-            <widget class="QLabel" name="label_45">
-             <property name="text">
-              <string>Parity</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="lockin_Parity"/>
-           </item>
-          </layout>
-         </item>
-         <item row="5" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_16">
-           <item>
-            <widget class="QLabel" name="label_46">
-             <property name="text">
-              <string>Echo mode</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="lockin_EchoMode"/>
-           </item>
-          </layout>
-         </item>
-         <item row="11" column="0">
-          <widget class="QPushButton" name="lockin_getTime">
-           <property name="text">
-            <string>Get time constant</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QPushButton" name="lockin_SetTime">
-           <property name="text">
-            <string>Set time constant</string>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="1">
-          <widget class="QLineEdit" name="lockin_time_line"/>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="1">
+           <widget class="QComboBox" name="serial_ComboBox"/>
+          </item>
+          <item row="6" column="1">
+           <widget class="QPushButton" name="connect_serial">
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="label_30">
+            <property name="text">
+             <string>Serial port connected?</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QLineEdit" name="lockin_CommandReturn_Value"/>
+          </item>
+          <item row="8" column="1">
+           <widget class="QPushButton" name="serial_transmitt">
+            <property name="text">
+             <string>Transmit data</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLineEdit" name="lockin_CommandReturn"/>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="lockin_commandValue"/>
+          </item>
+          <item row="10" column="1">
+           <widget class="QCheckBox" name="serialCheckbox">
+            <property name="text">
+             <string>CheckBox</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QComboBox" name="lockin_command"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_29">
+            <property name="text">
+             <string>Serial Port</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="8">
+             <widget class="QLabel" name="label_31">
+              <property name="text">
+               <string>Switch 8</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="7">
+             <widget class="QLabel" name="label_32">
+              <property name="text">
+               <string>Switch 7</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QCheckBox" name="lockin_2down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QLabel" name="label_35">
+              <property name="text">
+               <string>Switch 4</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="6">
+             <widget class="QLabel" name="label_33">
+              <property name="text">
+               <string>Switch 6</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="4">
+             <widget class="QCheckBox" name="lockin_4down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_37">
+              <property name="text">
+               <string>Switch 3</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="5">
+             <widget class="QLabel" name="label_34">
+              <property name="text">
+               <string>Switch 5</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="7">
+             <widget class="QCheckBox" name="lockin_7up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_38">
+              <property name="text">
+               <string>Switch 1</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QCheckBox" name="lockin_1down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="5">
+             <widget class="QCheckBox" name="lockin_5up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="8">
+             <widget class="QCheckBox" name="lockin_8up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="6">
+             <widget class="QCheckBox" name="lockin_6down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="5">
+             <widget class="QCheckBox" name="lockin_5down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_36">
+              <property name="text">
+               <string>Switch 2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QCheckBox" name="lockin_1up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QCheckBox" name="lockin_3up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QCheckBox" name="lockin_2up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QCheckBox" name="lockin_4up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="6">
+             <widget class="QCheckBox" name="lockin_6up">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="8">
+             <widget class="QCheckBox" name="lockin_8down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="7">
+             <widget class="QCheckBox" name="lockin_7down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_39">
+              <property name="text">
+               <string>Up</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_40">
+              <property name="text">
+               <string>Down</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QCheckBox" name="lockin_3down">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="label_41">
+              <property name="text">
+               <string>Baudrate</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="lockin_baud_combo"/>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QLabel" name="label_42">
+              <property name="text">
+               <string>Stopbits</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="lockin_stop_combo"/>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <item>
+             <widget class="QLabel" name="label_45">
+              <property name="text">
+               <string>Parity</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="lockin_Parity"/>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QLabel" name="label_46">
+              <property name="text">
+               <string>Echo mode</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="lockin_EchoMode"/>
+            </item>
+           </layout>
+          </item>
+          <item row="11" column="0">
+           <widget class="QPushButton" name="lockin_getTime">
+            <property name="text">
+             <string>Get time constant</string>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="1">
+           <widget class="QPushButton" name="lockin_SetTime">
+            <property name="text">
+             <string>Set time constant</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1">
+           <widget class="QComboBox" name="setTimeConstant"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Interpolation</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QwtPlot" name="origPlot"/>
+            </item>
+            <item>
+             <widget class="QwtPlot" name="interpol_Plot"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_18">
+            <item>
+             <widget class="QLabel" name="label_48">
+              <property name="text">
+               <string>Interpolation method</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="setInterpolationMethod"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="interpol_Variables_label">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="setInterpolationVariables"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_50">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+       <zorder>origPlot</zorder>
+       <zorder>verticalLayoutWidget_2</zorder>
+       <zorder>verticalLayoutWidget_2</zorder>
       </widget>
      </widget>
     </item>

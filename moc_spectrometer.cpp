@@ -406,8 +406,8 @@ void Spectrometer::switchingSucceed(Polarizer _t1)
     QMetaObject::activate(this, &staticMetaObject, 11, _a);
 }
 struct qt_meta_stringdata_Spectrometer_Control_t {
-    QByteArrayData data[48];
-    char stringdata[590];
+    QByteArrayData data[50];
+    char stringdata[619];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -463,7 +463,9 @@ QT_MOC_LITERAL(43, 531, 16), // "get_analog_value"
 QT_MOC_LITERAL(44, 548, 12), // "lockin_value"
 QT_MOC_LITERAL(45, 561, 5), // "value"
 QT_MOC_LITERAL(46, 567, 10), // "firstValue"
-QT_MOC_LITERAL(47, 578, 11) // "secondValue"
+QT_MOC_LITERAL(47, 578, 11), // "secondValue"
+QT_MOC_LITERAL(48, 590, 23), // "set_serial_waiting_time"
+QT_MOC_LITERAL(49, 614, 4) // "time"
 
     },
     "Spectrometer_Control\0switchPolarizer\0"
@@ -481,7 +483,8 @@ QT_MOC_LITERAL(47, 578, 11) // "secondValue"
     "stepperStopped\0currentStepperStatus\0"
     "updatePolarizers\0scanFinish\0scanPosition\0"
     "TXStatus\0response\0get_analog_value\0"
-    "lockin_value\0value\0firstValue\0secondValue"
+    "lockin_value\0value\0firstValue\0secondValue\0"
+    "set_serial_waiting_time\0time"
 };
 #undef QT_MOC_LITERAL
 
@@ -491,7 +494,7 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      29,   14, // methods
+      30,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -499,37 +502,38 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
       16,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  159,    2, 0x06 /* Public */,
-       5,    2,  162,    2, 0x06 /* Public */,
-       8,    3,  167,    2, 0x06 /* Public */,
-      12,    1,  174,    2, 0x06 /* Public */,
-      14,    0,  177,    2, 0x06 /* Public */,
-      15,    1,  178,    2, 0x06 /* Public */,
-      18,    0,  181,    2, 0x06 /* Public */,
-      19,    0,  182,    2, 0x06 /* Public */,
-      20,    1,  183,    2, 0x06 /* Public */,
-      22,    1,  186,    2, 0x06 /* Public */,
-      24,    1,  189,    2, 0x06 /* Public */,
-      25,    0,  192,    2, 0x06 /* Public */,
-      26,    0,  193,    2, 0x06 /* Public */,
-      27,    1,  194,    2, 0x06 /* Public */,
-      29,    1,  197,    2, 0x06 /* Public */,
-      30,    1,  200,    2, 0x06 /* Public */,
+       1,    1,  164,    2, 0x06 /* Public */,
+       5,    2,  167,    2, 0x06 /* Public */,
+       8,    3,  172,    2, 0x06 /* Public */,
+      12,    1,  179,    2, 0x06 /* Public */,
+      14,    0,  182,    2, 0x06 /* Public */,
+      15,    1,  183,    2, 0x06 /* Public */,
+      18,    0,  186,    2, 0x06 /* Public */,
+      19,    0,  187,    2, 0x06 /* Public */,
+      20,    1,  188,    2, 0x06 /* Public */,
+      22,    1,  191,    2, 0x06 /* Public */,
+      24,    1,  194,    2, 0x06 /* Public */,
+      25,    0,  197,    2, 0x06 /* Public */,
+      26,    0,  198,    2, 0x06 /* Public */,
+      27,    1,  199,    2, 0x06 /* Public */,
+      29,    1,  202,    2, 0x06 /* Public */,
+      30,    1,  205,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      32,    1,  203,    2, 0x0a /* Public */,
-      33,    1,  206,    2, 0x0a /* Public */,
-      34,    2,  209,    2, 0x0a /* Public */,
-      35,    0,  214,    2, 0x0a /* Public */,
-      36,    0,  215,    2, 0x0a /* Public */,
-      37,    1,  216,    2, 0x0a /* Public */,
-      38,    1,  219,    2, 0x0a /* Public */,
-      39,    0,  222,    2, 0x0a /* Public */,
-      40,    1,  223,    2, 0x0a /* Public */,
-      41,    1,  226,    2, 0x0a /* Public */,
-      42,    1,  229,    2, 0x0a /* Public */,
-      43,    0,  232,    2, 0x0a /* Public */,
-      44,    3,  233,    2, 0x0a /* Public */,
+      32,    1,  208,    2, 0x0a /* Public */,
+      33,    1,  211,    2, 0x0a /* Public */,
+      34,    2,  214,    2, 0x0a /* Public */,
+      35,    0,  219,    2, 0x0a /* Public */,
+      36,    0,  220,    2, 0x0a /* Public */,
+      37,    1,  221,    2, 0x0a /* Public */,
+      38,    1,  224,    2, 0x0a /* Public */,
+      39,    0,  227,    2, 0x0a /* Public */,
+      40,    1,  228,    2, 0x0a /* Public */,
+      41,    1,  231,    2, 0x0a /* Public */,
+      42,    1,  234,    2, 0x0a /* Public */,
+      43,    0,  237,    2, 0x0a /* Public */,
+      44,    3,  238,    2, 0x0a /* Public */,
+      48,    1,  245,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -563,6 +567,7 @@ static const uint qt_meta_data_Spectrometer_Control[] = {
     QMetaType::Void, 0x80000000 | 31,   42,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString, QMetaType::Int, QMetaType::Int,   45,   46,   47,
+    QMetaType::Void, QMetaType::Double,   49,
 
        0        // eod
 };
@@ -601,6 +606,7 @@ void Spectrometer_Control::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 26: _t->response((*reinterpret_cast< QVector<QString>(*)>(_a[1]))); break;
         case 27: _t->get_analog_value(); break;
         case 28: _t->lockin_value((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3]))); break;
+        case 29: _t->set_serial_waiting_time((*reinterpret_cast< double(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -762,13 +768,13 @@ int Spectrometer_Control::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 29)
+        if (_id < 30)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 29;
+        _id -= 30;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 29)
+        if (_id < 30)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 29;
+        _id -= 30;
     }
     return _id;
 }

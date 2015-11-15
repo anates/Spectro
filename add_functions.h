@@ -35,6 +35,8 @@
 
 #include "scan.h"
 
+enum interpolMethods {walking, spline, bicubic};
+
 void read_unformatted_file(Scan &Data, const QString &fileName);
 void write_unformatted_file(const Scan &Data, QString fileName);
 void write_log_file(const Scan &Data, QString fileName);
@@ -70,5 +72,7 @@ inline double convertWLtoPos(double input)
 {
     return convertWNtoPos(convertWLtoWN(input));
 }
+
+void calculateInterpolation(const QMap<double, double> &indata, QMap<double, double> &outdata, interpolMethods method, const int interpolVariable);
 
 #endif // ADD_FUNCTIONS_H

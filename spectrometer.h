@@ -116,6 +116,7 @@ public slots:
     //to serial
     void get_analog_value(void);
     void lockin_value(QString value, int firstValue, int secondValue);
+    void set_serial_waiting_time(double time);
 signals:
     //Internal
     void switchPolarizer(Polarizer pol);
