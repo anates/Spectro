@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     polarizer_control.cpp \
     txcontroller.cpp \
     qsshsocket.cpp \
-    serial_controller.cpp
+    serial_controller.cpp \
+    logfiledialog.cpp
 
 HEADERS  += mainwindow.h \
     add_functions.h \
@@ -55,15 +56,17 @@ HEADERS  += mainwindow.h \
     polarizer_control.h \
     txcontroller.h \
     qsshsocket.h \
-    serial_controller.h
+    serial_controller.h \
+    logfiledialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    logfiledialog.ui
 
 INCLUDEPATH += /usr/local/qwt-6.1.1/include
 #Has to be changed back to -L/usr/lib/ afterwards
 LIBS += -L/usr/local/qwt-6.1.1/lib/ -lqwt -lssh
 
-QMAKE_CXXFLAGS += -std=c++11 -std=gnu++0x
+QMAKE_CXXFLAGS += -std=c++11 -std=gnu++0x -O3 -fopenmp
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

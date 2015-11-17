@@ -228,18 +228,20 @@ void Spectrometer_Control::setAquisitions(int numAqu)
 
 void Spectrometer_Control::currentCounts(double counts)
 {
-//    if(this->numAqu >= this->multiAqu)
-//    {
-//        this->currCounts /= this->multiAqu;
-//        this->numAqu = 1;
-//        emit currentCounterData(this->currCounts);
-//        this->currCounts = 0;
-//    }
-//    else
-//    {
-//        this->numAqu++;
-//        this->currCounts += counts;
-//    }
+    if(this->numAqu >= this->multiAqu)
+    {
+        this->currCounts /= this->multiAqu;
+        this->numAqu = 1;
+        emit this->currentAquisitionData(this->currCounts);
+        this->currCounts = 0;
+    }
+    else
+    {
+        this->numAqu++;
+        this->currCounts += counts;
+        qDebug() << "Aquisition number: " + QString::number(numAqu);
+        this->get_analog_value();
+    }
     emit this->currentCounterData(counts);
     qDebug() << "Current counts in spectrometer: " << counts;
 }

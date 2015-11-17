@@ -8,11 +8,12 @@ LogFile::LogFile()
 void LogFile::clear(void)
 {
     LogFile::countNumber = 0;
+    LogFile::oldSlit = 0;
     LogFile::laserIntensity = 0;
     LogFile::logfileSet = false;
     LogFile::name = "";
     LogFile::sensitivity = 0;
-    LogFile::slitWidth = 0;
+    LogFile::slits = {0, 0, 0, 0};
 }
 
 QString & LogFile::getName()
@@ -32,10 +33,15 @@ qreal & LogFile::getIntensity()
 
 qreal & LogFile::getSensitivity()
 {
-    return sensitivity;
+    return this->sensitivity;
 }
 
-qreal & LogFile::getSlit()
+QVector<qreal> &LogFile::getSlit()
 {
-    return slitWidth;
+    return this->slits;
+}
+
+qreal &LogFile::getOldSlit()
+{
+    return this->oldSlit;
 }

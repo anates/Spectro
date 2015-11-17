@@ -95,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Creating connections
     connect(newSpectrometer, &Spectrometer_Control::currentCounterData, this, &MainWindow::oncurrentCount);
+    connect(newSpectrometer, &Spectrometer_Control::currentAquisitionData, this, &MainWindow::onCurrentAquisition);
     connect(newSpectrometer, &Spectrometer_Control::TX_status, this, &MainWindow::connectStatus);
     connect(newSpectrometer, &Spectrometer_Control::currentData, this, &MainWindow::incomingData);
     connect(newSpectrometer, &Spectrometer_Control::currentScanPosition, this, &MainWindow::CurrentScanStatus);
@@ -461,7 +462,7 @@ void MainWindow::save()
             out << MainWindow::newScanList.getCurrentScan().log.laserIntensity;
             out << MainWindow::newScanList.getCurrentScan().log.name;
             out << MainWindow::newScanList.getCurrentScan().log.sensitivity;
-            out << MainWindow::newScanList.getCurrentScan().log.slitWidth;
+            out << MainWindow::newScanList.getCurrentScan().log.oldSlit;
             out << MainWindow::newScanList.getCurrentScan().isCalibrated;
         }
         else
@@ -769,7 +770,7 @@ void MainWindow::on_scanButton_clicked()//Muss ueberarbeitet werden???
             tmpScan.log.laserIntensity = linePower->text().toDouble();
             tmpScan.log.sensitivity = lineSens->text().toDouble();
             tmpScan.log.countNumber = lineCount->text().toDouble();
-            tmpScan.log.slitWidth = lineSlit->text().toDouble();
+            tmpScan.log.oldSlit = lineSlit->text().toDouble();
             tmpScan.log.logfileSet = true;
         }
         else
@@ -967,7 +968,20 @@ void MainWindow::reload_data()
         ui->scanName->setText(newScanList.getCurrentScan().scanName);
         ui->logfileName->setText(newScanList.getCurrentScan().log.name);
         ui->laserPower->setText(QString::number(newScanList.getCurrentScan().log.laserIntensity));
-        ui->slitWidth->setText(QString::number(newScanList.getCurrentScan().log.slitWidth));
+        if(newScanList.getCurrentScan().log.oldSlit != 0)
+        {
+            ui->slitwidth_1->setText(QString::number(newScanList.getCurrentScan().log.oldSlit));
+            ui->slitwidth_2->setText(QString::number(newScanList.getCurrentScan().log.oldSlit));
+            ui->slitwidth_3->setText(QString::number(newScanList.getCurrentScan().log.oldSlit));
+            ui->slitwidth_4->setText(QString::number(newScanList.getCurrentScan().log.oldSlit));
+        }
+        else
+        {
+            ui->slitwidth_1->setText(QString::number(newScanList.getCurrentScan().log.slits[0]));
+            ui->slitwidth_1->setText(QString::number(newScanList.getCurrentScan().log.slits[1]));
+            ui->slitwidth_1->setText(QString::number(newScanList.getCurrentScan().log.slits[2]));
+            ui->slitwidth_1->setText(QString::number(newScanList.getCurrentScan().log.slits[3]));
+        }
         ui->countNumber->setText(QString::number(newScanList.getCurrentScan().log.countNumber));
         ui->sensitivity->setText(QString::number(newScanList.getCurrentScan().log.sensitivity));
         ui->setScanSpeed->setReadOnly(!newScanList.getCurrentScan().readonly);
@@ -979,7 +993,10 @@ void MainWindow::reload_data()
         ui->scanName->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->logfileName->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->laserPower->setReadOnly(!newScanList.getCurrentScan().readonly);
-        ui->slitWidth->setReadOnly(!newScanList.getCurrentScan().readonly);
+        ui->slitwidth_1->setReadOnly(!newScanList.getCurrentScan().readonly);
+        ui->slitwidth_2->setReadOnly(!newScanList.getCurrentScan().readonly);
+        ui->slitwidth_3->setReadOnly(!newScanList.getCurrentScan().readonly);
+        ui->slitwidth_4->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->countNumber->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->sensitivity->setReadOnly(!newScanList.getCurrentScan().readonly);
         ui->CalibratedBox->setChecked(newScanList.getCurrentScan().isCalibrated);
@@ -1088,7 +1105,10 @@ void MainWindow::on_logButton_clicked()
         newScanList.getCurrentScan().log.countNumber = ui->countNumber->text().toDouble();
         newScanList.getCurrentScan().log.laserIntensity = ui->laserPower->text().toDouble();
         newScanList.getCurrentScan().log.sensitivity = ui->sensitivity->text().toDouble();
-        newScanList.getCurrentScan().log.slitWidth = ui->slitWidth->text().toDouble();
+        newScanList.getCurrentScan().log.slits[0] = ui->slitwidth_1->text().toDouble();
+        newScanList.getCurrentScan().log.slits[1] = ui->slitwidth_2->text().toDouble();
+        newScanList.getCurrentScan().log.slits[2] = ui->slitwidth_3->text().toDouble();
+        newScanList.getCurrentScan().log.slits[3] = ui->slitwidth_4->text().toDouble();
         newScanList.getCurrentScan().log.name = ui->logfileName->text();
         newScanList.getCurrentScan().log.logfileSet = true;
     }
@@ -1169,8 +1189,19 @@ void MainWindow::loadConfig()
 void MainWindow::oncurrentCount(double counts)
 {
     qDebug() << "New counts: " << QString::number(counts);
-    qDebug() << "New counts: " << counts;
     ui->photoCounter->setText(QString::number(counts));
+    ui->lockin_CommandReturn_Value->setText(QString::number(counts));
+    /*
+    if(ui->manual_automat->isChecked())
+    {
+        qDebug() << "Continuing with scan!";
+        emit this->continue_scan(counts);
+    }*/
+}
+
+void MainWindow::onCurrentAquisition(double counts)
+{
+    qDebug() << "New Aquisition counts: " << QString::number(counts);
     if(ui->manual_automat->isChecked())
     {
         qDebug() << "Continuing with scan!";
@@ -1604,7 +1635,7 @@ void MainWindow::createLogFile()
             tmpScan.log.laserIntensity = linePower->text().toDouble();
             tmpScan.log.sensitivity = lineSens->text().toDouble();
             tmpScan.log.countNumber = lineCount->text().toDouble();
-            tmpScan.log.slitWidth = lineSlit->text().toDouble();
+            tmpScan.log.oldSlit = lineSlit->text().toDouble();
             tmpScan.log.logfileSet = true;
         }
         else
@@ -1870,7 +1901,10 @@ void MainWindow::on_connect_serial_clicked()
 
 void MainWindow::on_serial_transmitt_clicked()
 {
-    this->newSpectrometer->get_analog_value();
+    if(ui->lockin_commandValue->text().isEmpty())
+        this->newSpectrometer->get_analog_value();
+    else
+        this->newSpectrometer->lockin_value(ui->lockin_commandValue->text(), -1, -1);
 //    QString data = "Q1\x00D";
 //    serial->write(data.toLocal8Bit());
 //    qDebug() << data;
@@ -2404,11 +2438,13 @@ void MainWindow::on_setInterpolationMethod_currentIndexChanged(const QString &ar
         return;
     }
     calculateInterpolation(this->Scandata, this->InterpolatedData, (arg1 == "Walking average"?walking:(arg1=="Spline")?spline:bicubic), (arg1=="Walking average")?ui->setInterpolationVariables->currentData().toInt():0);
+    this->replot_interpolation();
 }
 
 void MainWindow::on_setInterpolationVariables_currentIndexChanged(const QString &arg1)
 {
     calculateInterpolation(this->Scandata, this->InterpolatedData, walking, arg1.toInt());
+    this->replot_interpolation();
 }
 
 void MainWindow::replot_interpolation()

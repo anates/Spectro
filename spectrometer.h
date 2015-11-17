@@ -130,6 +130,7 @@ signals:
     void stepperIsStopped(void);
     void currentScanPosition(qreal position);
     void currentCounterData(double counts);
+    void currentAquisitionData(double counts);
     void currentStatus(int);
     void positionChanged(void);
     void stepperMoving(void);

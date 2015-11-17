@@ -48,7 +48,7 @@ public:
 public slots:
     void calibrate(void);
     void oncurrentCount(double counts);
-
+    void onCurrentAquisition(double counts);
     void closeProgressBar(void);
 
     void addNewValue(qreal wNumber, qreal counts);

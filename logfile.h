@@ -1,6 +1,7 @@
 #ifndef LOGFILE_H
 #define LOGFILE_H
 #include <QString>
+#include <QVector>
 
 class LogFile
 {
@@ -9,14 +10,16 @@ public:
     bool logfileSet = false;
     QString name = "";
     qreal laserIntensity = 0;
-    qreal slitWidth = 0;
+    QVector<qreal> slits = {0, 0, 0, 0};
+    qreal oldSlit;
     qreal sensitivity = 0;
     qreal countNumber = 0;
 public:
     LogFile();
     QString & getName();
     qreal & getIntensity();
-    qreal & getSlit();
+    QVector<qreal> & getSlit();
+    qreal &getOldSlit();
     qreal & getSensitivity();
     qreal & getCount();
     void clear(void);

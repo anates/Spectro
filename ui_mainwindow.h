@@ -187,13 +187,21 @@ public:
     QLabel *label_5;
     QLineEdit *laserPower;
     QLabel *label_6;
-    QLineEdit *slitWidth;
     QLabel *label_7;
     QLineEdit *sensitivity;
     QLabel *label_8;
     QLineEdit *countNumber;
     QLabel *label_15;
     QLineEdit *logfileName;
+    QHBoxLayout *horizontalLayout_17;
+    QLabel *label_49;
+    QLineEdit *slitwidth_1;
+    QLabel *label_51;
+    QLineEdit *slitwidth_2;
+    QLabel *label_52;
+    QLineEdit *slitwidth_3;
+    QLabel *label_53;
+    QLineEdit *slitwidth_4;
     QPushButton *logButton;
     QWidget *RemoteTab;
     QGridLayout *gridLayout_10;
@@ -1031,11 +1039,6 @@ public:
 
         formLayout_3->setWidget(2, QFormLayout::LabelRole, label_6);
 
-        slitWidth = new QLineEdit(logTab);
-        slitWidth->setObjectName(QStringLiteral("slitWidth"));
-
-        formLayout_3->setWidget(2, QFormLayout::FieldRole, slitWidth);
-
         label_7 = new QLabel(logTab);
         label_7->setObjectName(QStringLiteral("label_7"));
 
@@ -1065,6 +1068,52 @@ public:
         logfileName->setObjectName(QStringLiteral("logfileName"));
 
         formLayout_3->setWidget(0, QFormLayout::FieldRole, logfileName);
+
+        horizontalLayout_17 = new QHBoxLayout();
+        horizontalLayout_17->setSpacing(6);
+        horizontalLayout_17->setObjectName(QStringLiteral("horizontalLayout_17"));
+        label_49 = new QLabel(logTab);
+        label_49->setObjectName(QStringLiteral("label_49"));
+
+        horizontalLayout_17->addWidget(label_49);
+
+        slitwidth_1 = new QLineEdit(logTab);
+        slitwidth_1->setObjectName(QStringLiteral("slitwidth_1"));
+
+        horizontalLayout_17->addWidget(slitwidth_1);
+
+        label_51 = new QLabel(logTab);
+        label_51->setObjectName(QStringLiteral("label_51"));
+
+        horizontalLayout_17->addWidget(label_51);
+
+        slitwidth_2 = new QLineEdit(logTab);
+        slitwidth_2->setObjectName(QStringLiteral("slitwidth_2"));
+
+        horizontalLayout_17->addWidget(slitwidth_2);
+
+        label_52 = new QLabel(logTab);
+        label_52->setObjectName(QStringLiteral("label_52"));
+
+        horizontalLayout_17->addWidget(label_52);
+
+        slitwidth_3 = new QLineEdit(logTab);
+        slitwidth_3->setObjectName(QStringLiteral("slitwidth_3"));
+
+        horizontalLayout_17->addWidget(slitwidth_3);
+
+        label_53 = new QLabel(logTab);
+        label_53->setObjectName(QStringLiteral("label_53"));
+
+        horizontalLayout_17->addWidget(label_53);
+
+        slitwidth_4 = new QLineEdit(logTab);
+        slitwidth_4->setObjectName(QStringLiteral("slitwidth_4"));
+
+        horizontalLayout_17->addWidget(slitwidth_4);
+
+
+        formLayout_3->setLayout(2, QFormLayout::FieldRole, horizontalLayout_17);
 
 
         verticalLayout->addLayout(formLayout_3);
@@ -1469,7 +1518,6 @@ public:
         gridLayout_8->addLayout(verticalLayout_3, 0, 0, 1, 1);
 
         gridTabWidget->addTab(tab, QString());
-        origPlot->raise();
 
         gridLayout_5->addWidget(gridTabWidget, 0, 1, 1, 1);
 
@@ -1487,7 +1535,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        gridTabWidget->setCurrentIndex(6);
+        gridTabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1581,6 +1629,10 @@ public:
         label_7->setText(QApplication::translate("MainWindow", "Sensitivity [counts/sec]", 0));
         label_8->setText(QApplication::translate("MainWindow", "counts", 0));
         label_15->setText(QApplication::translate("MainWindow", "Name for logfile", 0));
+        label_49->setText(QApplication::translate("MainWindow", "1", 0));
+        label_51->setText(QApplication::translate("MainWindow", "2", 0));
+        label_52->setText(QApplication::translate("MainWindow", "3", 0));
+        label_53->setText(QApplication::translate("MainWindow", "4", 0));
         logButton->setText(QApplication::translate("MainWindow", "Add log", 0));
         gridTabWidget->setTabText(gridTabWidget->indexOf(logTab), QApplication::translate("MainWindow", "Logfile settings", 0));
         connect->setText(QApplication::translate("MainWindow", "Connect", 0));
