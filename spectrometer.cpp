@@ -223,15 +223,17 @@ void Spectrometer_Control::scanData(QPair<int, int> data)
 
 void Spectrometer_Control::setAquisitions(int numAqu)
 {
-    this->numAqu = numAqu;
+    this->multiAqu = numAqu;
 }
 
 void Spectrometer_Control::currentCounts(double counts)
 {
+    qDebug() << "numAqu: " << numAqu << " and multiAqu: " << this->multiAqu;
     if(this->numAqu >= this->multiAqu)
     {
+        qDebug() << "Returning read value!";
         this->currCounts /= this->multiAqu;
-        this->numAqu = 1;
+        this->numAqu = 0;
         emit this->currentAquisitionData(this->currCounts);
         this->currCounts = 0;
     }

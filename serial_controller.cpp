@@ -41,9 +41,9 @@ serial_controller_worker::~serial_controller_worker()
 
 void serial_controller_worker::read_data()
 {
-    qDebug() << "Reading data";
+    //qDebug() << "Reading data";
     QByteArray data = this->serial->readAll();
-    qDebug() << "Data is: " << data;
+    //qDebug() << "Data is: " << data;
     storage += QString::fromLatin1(data.data());
     //emit this->response(QString::fromLatin1(data.data()));
     if(data == ">")
@@ -67,7 +67,7 @@ void serial_controller_worker::transaction(const QString &request, int delay)
     QThread::msleep((this->delay_write)*1000);
     qDebug() << "Writing data: " << requestData;
     serial->write(requestData);
-    qDebug() << "Data written";
+    //qDebug() << "Data written";
 //    if(serial.waitForBytesWritten(waitTimeout))
 //    {
 //        if(serial.waitForReadyRead(waitTimeout))
