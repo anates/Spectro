@@ -4,10 +4,12 @@ Stepper_Control_Worker::Stepper_Control_Worker(QMutex *mutex, QWaitCondition *co
 {
     waitMutex = mutex;
     WaitCond = cond;
+#ifdef LOCAL
     Stepper_Control_Worker::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_86, BlackLib::output));
     Stepper_Control_Worker::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_87, BlackLib::output));
     Stepper_Control_Worker::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_88, BlackLib::output));
     Stepper_Control_Worker::STP.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_89, BlackLib::output));
+#endif
 }
 
 Stepper_Control_Worker::~Stepper_Control_Worker()
@@ -19,6 +21,7 @@ void Stepper_Control_Worker::moveStepper(int steps, bool dir)
 {
     waitMutex->lock();
     //qDebug() << "Motor moved from down below!";
+#ifdef LOCAL
     Stepper_Control_Worker::STP[1]->setValue((dir == true)?BlackLib::high:BlackLib::low);
     usleep(50000);
     Stepper_Control_Worker::STP[0]->setValue(BlackLib::low);
@@ -39,6 +42,7 @@ void Stepper_Control_Worker::moveStepper(int steps, bool dir)
     WaitCond->wakeAll();
     waitMutex->unlock();
     emit StepperMoved(steps, dir);
+#endif
 }
 
 //Stepper_Control_Master-functions

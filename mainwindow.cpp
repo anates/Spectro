@@ -228,7 +228,7 @@ void MainWindow::replot()
 
     MainWindow::pen.setStyle(Qt::SolidLine);
     MainWindow::pen.setWidth(3);
-    MainWindow::pen.setBrush(Qt::red);
+    MainWindow::pen.setBrush(Qt::blue);
     MainWindow::pen.setCapStyle(Qt::RoundCap);
     MainWindow::pen.setJoinStyle(Qt::RoundJoin);
 

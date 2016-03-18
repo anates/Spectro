@@ -40,11 +40,11 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    
+
 public slots:
     void calibrate(void);
     void oncurrentCount(double counts);

@@ -4,6 +4,7 @@
 DPC_Worker::DPC_Worker(counterData *data)
 {
     Data = data;
+#ifdef LOCAL
     A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_32, BlackLib::input));
     A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_33, BlackLib::input));
     A.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_34, BlackLib::input));
@@ -28,6 +29,7 @@ DPC_Worker::DPC_Worker(counterData *data)
     C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_5, BlackLib::input));
     C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_10, BlackLib::input));
     C.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_11, BlackLib::input));
+#endif
 //    //DPC::C[6] = new BlackLib::BlackGPIO(BlackLib::I2C_0, BlackLib::input);
 //    //DPC::C[7] = new BlackLib::BlackGPIO(BlackLib::I2C_1, BlackLib::input);
     toDo = false;

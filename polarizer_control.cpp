@@ -2,11 +2,13 @@
 //polarizer_control_worker-functions
 polarizer_control_worker::polarizer_control_worker()
 {
+#ifdef LOCAL
     polarizer_control_worker::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_120, BlackLib::output));
     polarizer_control_worker::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_121, BlackLib::output));
     polarizer_control_worker::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_122, BlackLib::output));
     polarizer_control_worker::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_123, BlackLib::output));
     polarizer_control_worker::POL.emplace_back(new BlackLib::BlackGPIO(BlackLib::GPIO_117, BlackLib::output));
+#endif
     //Spec_Control::POL[5] = new BlackLib::BlackGPIO(BlackLib::GPIO_115, BlackLib::output);
 }
 

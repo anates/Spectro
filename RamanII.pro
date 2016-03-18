@@ -13,12 +13,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     add_functions.cpp \
-    ../tcp_client_test/client.cpp \
-    ../tcp_client_test/server.cpp \
-    ../remoteController/tx_thread.cpp \
-    ../BlackLib/v1_0/BlackLib.cpp \
-    ../BlackLib/v3_0/BlackCore.cpp \
-    ../BlackLib/v3_0//BlackGPIO/BlackGPIO.cpp \
+    client.cpp \
+    server.cpp \
+    tx_thread.cpp \
+    #BlackLib.cpp \
+    #BlackCore.cpp \
+    #BlackGPIO.cpp \
     scandata.cpp \
     logfile.cpp \
     scanparams.cpp \
@@ -36,14 +36,14 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     add_functions.h \
-    ../tcp_client_test/client.h \
-    ../tcp_client_test/server.h \
-    ../remoteController/tx_thread.h \
-    ../BlackLib/v3_0/BlackCore.h \
-    ../BlackLib/v3_0/BlackDef.h \
-    ../BlackLib/v3_0/BlackErr.h \
-    ../BlackLib/v3_0/BlackGPIO/BlackGPIO.h \
-    ../BlackLib/v3_0/BlackLib.h \
+    client.h \
+    server.h \
+    tx_thread.h \
+    #BlackCore.h \
+    #BlackDef.h \
+    #BlackErr.h \
+    #BlackGPIO.h \
+    #BlackLib.h \
     scandata.h \
     logfile.h \
     scanparams.h \
@@ -62,9 +62,9 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     logfiledialog.ui
 
-INCLUDEPATH += /usr/local/qwt-6.1.1/include
+INCLUDEPATH += /usr/local/qwt-6.1.3/include
 #Has to be changed back to -L/usr/lib/ afterwards
-LIBS += -L/usr/local/qwt-6.1.1/lib/ -lqwt -lssh
+LIBS += -L/usr/local/qwt-6.1.3/lib/ -lqwt -lssh
 
 QMAKE_CXXFLAGS += -std=c++11 -std=gnu++0x -O3 -fopenmp
 
