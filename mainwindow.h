@@ -17,7 +17,7 @@
 #include <QJsonValue>
 #include <QtSerialPort/QSerialPortInfo>
 
-#include "../remoteController/tx_thread.h"
+#include "tx_thread.h"
 #include "qsshsocket.h"
 #include "add_functions.h"
 #include "scanlist.h"
